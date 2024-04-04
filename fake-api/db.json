@@ -1,0 +1,44 @@
+{
+  "login": [
+    {
+      "email": "admin@gmail.com",
+      "password": "Abc@123",
+      "id": 2
+    }
+  ],
+  "register": [],
+  "users": [
+    {
+      "name": "Admin",
+      "email": "admin@gmail.com",
+      "numberPhone": "0909090909",
+      "id": 2
+    }
+  ],
+  "menus": [
+    {
+      "id": 1,
+      "name": "Menu 1",
+      "url": "/menu-1.html",
+      "iconClass": "folder",
+      "children": []
+    },
+    {
+      "name": "Menu 2",
+      "url": "/menu-2.html",
+      "iconClass": "ss",
+      "children": [],
+      "id": 2
+    },
+    {
+      "name": "Menu 3",
+      "url": "/menu-3.html",
+      "iconClass": "ss",
+      "children": [],
+      "id": 3
+    }
+  ],
+  "profile": {
+    "name": "Admin"
+  }
+}
