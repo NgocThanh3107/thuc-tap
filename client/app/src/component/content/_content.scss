@@ -1,0 +1,28 @@
+.style_a{
+    text-decoration: none;
+    font-weight: bold;
+    a{
+        color:green;
+    }
+}
+.content{
+    background-color: rgb(247, 239, 230);
+}
+.table-style{
+    display: block;
+    width: 100%;
+    p{
+        position: absolute;
+        top: 100px;
+        right: 200px;
+        a{
+            @extend .style_a ;
+            color: green;
+        }
+    }
+}
+.create{
+    position: absolute;
+    top: 100px;
+    left: 250px;
+}

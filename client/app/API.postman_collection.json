@@ -1,0 +1,224 @@
+{
+	"info": {
+		"_postman_id": "ada8368f-d9e6-40c1-9d12-75049744d9b3",
+		"name": "API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5668789",
+		"_collection_link": "https://lunar-shuttle-830205.postman.co/workspace/Th%25E1%25BB%25B1c-T%25E1%25BA%25ADp-API~b3f75100-1685-4de4-967e-1f02c0163ffe/collection/5668789-ada8368f-d9e6-40c1-9d12-75049744d9b3?action=share&source=collection_link&creator=5668789"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.collectionVariables.set('admin_token', res.data.token);\r",
+									"console.log(res)\r",
+									"console.log(pm.variables)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{API-Key}}",
+								"type": "text"
+							},
+							{
+								"key": "locale",
+								"value": "en",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"Abc@1234\",\r\n    \"remember\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v2/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"login"
+							]
+						},
+						"description": "export interface InputProps {\n\nusername: string;\n\npassword:string;\n\nrember?: boolean\n\n}"
+					},
+					"response": []
+				},
+				{
+					"name": "Check",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{API-Key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v2/auth/check",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"check"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{API-Key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v2/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Menu",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-Key",
+								"value": "{{API-Key}}",
+								"type": "text"
+							},
+							{
+								"key": "locale",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v2/menu/my-menu",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"menu",
+								"my-menu"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://192.168.5.240",
+			"type": "string"
+		},
+		{
+			"key": "API-Key",
+			"value": "1412bcca3e1e6e147121e1c40c19dce1",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJuYmYiOjE3MTI1MDA2OTUsImV4cCI6MTc0NDAzNjY5NSwidXNlciI6eyJpZCI6MTAwMDAwMDAxOH19.plwLkMNsMHsBzGyoJO0LWZ_zqjm1sXH8kOaD2nuUMd536Nd5gjfYGNoiQ3bMd5t9BE71r8J7ysp52l9rXTdsxg"
+		}
+	]
+}

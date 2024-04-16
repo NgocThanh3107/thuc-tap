@@ -1,0 +1,47 @@
+
+$BlackColor : black ;
+    .menu-header{
+        display: block;
+        width: 200px;
+        height: 800px;
+        // height: 185px;
+        border-right: solid 2px #333;
+        padding-right: 10px;
+        float: left;
+        margin: 20px;
+        p{
+            border-bottom: 1px solid #333;
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    }
+   
+    .header{
+        width: 100%;
+        display: inline-block;
+        height: 70px;
+        border-bottom: 1px solid #333;
+        h3{
+            float: left;
+            margin-left: 30px;
+            a{
+                color: green;
+                font-size: 30px;
+         
+            }
+        }
+        p{
+            float: right;
+            margin-right: 30px;
+            a{
+                color: $BlackColor;
+                font-weight: bold;
+                font-size: 18px;
+            }
+        }
+    }
+
+  
+   
+    
