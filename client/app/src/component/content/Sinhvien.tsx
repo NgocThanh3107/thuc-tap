@@ -6,6 +6,7 @@ import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import './_content.scss'
 import LopProps from './crdu-LH';
+import { useNavigate } from 'react-router-dom';
 interface DataType {
     // key: string;
     tenSinhVien: string;
@@ -16,7 +17,8 @@ interface DataType {
   }
 const { Column } = Table;
 const SinhVien: React.FC = () =>{
-   
+    let navigate = useNavigate();
+    let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
     const [data, setData] = useState<DataType[]>([]);
     // console.log(data)
@@ -24,18 +26,21 @@ const SinhVien: React.FC = () =>{
     useEffect(()=>{
         axios.get("http://192.168.5.240//api/v1/builder/form/sinh-vien/data?page=1&pageSize=10",
             {headers:
-                {"API-Key" : "0177e09f564ea6fb08fbe969b6c70877",
+                {"API-Key" : api,
                 "Authorization": `Bearer ${token}`
                 }
             }
         )
-        .then(res=>{
-            console.log(res.data.data)
-            setData(res.data.data)
+        .then(res =>{
+            if(res.data.status == true){
+                setData(res.data.data)
+            }else{
+                console.log(res.data.message)
+            }
+            
         });
      
     },[])
-    // console.log(tenLop)
 
     
     const del = (e: React.MouseEvent<HTMLElement>) => { 
@@ -45,7 +50,7 @@ const SinhVien: React.FC = () =>{
       axios.delete("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
       {
           headers: {
-              "API-Key" : "0177e09f564ea6fb08fbe969b6c70877",
+              "API-Key" : api,
               "Authorization": `Bearer ${token}`
           },
           data : [getId]
@@ -61,11 +66,10 @@ const SinhVien: React.FC = () =>{
             }
       })
     }
-    
 
 return (
-    <div className='table-style'>
-        <Table style={{width:1800 , position:'absolute', top:100, left: 250}} dataSource={data}>
+    <div>
+        <Table dataSource={data}>
             <Column title={"Ten Sinh Vien"} dataIndex="tenSinhVien" key="tenSinhVien" />
             <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
         <Column title="Lop" dataIndex="lop" key = "lop" 
@@ -87,13 +91,20 @@ return (
         render={( data: DataType) => (
             <Space size="middle" className='style_a'>
             {/* <Link href={"/create_sinhvien/" + data?.id}><i className="fa fa-plus" aria-hidden="true"></i> Create</Link> */}
-            <Link href={"/read_sinhvien/" + data?.id}><i className="fa fa-book" aria-hidden="true"></i> Read</Link>
+            <a href={"/read_sinhvien/" + data?.id} onClick={(e) => {e.preventDefault();navigate("/read_sinhvien/" + data?.id)}}><i className="fa fa-book" aria-hidden="true" ></i> Edit</a>
             <a onClick={del} id = {data?.id} ><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
             </Space>
         )}
         />
         </Table>
-        <p><Link href={"/create_sinhvien"}><i className="fa fa-plus" aria-hidden="true"></i> Create</Link></p>
+        <div className='create'>
+            <Link href="/create_sinhvien" 
+                onClick={(e) => {e.preventDefault();
+                navigate("/create_sinhvien");
+                }}>
+                <i className="fa fa-plus" aria-hidden="true"></i> Create
+            </Link>
+        </div>
     </div>
 )
 }

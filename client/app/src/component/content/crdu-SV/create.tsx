@@ -5,10 +5,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LopProps from '../crdu-LH';
 import { Select, Space } from 'antd';
-import { Value } from 'sass';
 const Create_sv: React.FC = () =>{ 
 
     const navigate = useNavigate();
+    let api = localStorage.getItem("api");
       let token = localStorage.getItem("token");
       type FieldType = {
           tenSinhvien?: string;
@@ -19,12 +19,12 @@ const Create_sv: React.FC = () =>{
         };
 
         const [data1, setData1] = useState<LopProps[]>([]);
-        const [lop, setLop]= useState("")
+        const [lop, setLop]= useState<string>()
 
         useEffect(()=>{
           axios.get("http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10",
             {headers:
-                {"API-Key" : "0177e09f564ea6fb08fbe969b6c70877",
+                {"API-Key" : api,
                 "Authorization": `Bearer ${token}`
                 }
             }
@@ -36,7 +36,9 @@ const Create_sv: React.FC = () =>{
         },[])
         const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
           // console.log('Success:', values);
-        
+          if(lop == ""){
+            alert("Chon lop")
+          }
           const data = {
                 maSinhVien: values.maSinhvien,
                 tenSinhVien: values.tenSinhvien,
@@ -52,7 +54,7 @@ const Create_sv: React.FC = () =>{
             data,
             {
                 headers: {
-                    "API-Key" : "0177e09f564ea6fb08fbe969b6c70877",
+                    "API-Key" : api,
                     "Authorization": `Bearer ${token}`
                 }
             }
@@ -61,6 +63,7 @@ const Create_sv: React.FC = () =>{
               console.log(res)
                 if(res.data.status == true){
                   navigate("/administrator/builder/data/sinh-vien.html")
+                  alert("Thành Công")
                 }
                 else{
                   console.log(res.data.message)
@@ -68,20 +71,18 @@ const Create_sv: React.FC = () =>{
             })
         
         };
-        
         const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
           console.log('Failed:', errorInfo);
         };
 
         const handleChange = (value: string) => {
-          // console.log(`selected ${value}`);
-         setLop(value)
+          setLop(value)
       
         };
       
   
   return(
-    <Form className='create'
+    <Form
       name="basic"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
@@ -114,7 +115,7 @@ const Create_sv: React.FC = () =>{
         >
             <Space wrap>
                 <Select
-                    style={{ width: 195 }}
+                    style={{ width: 400 , textAlign: 'left' }}
                     onChange={handleChange}
                     defaultValue={"Chon Lop"}
                     options={
@@ -140,3 +141,5 @@ const Create_sv: React.FC = () =>{
   }
   
   export default Create_sv;
+
+

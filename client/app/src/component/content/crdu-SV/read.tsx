@@ -8,7 +8,7 @@ import { Select, Space } from 'antd';
 // import { Value } from "sass";
 
 const Read_sv: React.FC = () => {
-
+  let api = localStorage.getItem("api")
   const navigate = useNavigate()
   type FieldType = {
     tenSinhVien?: string;
@@ -35,7 +35,7 @@ const Read_sv: React.FC = () => {
       data,
       {
         headers: {
-          "API-Key": "0177e09f564ea6fb08fbe969b6c70877",
+          "API-Key": api,
           "Authorization": `Bearer ${token}`
         },
       }
@@ -44,8 +44,10 @@ const Read_sv: React.FC = () => {
         console.log(res)
         if (res.data.status == true) {
           navigate("/administrator/builder/data/sinh-vien.html")
+          alert("ok")
         } else {
           console.log(res.data.message)
+          alert("Mã sinh viên đã tồn tại")
         }
       })
 
@@ -54,7 +56,6 @@ const Read_sv: React.FC = () => {
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
-
 
   let token = localStorage.getItem("token");
   const [data, setData] = useState<FieldType>();
@@ -65,7 +66,7 @@ const Read_sv: React.FC = () => {
     axios.get("http://192.168.5.240/api/v1/builder/form/sinh-vien/data/" + params.id,
       {
         headers: {
-          "API-Key": "0177e09f564ea6fb08fbe969b6c70877",
+          "API-Key": api,
           "Authorization": `Bearer ${token}`
         }
       }
@@ -80,7 +81,7 @@ const Read_sv: React.FC = () => {
       {
         headers:
         {
-          "API-Key": "0177e09f564ea6fb08fbe969b6c70877",
+          "API-Key": api,
           "Authorization": `Bearer ${token}`
         }
       }
@@ -99,6 +100,7 @@ const Read_sv: React.FC = () => {
     
   return (
     <div className="read">
+      <h1>Edit and Update</h1>
       <Form<FieldType>
         name="basic"
         labelCol={{ span: 8 }}
@@ -130,7 +132,7 @@ const Read_sv: React.FC = () => {
           label="ID"
           name="id"
         >
-          <Input />
+          <Input readOnly/>
         </Form.Item>
         <Form.Item<FieldType>
           label="Lop"
@@ -139,7 +141,7 @@ const Read_sv: React.FC = () => {
         >
           <Select
             onChange={handleChange}
-            style={{ width: 240 }} 
+            style={{ width: 400 , textAlign: "left" }} 
             options={
               data1.map((v, key) => {
                 return {

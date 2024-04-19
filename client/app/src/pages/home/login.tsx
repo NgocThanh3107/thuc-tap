@@ -3,11 +3,12 @@ import { Button, Checkbox, Form, type FormProps, Input } from 'antd';
 import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import { useNavigate } from 'react-router-dom';
+import React from "react";
 
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-
+  let api = localStorage.getItem("api");
   type FieldType = {
     username?: string;
     password?: string;
@@ -26,12 +27,14 @@ const Login: React.FC = () => {
       data,
       {
         headers: {
-          "API-Key": "0177e09f564ea6fb08fbe969b6c70877"
+          "API-Key": api
         }
       })
       .then((res) => {
+        console.log(res)
         if (res.data.status == false) {
           console.log(res.data.message)
+          alert("incorrect username or password")
         } else {
           localStorage.setItem("check", res.data.status)
           let token = res.data.data.token;
@@ -53,7 +56,7 @@ const Login: React.FC = () => {
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       style={{ maxWidth: 600 }}
-      initialValues={{ remember: true, username: "abc" }}
+      initialValues={{ remember: true }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="off"

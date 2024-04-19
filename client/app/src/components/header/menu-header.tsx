@@ -8,23 +8,44 @@ const a: React.CSSProperties = {
   color: '#333',
   margin: "7px",
 };
+interface HeaderProps{
+  pageTitle ?: string;
+  url ?: string;
+  iconClass ?: string;
+  name ?: string;
+}
 
 const Menu_header: React.FC = () => {
-  const token = localStorage.getItem("token")
-  const [data, setData] = useState([]);
+  let api = localStorage.getItem("api");
+  // const token = localStorage.getItem("token")
+  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const [data, setData] = useState<HeaderProps[]>([]);
   // console.log(data)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const newToken = localStorage.getItem("token");
+      setToken(newToken);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   useEffect(() => {
     axios.get("http://192.168.5.240/api/v2/menu/my-menu",
       {
         headers: {
-          "API-Key": "0177e09f564ea6fb08fbe969b6c70877",
+          "API-Key": api,
           "locale": "en",
           "Authorization": `Bearer ${token}`
         }
       }
     )
       .then(res => {
-        // console.log(res.data.data)
+        console.log(res)
         setData(res.data.data)
       })
       .catch(function (error) {
@@ -36,7 +57,7 @@ const Menu_header: React.FC = () => {
     if (data.length > 0) {
       return data.map((value, key) => {
         return (
-          <p><Link style={a} href={value["url"]}><i className={data[key]["iconClass"]}></i> {data[key]["pageTitle"]}</Link></p>
+          <Link style={a} href={value.url}><i className={value.iconClass}></i> {value.pageTitle}</Link>
         )
       })
     }

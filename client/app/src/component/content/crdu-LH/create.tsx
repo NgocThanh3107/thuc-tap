@@ -1,15 +1,13 @@
 
-
 import React from 'react';
 import { Button, Checkbox, Form, type FormProps, Input } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useOutletContext } from 'react-router-dom';
-import { Location } from 'react-router-dom';
 
 const Create: React.FC = () =>{ 
 
   const navigate = useNavigate();
+  let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
     type FieldType = {
         tenLop?: string;
@@ -25,11 +23,12 @@ const Create: React.FC = () =>{
               tenLop: values.tenLop,
               moTa: null
           }
+          console.log(data)
           axios.post("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
           data,
           {
               headers: {
-                  "API-Key" : "0177e09f564ea6fb08fbe969b6c70877",
+                  "API-Key" : api,
                   "Authorization": `Bearer ${token}`
               }
           }
@@ -38,9 +37,11 @@ const Create: React.FC = () =>{
             console.log(res)
               if(res.data.status == true){
                 navigate("/administrator/builder/data/lop-hoc.html")
+                alert("Thành công")
               }
               else{
                 console.log(res.data.message)
+                alert("Mã lớp đã tồn tại")
               }
           })
       
@@ -50,10 +51,8 @@ const Create: React.FC = () =>{
         console.log('Failed:', errorInfo);
       };
 
-       const a= useOutletContext();
-       console.log(a)
 return(
-  <Form className='create'
+  <Form className=''
     name="basic"
     labelCol={{ span: 8 }}
     wrapperCol={{ span: 16 }}

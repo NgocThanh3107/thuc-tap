@@ -1,15 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import React from "react";
+
 const Account: React.FC = () =>{
 
     const token = localStorage.getItem("token")
-    
+    let api = localStorage.getItem("api");
     useEffect(()=>{
         axios.get(
             "http://192.168.5.240/api/v2/auth/check",
             {
                 headers: {
-                    "API-Key": "0177e09f564ea6fb08fbe969b6c70877" ,
+                    "API-Key": api ,
                     "Authorization": `Bearer ${token}`
                 }
                 

@@ -5,24 +5,32 @@
         color:green;
     }
 }
-.content{
-    background-color: rgb(247, 239, 230);
-}
-.table-style{
-    display: block;
-    width: 100%;
-    p{
-        position: absolute;
-        top: 100px;
-        right: 200px;
-        a{
-            @extend .style_a ;
-            color: green;
-        }
+.create{
+    float: right;
+    margin-right: 10px;
+    a{
+       font-size: 17px;
+       font-weight: bold;
+       color: green;
+       padding: 10px 20px;
+       background-color: #e0dede;
     }
 }
-.create{
-    position: absolute;
-    top: 100px;
-    left: 250px;
+.read{
+    width: 100%;
+    form{
+        margin-top: 30px;
+        display: block;
+    }
+    h1{
+        text-align: center;
+        width: 250px;
+        margin-left: 250px;
+        color: #777676;
+        border-bottom: solid 1px #9c9696;
+        padding-bottom: 10px;
+        margin-bottom: 50px;
+    }
 }
+
+
