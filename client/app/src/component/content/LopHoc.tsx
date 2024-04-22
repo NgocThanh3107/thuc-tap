@@ -99,29 +99,28 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
     .then(res=>{
         if(res.data.status == true){
           const newData = getdata.filter(item => item.id != getId);
+          const key = 'updatable';
           setgetData(newData);
           console.log(res.data.message)
+          messageApi.open({
+            key,
+            type: 'loading',
+            content: 'Đang xóa...',
+          });
+          setTimeout(() => {
+            messageApi.open({
+              key,
+              type: 'success',
+              content: 'Đã xóa!',
+              duration: 2,
+            });
+          }, 1000);
        
           }else{
               console.log(res.data.message)
           }
     });
-
-    const key = 'updatable';
-    messageApi.open({
-        key,
-        type: 'loading',
-        content: 'Đang xóa...',
-      });
-      setTimeout(() => {
-        messageApi.open({
-          key,
-          type: 'success',
-          content: 'Đã xóa!',
-          duration: 2,
-        });
-      }, 1000);
-    };
+};
     
     useEffect(() => {
         fetchData(1, 10);
