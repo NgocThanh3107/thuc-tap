@@ -18,131 +18,102 @@ interface DataType {
     tags: string[];
     lop : LopProps;
   }
-  type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
+  interface paginationProps {
+    pageSize? : number;
+    totalPage?: number;
+    total ?: number;
+    page?: number;
+  }
 
-interface DataType {
-  name: {
-    first: string;
-    last: string;
-  };
-  gender: string;
-  email: string;
-  login: {
-    uuid: string;
-  };
-}
+  
 
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  sortField?: string;
-  sortOrder?: string;
-  filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
-}
-const { Column } = Table;
+const {Column} = Table;
 const SinhVien: React.FC = () =>{
     let navigate = useNavigate();
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
     const [data, setData] = useState<DataType[]>([]);
+    const [pagination, setPagination] = useState<paginationProps>()
 
     const [messageApi, contextHolder] = message.useMessage();
-    // console.log(data)
-    
-    useEffect(()=>{
-        axios.get("http://192.168.5.240//api/v1/builder/form/sinh-vien/data?page=1&pageSize=10",
-            {headers:
-                {"API-Key" : api,
-                "Authorization": `Bearer ${token}`
+
+        useEffect(() => {
+            fetchData(1, 10); // Fetch initial data when component mounts
+          }, []);
+        
+          const fetchData = (page: number, pageSize: number) => {
+            axios
+              .get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=${page}&pageSize=${pageSize}`, {
+                headers: {
+                  'API-Key': api,
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then((res) => {
+                if (res.data.status === true) {
+                  setData(res.data.data);
+                  setPagination(res.data.pagination);
+                } else {
+                  console.log(res.data.message);
                 }
-            }
-        )
-        .then(res =>{
-            if(res.data.status == true){
-                setData(res.data.data);
-                setTableParams({
-                    ...tableParams,
-                    pagination: {
-                     ...tableParams.pagination,
-                     total: 20,
-                // 200 is mock data, you should read it from server
-                // total: data.totalCount,
-              },
-            });
-            }else{
-                console.log(res.data.message)
-            }   
-        });
-     
-    },[])
-
-    
-    const del = (e: React.MouseEvent<HTMLElement>) => { 
-      e.preventDefault();
-      let getId = e.currentTarget.id;
-    //   console.log(getId)
-      axios.delete("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
-      {
-          headers: {
-              "API-Key" : api,
-              "Authorization": `Bearer ${token}`
-          },
-          data : [getId]
-      }        
-      )
-      .then(res=>{
-          if(res.data.status == true){
-            const newData = data.filter(item => item.id != getId);
-            setData(newData);
-            console.log(res.data.message)
-            }else{
-                console.log(res.data.message)
-            }
-      })
-
-      const key = 'updatable';
-        messageApi.open({
-            key,
-            type: 'loading',
-            content: 'Đang xóa...',
-        });
-        setTimeout(() => {
-            messageApi.open({
-            key,
-            type: 'success',
-            content: 'Đã xóa!',
-            duration: 2,
-            });
-        }, 1000);
-        };
-
-
-        const [tableParams, setTableParams] = useState<TableParams>({
-            pagination: {
-              current: 1,
-              pageSize: 7,
-            },
-          });
-        
-          const handleTableChange: TableProps['onChange'] = (pagination, filters, sorter) => {
-            setTableParams({
-              pagination,
-              filters,
-              ...sorter,
-            });
-        
-            if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-              setData([]);
-            }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
           };
+        
+          const handleTableChange = (pagination: any) => {
+            const { current, pageSize } = pagination;
+            fetchData(current, pageSize);
+          };
+         
+          const del = (e: React.MouseEvent<HTMLElement>) => { 
+            e.preventDefault();
+            let getId = e.currentTarget.id;
+          //   console.log(getId)
+            axios.delete("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
+            {
+                headers: {
+                    "API-Key" : api,
+                    "Authorization": `Bearer ${token}`
+                },
+                data : [getId]
+            }        
+            )
+            .then(res=>{
+                if(res.data.status == true){
+                  const newData = data.filter(item => item.id != getId);
+                  setData(newData);
+                  console.log(res.data.message)
+                  }else{
+                      console.log(res.data.message)
+                  }
+            })
+      
+            const key = 'updatable';
+              messageApi.open({
+                  key,
+                  type: 'loading',
+                  content: 'Đang xóa...',
+              });
+              setTimeout(() => {
+                  messageApi.open({
+                  key,
+                  type: 'success',
+                  content: 'Đã xóa!',
+                  duration: 2,
+                  });
+              }, 1000);
+              };
 
+        
 return (
     <div>
         {contextHolder}
-        <Table  dataSource={data}  
-                // rowKey={(data) => data.id}
-                pagination={tableParams.pagination}
-                // loading={loading}
-                onChange={handleTableChange}>
+        <Table  dataSource={data}
+            pagination={pagination}
+            onChange={handleTableChange}
+        >
             <Column title={"Ten Sinh Vien"} dataIndex="tenSinhVien" key="tenSinhVien" />
             <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
             <Column title="Lop" dataIndex="lop" key = "lop" 

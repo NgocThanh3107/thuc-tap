@@ -39,6 +39,13 @@ interface TableParams {
   filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
 
+interface paginationProps {
+    pageSize? : number;
+    totalPage?: number;
+    total ?: number;
+    page?: number;
+  }
+
 
 const { Column } = Table;
 
@@ -47,44 +54,33 @@ const LopHoc: React.FC = () => {
     let navigate = useNavigate();
     let api = localStorage.getItem("api");
     let token =localStorage.getItem("token");
-
-    const check = !! token;
-    console.log(check)
-
     
+    const [pagination, setPagination] = useState<paginationProps>()
+    console.log(pagination)
     const [getdata, setgetData] = useState<DataType[]>([]);
    
-    useEffect(()=>{
-       
-        axios.get("http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10",
-            {headers:
-                {"API-Key" : api,
-                "Authorization": `Bearer ${token}`
-                }
-            }
-        )
-        .then(res=>{
-            console.log(res)
-            if(res.data.status == true){
-                setgetData(res.data.data)
-                // setLoading(false);
-                setTableParams({
-                ...tableParams,
-                pagination: {
-                 ...tableParams.pagination,
-                 total: 20,
-            // 200 is mock data, you should read it from server
-            // total: data.totalCount,
-          },
-        });
-            }else{
-                console.log(res.data.message);
-            }
-        })
-        .catch(function (error){
-            console.log(error)
-        });
-    },[]);
+    // useEffect(()=>{
+    //     axios.get("http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10",
+    //         {headers:
+    //             {"API-Key" : api,
+    //             "Authorization": `Bearer ${token}`
+    //             }
+    //         }
+    //     )
+    //     .then(res=>{
+    //         console.log(res)
+    //         if(res.data.status == true){
+    //             setgetData(res.data.data)
+    //             // setLoading(false);
+    //             setPagination(res.data.pagination)
+    //         }else{
+    //             console.log(res.data.message);
+    //         }
+    //     })
+    //     .catch(function (error){
+    //         console.log(error)
+    //     });
+    // },[]);
 
 const [messageApi, contextHolder] = message.useMessage();
 const del = (e: React.MouseEvent<HTMLElement>) => {
@@ -127,35 +123,41 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
       }, 1000);
     };
     
-
-//   const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 7,
-    },
-  });
-
-  const handleTableChange: TableProps['onChange'] = (pagination, filters, sorter) => {
-    setTableParams({
-      pagination,
-      filters,
-      ...sorter,
-    });
-
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setgetData([]);
-    }
-  };
-
+    useEffect(() => {
+        fetchData(1, 10);
+      }, []);
+    
+      const fetchData = (page: number, pageSize: number) => {
+        axios
+          .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
+            headers: {
+              'API-Key': api,
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((res) => {
+            if (res.data.status === true) {
+              setgetData(res.data.data);
+              setPagination(res.data.pagination);
+            } else {
+              console.log(res.data.message);
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      };
+    
+      const handleTableChange = (pagination: any) => {
+        const { current, pageSize } = pagination;
+        fetchData(current, pageSize);
+      };
         return (
             <div>
                 {contextHolder}
-                <Table dataSource={getdata}
-                rowKey={(getdata) => getdata.key}
-                pagination={tableParams.pagination}
-                // loading={loading}
-                onChange={handleTableChange}
+                <Table  dataSource={getdata}
+                        pagination={pagination}
+                        onChange={handleTableChange}
                 >
                     <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
                     <Column title="Ma lop" dataIndex="maLop" key="maLop" />
