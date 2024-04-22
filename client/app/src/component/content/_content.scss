@@ -6,14 +6,17 @@
     }
 }
 .create{
-    float: right;
-    margin-right: 10px;
+    // float: right;
+    // margin-right: 10px;
+    position: absolute;
+    top: 35px;
+    right: 80px;
     a{
        font-size: 17px;
        font-weight: bold;
        color: green;
-       padding: 10px 20px;
-       background-color: #e0dede;
+    //    padding: 10px 20px;
+    //    background-color: #e0dede;
     }
 }
 .read{

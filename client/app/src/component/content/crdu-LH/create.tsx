@@ -12,7 +12,7 @@ const Create: React.FC = () =>{
     type FieldType = {
         tenLop?: string;
         maLop?: string;
-        moTa?: null
+        moTa?: string
       };
       
       const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
@@ -21,7 +21,7 @@ const Create: React.FC = () =>{
         const data = {
               maLop: values.maLop,
               tenLop: values.tenLop,
-              moTa: null
+              moTa: values.moTa
           }
           console.log(data)
           axios.post("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
@@ -65,7 +65,7 @@ return(
     <Form.Item<FieldType>
       label="Ten Lop"
       name="tenLop"
-      rules={[{ required: true, message: 'Nhap ten lop!' }]}
+      rules={[{ required: true, message: 'Enter a class name !' }]}
     >
       <Input />
     </Form.Item>
@@ -73,7 +73,7 @@ return(
     <Form.Item<FieldType>
       label="Ma Lop"
       name="maLop"
-      rules={[{ required: true, message: 'Nhap ma lop!' }]}
+      rules={[{ required: true, message: 'Enter the class code !' }]}
     >
       <Input/>
     </Form.Item>

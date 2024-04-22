@@ -5,15 +5,40 @@ import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import './_content.scss'
 import { useNavigate } from 'react-router-dom';
-
+import { Button, message } from 'antd';
+import type { TableColumnsType, TableProps } from 'antd';
+import type { GetProp} from 'antd';
 
 interface DataType {
     key: string;
     tenLop: string;
     id?: string;
     maLop: string;
+    moTa: string;
     tags: string[];
 }
+
+type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
+
+interface DataType {
+  name: {
+    first: string;
+    last: string;
+  };
+  gender: string;
+  email: string;
+  login: {
+    uuid: string;
+  };
+}
+
+interface TableParams {
+  pagination?: TablePaginationConfig;
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
+}
+
 
 const { Column } = Table;
 
@@ -27,7 +52,7 @@ const LopHoc: React.FC = () => {
     console.log(check)
 
     
-    const [getdata, setData] = useState<DataType[]>([]);
+    const [getdata, setgetData] = useState<DataType[]>([]);
    
     useEffect(()=>{
        
@@ -41,7 +66,17 @@ const LopHoc: React.FC = () => {
         .then(res=>{
             console.log(res)
             if(res.data.status == true){
-                setData(res.data.data)
+                setgetData(res.data.data)
+                // setLoading(false);
+                setTableParams({
+                ...tableParams,
+                pagination: {
+                 ...tableParams.pagination,
+                 total: 20,
+            // 200 is mock data, you should read it from server
+            // total: data.totalCount,
+          },
+        });
             }else{
                 console.log(res.data.message);
             }
@@ -49,12 +84,13 @@ const LopHoc: React.FC = () => {
         .catch(function (error){
             console.log(error)
         });
-    },[])
+    },[]);
 
-
+const [messageApi, contextHolder] = message.useMessage();
 const del = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const getId = e.currentTarget.id;
+  
     axios.delete("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
     {
         headers: {
@@ -67,19 +103,63 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
     .then(res=>{
         if(res.data.status == true){
           const newData = getdata.filter(item => item.id != getId);
-          setData(newData);
+          setgetData(newData);
           console.log(res.data.message)
+       
           }else{
               console.log(res.data.message)
           }
-    })
-  }
-  
+    });
+
+    const key = 'updatable';
+    messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Đang xóa...',
+      });
+      setTimeout(() => {
+        messageApi.open({
+          key,
+          type: 'success',
+          content: 'Đã xóa!',
+          duration: 2,
+        });
+      }, 1000);
+    };
+    
+
+//   const [loading, setLoading] = useState(false);
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 7,
+    },
+  });
+
+  const handleTableChange: TableProps['onChange'] = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination,
+      filters,
+      ...sorter,
+    });
+
+    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+      setgetData([]);
+    }
+  };
+
         return (
             <div>
-                <Table dataSource={getdata}>
-                    <Column title={"Ten Lop"} dataIndex="tenLop" key="tenLop" />
+                {contextHolder}
+                <Table dataSource={getdata}
+                rowKey={(getdata) => getdata.key}
+                pagination={tableParams.pagination}
+                // loading={loading}
+                onChange={handleTableChange}
+                >
+                    <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
                     <Column title="Ma lop" dataIndex="maLop" key="maLop" />
+                    <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
                     <Column
                         title="Action"
                         key="action"
@@ -89,6 +169,7 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
                                     <i className="fa fa-book" aria-hidden="true"></i> Edit
                                 </Link>
                                 <a onClick={del} id={getdata?.id}><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
+                                
                             </Space>
                         )}
                     />
@@ -103,4 +184,3 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
     
 }
 export default LopHoc;
-

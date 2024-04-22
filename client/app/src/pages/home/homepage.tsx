@@ -11,7 +11,7 @@ import Nopage from './Nopage';
 
 const Homepage: React.FC = () =>{
 
-  const { Header, Footer, Content } = Layout;
+  const { Footer, Content } = Layout;
 
   const footerStyle: React.CSSProperties = {
     textAlign: 'center',
@@ -39,30 +39,27 @@ const Homepage: React.FC = () =>{
           setCheck(res.data.status)
         }else{
           localStorage.removeItem("token");
-          navigate("/login")
+          navigate("/login");
         }
       })
     },[]);
 
-
   if(check == true){
     return (
-      <Flex gap="middle" wrap="wrap">
+      // <Flex gap="middle" wrap="wrap">
         <Layout className='style_layout'>
-          <Header className='header_style'>
-            <Headers />
-          </Header>
-          <Layout>
+          <Headers />
             <Content  className='content_style'>
               <div className='sider_style' >
                 <Menu_header />
               </div>
-                <div className='Outlet'><Outlet /></div>        
+              <div className='Outlet'>
+                <Outlet />
+              </div>        
             </Content>
-          </Layout>
           <Footer style={footerStyle}>Footer</Footer>
         </Layout>
-      </Flex>
+      // </Flex>
     )
   }else{
     return(

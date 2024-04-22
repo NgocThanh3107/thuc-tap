@@ -11,17 +11,20 @@ const Read: React.FC = () => {
     tenLop?: string;
     maLop?: string;
     id?: number;
+    moTa: string;
   };
 
+  let token = localStorage.getItem("token");
+  const [getdata, setData] = useState<FieldType>();
   let api = localStorage.getItem("api");
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log('Success:', values);
 
       const data = {
-        id: values.id,
+        id: getdata?.id,
         maLop: values.maLop,
         tenLop: values.tenLop,
-        moTa: null
+        moTa: values.maLop
       }
       axios.put("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
         data,
@@ -50,9 +53,6 @@ const Read: React.FC = () => {
     console.log('Failed:', errorInfo);
   };
 
-
-  let token = localStorage.getItem("token");
-  const [data, setData] = useState<FieldType>();
   // console.log(data)
   const params = useParams()
   useEffect(() => {
@@ -65,11 +65,11 @@ const Read: React.FC = () => {
       }
     )
       .then(res => {
-        console.log(res.data.data)
+        console.log(res.data.data.id)
         setData(res.data.data)
       },)
   }, []);
-  console.log(data?.id)
+  console.log(getdata?.id)
 
   return (
     <div className="read">
@@ -80,14 +80,14 @@ const Read: React.FC = () => {
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
         initialValues={{
-          tenLop: data?.tenLop,
-          maLop: data?.maLop,
-          id: data?.id
+          tenLop: getdata?.tenLop,
+          maLop: getdata?.maLop,
+          id: getdata?.id
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
-        key={data ? "1" : "0"}
+        key={getdata ? "1" : "0"}
       >
         <Form.Item<FieldType>
           label="Ten Lop"
@@ -105,13 +105,21 @@ const Read: React.FC = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        {/* <Form.Item<FieldType>
+          label="Mo Ta"
+          name="moTa"
+          rules={[{ required: true, message: 'Please input your mo ta!' }]}
+        >
+          <Input />
+        </Form.Item> */}
+
+        {/* <Form.Item<FieldType>
           label="ID"
           name="id"
           rules={[{ required: true, message: 'Please input your id!' }]}  
         >
           <Input readOnly/>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">

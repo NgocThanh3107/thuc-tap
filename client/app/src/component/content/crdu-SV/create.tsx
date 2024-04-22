@@ -13,7 +13,7 @@ const Create_sv: React.FC = () =>{
       type FieldType = {
           tenSinhvien?: string;
           maSinhvien?: string;
-          moTa?: null,
+          moTa?: string,
           lop?: LopProps,
           id: number
         };
@@ -34,21 +34,21 @@ const Create_sv: React.FC = () =>{
             setData1(res.data.data)
         })
         },[])
+        
         const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
           // console.log('Success:', values);
-          if(lop == ""){
-            alert("Chon lop")
-          }
+        if(!lop){
+          alert("vui long chon lop")
+        }
+        else{
           const data = {
                 maSinhVien: values.maSinhvien,
                 tenSinhVien: values.tenSinhvien,
                 lop: {
                   id: lop
                 },
-                moTa: null
+                moTa: values.moTa
             }
-
-          console.log(data)
 
             axios.post("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
             data,
@@ -62,25 +62,26 @@ const Create_sv: React.FC = () =>{
             .then(res=>{
               console.log(res)
                 if(res.data.status == true){
-                  navigate("/administrator/builder/data/sinh-vien.html")
-                  alert("Thành Công")
+                  alert("Ok")
+                  navigate('/administrator/builder/data/sinh-vien.html')
+                }else{
+                  alert("Ma sinh vien da ton tai")
                 }
-                else{
-                  console.log(res.data.message)
-                }
+                
             })
         
         };
+      }
+
         const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
           console.log('Failed:', errorInfo);
         };
 
         const handleChange = (value: string) => {
           setLop(value)
-      
         };
       
-  
+      
   return(
     <Form
       name="basic"
@@ -95,7 +96,7 @@ const Create_sv: React.FC = () =>{
       <Form.Item<FieldType>
         label="Ten Sinh Vien"
         name="tenSinhvien"
-        rules={[{ required: true, message: 'Nhap ten lop!' }]}
+        rules={[{ required: true, message: "Enter student's name!" }]}
       >
         <Input />
       </Form.Item>
@@ -103,7 +104,7 @@ const Create_sv: React.FC = () =>{
       <Form.Item<FieldType>
         label="Ma Sinh Vien"
         name="maSinhvien"
-        rules={[{ required: true, message: 'Nhap ma lop!' }]}
+        rules={[{ required: true, message: "Enter student's code!" }]}
       >
         <Input/>
       </Form.Item>
@@ -111,13 +112,12 @@ const Create_sv: React.FC = () =>{
       <Form.Item<FieldType> 
         label = " ID"
         name="id"
-        // rules={[{ required: true, message: 'Chon id lop!' }]}
         >
             <Space wrap>
                 <Select
                     style={{ width: 400 , textAlign: 'left' }}
                     onChange={handleChange}
-                    defaultValue={"Chon Lop"}
+                    defaultValue={"Choose Class"}
                     options={
                       data1.map((v,key)=>{
                         return {

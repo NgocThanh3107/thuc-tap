@@ -4,10 +4,12 @@ import axios from 'axios';
 import 'font-awesome/css/font-awesome.min.css';
 import './_header.scss'
 import Link from 'antd/es/typography/Link';
+import { useNavigate } from 'react-router-dom';
 const a: React.CSSProperties = {
   color: '#333',
   margin: "7px",
 };
+
 interface HeaderProps{
   pageTitle ?: string;
   url ?: string;
@@ -16,24 +18,11 @@ interface HeaderProps{
 }
 
 const Menu_header: React.FC = () => {
+  let navigate = useNavigate();
   let api = localStorage.getItem("api");
-  // const token = localStorage.getItem("token")
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const token = localStorage.getItem("token")
   const [data, setData] = useState<HeaderProps[]>([]);
   // console.log(data)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const newToken = localStorage.getItem("token");
-      setToken(newToken);
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
   useEffect(() => {
     axios.get("http://192.168.5.240/api/v2/menu/my-menu",
       {
@@ -53,12 +42,19 @@ const Menu_header: React.FC = () => {
       })
   }, [])
 
+  const handleNavigation = (url: string) => {
+    navigate(url);
+  };
   const RenderData = () => {
     if (data.length > 0) {
       return data.map((value, key) => {
-        return (
-          <Link style={a} href={value.url}><i className={value.iconClass}></i> {value.pageTitle}</Link>
-        )
+        if (value.url) {
+          return (
+            <Link onClick={() => handleNavigation(value.url!)} style={a} key={key}>
+              <i className={value.iconClass}></i> {value.pageTitle}
+            </Link>
+          );
+        }
       })
     }
   }

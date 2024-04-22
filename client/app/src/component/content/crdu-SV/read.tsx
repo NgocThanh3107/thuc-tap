@@ -5,7 +5,7 @@ import { Button, Checkbox, Form, type FormProps, Input } from 'antd';
 import LopProps from "../crdu-LH";
 import React from 'react';
 import { Select, Space } from 'antd';
-// import { Value } from "sass";
+
 
 const Read_sv: React.FC = () => {
   let api = localStorage.getItem("api")
@@ -15,6 +15,7 @@ const Read_sv: React.FC = () => {
     maSinhVien: string;
     id?: number;
     lop?: LopProps;
+    moTa?: string;
   };
   const [idLop, setIdLop] = useState<Number>();
 
@@ -22,7 +23,7 @@ const Read_sv: React.FC = () => {
     // console.log('Success:', values);
 
     const data = {
-      id: values.id,
+      id: getdata?.id,
       maSinhVien: values.maSinhVien,
       tenSinhVien: values.tenSinhVien,
       lop: {
@@ -58,7 +59,7 @@ const Read_sv: React.FC = () => {
   };
 
   let token = localStorage.getItem("token");
-  const [data, setData] = useState<FieldType>();
+  const [getdata, setData] = useState<FieldType>();
   const [data1, setData1] = useState<LopProps[]>([]);
 
   const params = useParams()
@@ -72,7 +73,7 @@ const Read_sv: React.FC = () => {
       }
     )
       .then(res => {
-        // console.log(res)
+        console.log(res.data.data.id) 
         setData(res.data.data)
 
       },);
@@ -106,16 +107,16 @@ const Read_sv: React.FC = () => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
-        initialValues={data}
+        initialValues={getdata}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
-        key={data ? "1" : "0"}
+        key={getdata ? "1" : "0"}
       >
         <Form.Item<FieldType>
           label="Ten Sinh Vien"
           name="tenSinhVien"
-          rules={[{ required: true, message: 'Please input your ten sinh vien!' }]}
+          rules={[{ required: true, message: "Please enter the student's name !" }]}
         >
           <Input />
         </Form.Item>
@@ -123,21 +124,21 @@ const Read_sv: React.FC = () => {
         <Form.Item<FieldType>
           label="Ma Sinh Vien"
           name="maSinhVien"
-          rules={[{ required: true, message: 'Please input your ma sinh vien!' }]}
+          rules={[{ required: true, message: "Please enter the studen't code!" }]}
         >
           <Input />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        {/* <Form.Item<FieldType>
           label="ID"
           name="id"
         >
           <Input readOnly/>
-        </Form.Item>
+        </Form.Item> */}
+        
         <Form.Item<FieldType>
           label="Lop"
           name={["lop", "id"]}
-          
         >
           <Select
             onChange={handleChange}

@@ -25,7 +25,7 @@ function App() {
           <Route path='/administrator/builder/data/sinh-vien.html' element={<Sinhvien />} />  
           <Route path='/read_sinhvien/:id' element={<Read_sv />} />
           <Route path='/account' element={<Account />} />
-           <Route path='/create_sinhvien' element={<Create_sv />}/>
+          <Route path='/create_sinhvien' element={<Create_sv />}/>
           <Route path='/administrator/builder/data/lop-hoc.html' element={<LopHoc />} />
           <Route path='/read/:id' element={<Read />} />  
           <Route path='/create_lophoc' element={<Create />} />  
