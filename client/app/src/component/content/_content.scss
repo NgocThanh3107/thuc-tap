@@ -7,8 +7,9 @@
 }
 .create{
     position: absolute;
-    top: 55px;
+    top: 50px;
     right: 10px;
+    z-index: 1;
     a{
        font-size: 17px;
        font-weight: bold;
