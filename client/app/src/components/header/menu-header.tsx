@@ -5,10 +5,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import './_header.scss'
 import Link from 'antd/es/typography/Link';
 import { useNavigate } from 'react-router-dom';
-const a: React.CSSProperties = {
-  color: '#333',
-  margin: "7px",
-};
+
 
 interface HeaderProps{
   pageTitle ?: string;
@@ -22,7 +19,6 @@ const Menu_header: React.FC = () => {
   let api = localStorage.getItem("api");
   const token = localStorage.getItem("token")
   const [data, setData] = useState<HeaderProps[]>([]);
-  // console.log(data)
   useEffect(() => {
     axios.get("http://192.168.5.240/api/v2/menu/my-menu",
       {
@@ -34,7 +30,6 @@ const Menu_header: React.FC = () => {
       }
     )
       .then(res => {
-        console.log(res)
         setData(res.data.data)
       })
       .catch(function (error) {
@@ -50,7 +45,7 @@ const Menu_header: React.FC = () => {
       return data.map((value, key) => {
         if (value.url) {
           return (
-            <Link onClick={() => handleNavigation(value.url!)} style={a} key={key}>
+            <Link onClick={() => handleNavigation(value.url!)} key={key}>
               <i className={value.iconClass}></i> {value.pageTitle}
             </Link>
           );

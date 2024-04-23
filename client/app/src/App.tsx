@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Homepage from './pages/home/homepage';
 import Account from './pages/home/account';
 import Login from './pages/home/login';
@@ -12,7 +12,6 @@ import Create_sv from './component/content/crdu-SV/create';
 import Read_sv from './component/content/crdu-SV/read';
 import Test from './component/content/crdu-LH/test';
 import Nopage from './pages/home/Nopage';
-
 
 function App() {
 

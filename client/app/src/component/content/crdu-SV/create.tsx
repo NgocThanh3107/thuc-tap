@@ -1,6 +1,6 @@
 
 import React, { useEffect,useState } from 'react';
-import { Button, Checkbox, Form, type FormProps, Input } from 'antd';
+import { Button, Form, type FormProps, Input } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LopProps from '../crdu-LH';
@@ -22,56 +22,56 @@ const Create_sv: React.FC = () =>{
         const [lop, setLop]= useState<string>()
 
         useEffect(()=>{
-          axios.get("http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10",
+          fetchData(1, 100);
+        },[])
+        const fetchData = (page : Number, pageSize: Number) => {
+            axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`,
             {headers:
                 {"API-Key" : api,
                 "Authorization": `Bearer ${token}`
                 }
             }
-        )
-        .then(res=>{
-            console.log(res.data.data)
-            setData1(res.data.data)
-        })
-        },[])
-        
-        const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-          // console.log('Success:', values);
-        if(!lop){
-          alert("vui long chon lop")
-        }
-        else{
-          const data = {
-                maSinhVien: values.maSinhvien,
-                tenSinhVien: values.tenSinhvien,
-                lop: {
-                  id: lop
-                },
-                moTa: values.moTa
-            }
-
-            axios.post("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
-            data,
-            {
-                headers: {
-                    "API-Key" : api,
-                    "Authorization": `Bearer ${token}`
-                }
-            }
             )
             .then(res=>{
-              console.log(res)
-                if(res.data.status == true){
-                  alert("Ok")
-                  navigate('/administrator/builder/data/sinh-vien.html')
-                }else{
-                  alert("Ma sinh vien da ton tai")
-                }
-                
+                console.log(res.data.data)
+                setData1(res.data.data)
             })
-        
         };
-      }
+        
+        const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+          if(!lop){
+            alert("vui long chon lop")
+          }
+          else{
+            const data = {
+                  maSinhVien: values.maSinhvien,
+                  tenSinhVien: values.tenSinhvien,
+                  lop: {
+                    id: lop
+                  },
+                  moTa: values.moTa
+              }
+
+              axios.post("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
+              data,
+              {
+                  headers: {
+                      "API-Key" : api,
+                      "Authorization": `Bearer ${token}`
+                  }
+              }
+              )
+              .then(res=>{
+                  if(res.data.status == true){
+                    alert("Ok")
+                    navigate('/administrator/builder/data/sinh-vien.html')
+                  }else{
+                    alert("Ma sinh vien da ton tai")
+                  }
+                  
+              })
+          }
+        };
 
         const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
           console.log('Failed:', errorInfo);

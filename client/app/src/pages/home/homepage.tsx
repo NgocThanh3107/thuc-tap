@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Flex } from 'antd';
+import { Layout } from 'antd';
 import Menu_header from '../../components/header/menu-header';
 import { Outlet } from 'react-router-dom';
 import './_home.scss';
@@ -21,7 +21,6 @@ const Homepage: React.FC = () =>{
   let token = localStorage.getItem("token");
   let navigate = useNavigate();
   let [check, setCheck] = useState<boolean>();
-  console.log(check)
   let api = localStorage.getItem("api");
 
     useEffect(()=>{
@@ -34,7 +33,6 @@ const Homepage: React.FC = () =>{
         }
       )
       .then(res =>{
-        console.log(res)
         if(res.data.status == true){
           setCheck(res.data.status)
         }else{
@@ -46,7 +44,6 @@ const Homepage: React.FC = () =>{
 
   if(check == true){
     return (
-      // <Flex gap="middle" wrap="wrap">
         <Layout className='style_layout'>
           <Headers />
             <Content  className='content_style'>
@@ -59,7 +56,6 @@ const Homepage: React.FC = () =>{
             </Content>
           <Footer style={footerStyle}>Footer</Footer>
         </Layout>
-      // </Flex>
     )
   }else{
     return(

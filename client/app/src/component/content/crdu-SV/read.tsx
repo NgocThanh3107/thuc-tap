@@ -1,11 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Checkbox, Form, type FormProps, Input } from 'antd';
+import { Button, Form, type FormProps, Input } from 'antd';
 import LopProps from "../crdu-LH";
 import React from 'react';
-import { Select, Space } from 'antd';
-
+import { Select } from 'antd';
 
 const Read_sv: React.FC = () => {
   let api = localStorage.getItem("api")
@@ -20,8 +19,6 @@ const Read_sv: React.FC = () => {
   const [idLop, setIdLop] = useState<Number>();
 
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    // console.log('Success:', values);
-
     const data = {
       id: getdata?.id,
       maSinhVien: values.maSinhVien,
@@ -30,8 +27,7 @@ const Read_sv: React.FC = () => {
         id: idLop
       }
     };
-    // console.log(data)
-
+    
     axios.put("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
       data,
       {
@@ -61,8 +57,8 @@ const Read_sv: React.FC = () => {
   let token = localStorage.getItem("token");
   const [getdata, setData] = useState<FieldType>();
   const [data1, setData1] = useState<LopProps[]>([]);
+  const params = useParams();
 
-  const params = useParams()
   useEffect(() => {
     axios.get("http://192.168.5.240/api/v1/builder/form/sinh-vien/data/" + params.id,
       {
@@ -72,28 +68,40 @@ const Read_sv: React.FC = () => {
         }
       }
     )
-      .then(res => {
-        console.log(res.data.data.id) 
-        setData(res.data.data)
+        .then(res=> {
+          console.log(res)
+          if(res.data.status == true){
+            setData(res.data.data)
+          }else{
+            console.log(res.data.message)
+          }
+        },)
+        .catch(error =>{
+          console.log(error)
+        });
 
-      },);
-
-    axios.get("http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10",
-      {
-        headers:
-        {
-          "API-Key": api,
-          "Authorization": `Bearer ${token}`
-        }
-      }
-    )
-      .then(res => {
-        // console.log(res)
-        setData1(res.data.data)
-      })
+    fetchData(1, 100);
   }, []);
 
-
+  const fetchData = (page: number, pageSize: number) => {
+    axios
+      .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
+        headers: {
+          'API-Key': api,
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.status === true) {
+          setData1(res.data.data);
+        } else {
+          console.log(res.data.message);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   const handleChange = (value : number) => {
     setIdLop(value)
@@ -128,13 +136,6 @@ const Read_sv: React.FC = () => {
         >
           <Input />
         </Form.Item>
-
-        {/* <Form.Item<FieldType>
-          label="ID"
-          name="id"
-        >
-          <Input readOnly/>
-        </Form.Item> */}
         
         <Form.Item<FieldType>
           label="Lop"

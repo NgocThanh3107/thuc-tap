@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, Checkbox, Form, type FormProps, Input } from 'antd';
+import { Button, Form, type FormProps, Input } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 

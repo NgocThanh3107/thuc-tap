@@ -6,8 +6,6 @@ import Link from 'antd/es/typography/Link';
 import './_content.scss'
 import { useNavigate } from 'react-router-dom';
 import { Button, message } from 'antd';
-import type { TableColumnsType, TableProps } from 'antd';
-import type { GetProp} from 'antd';
 
 interface DataType {
     key: string;
@@ -17,8 +15,6 @@ interface DataType {
     moTa: string;
     tags: string[];
 }
-
-type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 
 interface DataType {
   name: {
@@ -30,13 +26,6 @@ interface DataType {
   login: {
     uuid: string;
   };
-}
-
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  sortField?: string;
-  sortOrder?: string;
-  filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
 
 interface paginationProps {
@@ -56,33 +45,11 @@ const LopHoc: React.FC = () => {
     let token =localStorage.getItem("token");
     
     const [pagination, setPagination] = useState<paginationProps>()
-    console.log(pagination)
+    
     const [getdata, setgetData] = useState<DataType[]>([]);
-   
-    // useEffect(()=>{
-    //     axios.get("http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10",
-    //         {headers:
-    //             {"API-Key" : api,
-    //             "Authorization": `Bearer ${token}`
-    //             }
-    //         }
-    //     )
-    //     .then(res=>{
-    //         console.log(res)
-    //         if(res.data.status == true){
-    //             setgetData(res.data.data)
-    //             // setLoading(false);
-    //             setPagination(res.data.pagination)
-    //         }else{
-    //             console.log(res.data.message);
-    //         }
-    //     })
-    //     .catch(function (error){
-    //         console.log(error)
-    //     });
-    // },[]);
 
-const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi, contextHolder] = message.useMessage();
+
 const del = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const getId = e.currentTarget.id;
@@ -98,10 +65,7 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
     )
     .then(res=>{
         if(res.data.status == true){
-          const newData = getdata.filter(item => item.id != getId);
           const key = 'updatable';
-          setgetData(newData);
-          console.log(res.data.message)
           messageApi.open({
             key,
             type: 'loading',
@@ -114,8 +78,10 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
               content: 'Đã xóa!',
               duration: 2,
             });
-          }, 1000);
-       
+          }, 300);
+
+          const newData = getdata.filter(item => item.id != getId);
+          setgetData(newData);
           }else{
               console.log(res.data.message)
           }
@@ -135,6 +101,7 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
             },
           })
           .then((res) => {
+            console.log(res)
             if (res.data.status === true) {
               setgetData(res.data.data);
               setPagination(res.data.pagination);

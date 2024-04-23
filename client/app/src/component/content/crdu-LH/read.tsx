@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Checkbox, Form, type FormProps, Input } from 'antd';
+import { Button, Form, type FormProps, Input } from 'antd';
 import React from "react";
 
 const Read: React.FC = () => {
@@ -52,8 +52,7 @@ const Read: React.FC = () => {
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
-
-  // console.log(data)
+  
   const params = useParams()
   useEffect(() => {
     axios.get("http://192.168.5.240/api/v1/builder/form/lop-hoc/data/" + params.id,
@@ -104,22 +103,6 @@ const Read: React.FC = () => {
         >
           <Input />
         </Form.Item>
-
-        {/* <Form.Item<FieldType>
-          label="Mo Ta"
-          name="moTa"
-          rules={[{ required: true, message: 'Please input your mo ta!' }]}
-        >
-          <Input />
-        </Form.Item> */}
-
-        {/* <Form.Item<FieldType>
-          label="ID"
-          name="id"
-          rules={[{ required: true, message: 'Please input your id!' }]}  
-        >
-          <Input readOnly/>
-        </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
