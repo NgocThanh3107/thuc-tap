@@ -1,25 +1,25 @@
-.style-layout{
-   width: 100%; 
+.app{
+   width: 70%;   
    display: block;
    height: auto;
-   margin: 0;
+   margin: auto;
    padding: 0;
    background-color: #fff;
-  
+   border: 1px solid #aca9a9;
 }
 .Outlet{
-    width: 80%;
+    width: 83%;
     display: block;
     float: left;
     height: 100%;
-    margin-left: 20px;
+    margin-left: 1%;
     position: relative;
     table{
         border: 1px solid #cac5c5;
         margin: 0;
         background-color: #d4d0d0;
     }
-    padding-top: 20px;  
+    padding-top: 40px;  
 }
 
 .sider_style{
@@ -29,11 +29,13 @@
     color: #333;
     float: left;
     background-color: #d4d0d0;
+    position: relative;
 }
 .content_style{
     display: block;
     width: 100%;
-    height: 1200px;
+    margin: auto;
+    height: 1100px;
     text-align: center;
     line-height: 20px;
     color: #333;
@@ -41,4 +43,10 @@
     background-color: #fff;
     min-height: 20px;
 }
-
+.footer{
+    width: 100%;
+    background-color: rgb(126, 126, 126);
+    text-align: center;
+    
+    // height: 100px;
+}

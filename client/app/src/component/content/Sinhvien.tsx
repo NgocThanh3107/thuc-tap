@@ -24,7 +24,6 @@ interface DataType {
     page?: number;
   }
 
-  
 const {Column} = Table;
 const SinhVien: React.FC = () =>{
     let navigate = useNavigate();
@@ -32,9 +31,9 @@ const SinhVien: React.FC = () =>{
     let token = localStorage.getItem("token");
     const [data, setData] = useState<DataType[]>([]);
     const [pagination, setPagination] = useState<paginationProps>()
-
     const [messageApi, contextHolder] = message.useMessage();
-
+    const [originalData, setOriginalData] = useState<DataType[]>([]);
+    const [search, setSearch] = useState<string>('');
         useEffect(() => {
             fetchData(1, 10); 
           }, []);
@@ -51,6 +50,7 @@ const SinhVien: React.FC = () =>{
                 if (res.data.status === true) {
                   setData(res.data.data);
                   setPagination(res.data.pagination);
+                  setOriginalData(res.data.data);
                 } else {
                   console.log(res.data.message);
                 }
@@ -60,6 +60,14 @@ const SinhVien: React.FC = () =>{
               });
           };
         
+          const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setSearch(e.target.value);
+            const filteredData = originalData.filter(item =>
+                item.tenSinhVien.toLowerCase().includes(e.target.value.toLowerCase())
+            );
+            setData(filteredData);
+          };
+
           const handleTableChange = (pagination: any) => {
             const { current, pageSize } = pagination;
             fetchData(current, pageSize);
@@ -107,6 +115,18 @@ const SinhVien: React.FC = () =>{
     return (
         <div>
             {contextHolder}
+            <div className='create'>
+                <Link href="/create_sinhvien" 
+                    onClick={(e) => {e.preventDefault();
+                    navigate("/create_sinhvien");
+                    }}>
+                    <i className="fa fa-plus" aria-hidden="true"></i> Create
+                </Link>
+            </div>
+            <div className='search'>
+              <input type="text" value={search} placeholder='Search class' onChange={handleSearchChange}/>
+              <button type='submit'><i className="fa fa-search" aria-hidden="true"></i></button>
+            </div>
             <Table  dataSource={data}
                 pagination={pagination}
                 onChange={handleTableChange}
@@ -138,14 +158,7 @@ const SinhVien: React.FC = () =>{
                 )}
                 />
             </Table>
-            <div className='create'>
-                <Link href="/create_sinhvien" 
-                    onClick={(e) => {e.preventDefault();
-                    navigate("/create_sinhvien");
-                    }}>
-                    <i className="fa fa-plus" aria-hidden="true"></i> Create
-                </Link>
-            </div>
+            
         </div>
     )
 }

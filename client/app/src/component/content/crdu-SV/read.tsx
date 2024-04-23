@@ -136,6 +136,14 @@ const Read_sv: React.FC = () => {
         >
           <Input />
         </Form.Item>
+
+        <Form.Item<FieldType>
+          label="Mo Ta"
+          name="moTa"
+          rules={[{ required: true, message: "Please enter the mo ta!" }]}
+        >
+          <Input />
+        </Form.Item>
         
         <Form.Item<FieldType>
           label="Lop"

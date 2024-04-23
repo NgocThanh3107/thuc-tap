@@ -5,7 +5,7 @@ import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import './_content.scss'
 import { useNavigate } from 'react-router-dom';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 
 interface DataType {
     key: string;
@@ -16,17 +16,17 @@ interface DataType {
     tags: string[];
 }
 
-interface DataType {
-  name: {
-    first: string;
-    last: string;
-  };
-  gender: string;
-  email: string;
-  login: {
-    uuid: string;
-  };
-}
+// interface DataType {
+//   name: {
+//     first: string;
+//     last: string;
+//   };
+//   gender: string;
+//   email: string;
+//   login: {
+//     uuid: string;
+//   };
+// }
 
 interface paginationProps {
     pageSize? : number;
@@ -42,14 +42,19 @@ const LopHoc: React.FC = () => {
    
     let navigate = useNavigate();
     let api = localStorage.getItem("api");
-    let token =localStorage.getItem("token");
+    let token = localStorage.getItem("token");
     
+    const [originalData, setOriginalData] = useState<DataType[]>([]);
+
     const [pagination, setPagination] = useState<paginationProps>()
     
     const [getdata, setgetData] = useState<DataType[]>([]);
 
     const [messageApi, contextHolder] = message.useMessage();
 
+    const [search, setSearch] = useState<string>('');
+
+    // console.log(search)
 const del = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const getId = e.currentTarget.id;
@@ -82,7 +87,7 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
 
           const newData = getdata.filter(item => item.id != getId);
           setgetData(newData);
-          }else{
+        } else{
               console.log(res.data.message)
           }
     });
@@ -102,53 +107,69 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
           })
           .then((res) => {
             console.log(res)
-            if (res.data.status === true) {
+            if (res.data.status == true) {
               setgetData(res.data.data);
+              setOriginalData(res.data.data);
               setPagination(res.data.pagination);
             } else {
               console.log(res.data.message);
             }
           })
-          .catch(function (error) {
-            console.log(error);
-          });
+          .catch(error => {
+              console.log(error);
+            })
+        
       };
-    
+
+      const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+        const filteredData = originalData.filter(item =>
+            item.tenLop.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setgetData(filteredData);
+      };
+
       const handleTableChange = (pagination: any) => {
         const { current, pageSize } = pagination;
         fetchData(current, pageSize);
       };
-        return (
-            <div>
-                {contextHolder}
-                <Table  dataSource={getdata}
-                        pagination={pagination}
-                        onChange={handleTableChange}
-                >
-                    <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
-                    <Column title="Ma lop" dataIndex="maLop" key="maLop" />
-                    <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
-                    <Column
-                        title="Action"
-                        key="action"
-                        render={(getdata: DataType) => (
-                            <Space size="middle" className='style_a'>
-                                <Link href={"/read/" + getdata?.id} onClick={(e) => { e.preventDefault(); navigate("/read/" + getdata?.id); }}>
-                                    <i className="fa fa-book" aria-hidden="true"></i> Edit
-                                </Link>
-                                <a onClick={del} id={getdata?.id}><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
-                                
-                            </Space>
-                        )}
-                    />
-                </Table>
-                <div className='create'>
-                    <Link href="/create_lophoc" onClick={(e) => { e.preventDefault(); navigate("/create_lophoc"); }}>
-                        <i className="fa fa-plus" aria-hidden="true"></i> Create
-                    </Link>
-                </div>
+
+    return (
+        <div>
+            {contextHolder}
+            <div className='create'>
+                <Link href="/create_lophoc" onClick={(e) => { e.preventDefault(); navigate("/create_lophoc"); }}>
+                    <i className="fa fa-plus" aria-hidden="true"></i> Create
+                </Link>
             </div>
-        )
+            <div className='search'>
+              <input type="text" value={search} placeholder='Search class' onChange={handleSearchChange}/>
+              <button type='submit'><i className="fa fa-search" aria-hidden="true"></i></button>
+            </div>
+            <Table  dataSource={getdata}
+                    pagination={pagination}
+                    onChange={handleTableChange}
+            >
+                <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
+                <Column title="Ma lop" dataIndex="maLop" key="maLop" />
+                <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
+                <Column
+                    title="Action"
+                    key="action"
+                    render={(getdata: DataType) => (
+                        <Space size="middle" className='style_a'>
+                            <Link href={"/read/" + getdata?.id} onClick={(e) => { e.preventDefault(); navigate("/read/" + getdata?.id); }}>
+                                <i className="fa fa-book" aria-hidden="true"></i> Edit
+                            </Link>
+                            <a onClick={del} id={getdata?.id}><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
+                            
+                        </Space>
+                    )}
+                />
+            </Table>
+            
+        </div>
+    )
     
 }
 export default LopHoc;

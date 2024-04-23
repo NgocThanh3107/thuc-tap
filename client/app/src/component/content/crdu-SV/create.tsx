@@ -70,6 +70,14 @@ const Create_sv: React.FC = () =>{
                   }
                   
               })
+              .catch(error => {
+                if (error.response.status === 401) {
+                    console.log("Token không hợp lệ");
+                    navigate("/login");
+                } else {
+                    console.log(error);
+                }
+            });
           }
         };
 
