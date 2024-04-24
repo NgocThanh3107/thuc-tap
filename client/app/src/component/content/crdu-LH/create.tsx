@@ -44,6 +44,13 @@ const Create: React.FC = () =>{
                 alert("Mã lớp đã tồn tại")
               }
           })
+          .catch(error=>{
+            if(error.response.status == 401){
+              navigate("/login");
+            }else{
+              console.log(error)
+            }
+          })
       
       };
       
@@ -74,6 +81,13 @@ return(
       label="Ma Lop"
       name="maLop"
       rules={[{ required: true, message: 'Enter the class code !' }]}
+    >
+      <Input/>
+    </Form.Item>
+    <Form.Item<FieldType>
+      label="Mo Ta"
+      name="moTa"
+      rules={[{ required: true, message: 'Enter the mo ta !' }]}
     >
       <Input/>
     </Form.Item>

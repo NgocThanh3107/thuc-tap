@@ -117,6 +117,14 @@ const Create_sv: React.FC = () =>{
         <Input/>
       </Form.Item>
 
+      {/* <Form.Item<FieldType>
+        label="Mo Ta"
+        name="moTa"
+        rules={[{ required: true, message: "Enter mo ta!" }]}
+      >
+        <Input/>
+      </Form.Item> */}
+
       <Form.Item<FieldType> 
         label = " ID"
         name="id"

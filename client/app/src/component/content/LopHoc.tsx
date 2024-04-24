@@ -6,6 +6,8 @@ import Link from 'antd/es/typography/Link';
 import './_content.scss'
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
+import { error } from 'console';
+
 
 interface DataType {
     key: string;
@@ -15,20 +17,7 @@ interface DataType {
     moTa: string;
     tags: string[];
 }
-
-// interface DataType {
-//   name: {
-//     first: string;
-//     last: string;
-//   };
-//   gender: string;
-//   email: string;
-//   login: {
-//     uuid: string;
-//   };
-// }
-
-interface paginationProps {
+interface PaginationProps {
     pageSize? : number;
     totalPage?: number;
     total ?: number;
@@ -46,13 +35,13 @@ const LopHoc: React.FC = () => {
     
     const [originalData, setOriginalData] = useState<DataType[]>([]);
 
-    const [pagination, setPagination] = useState<paginationProps>()
+    const [pagination, setPagination] = useState<PaginationProps>()
     
     const [getdata, setgetData] = useState<DataType[]>([]);
 
     const [messageApi, contextHolder] = message.useMessage();
 
-    const [search, setSearch] = useState<string>('');
+    const [search, setSearch] = useState<string>("");
 
     // console.log(search)
 const del = (e: React.MouseEvent<HTMLElement>) => {
@@ -90,13 +79,19 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
         } else{
               console.log(res.data.message)
           }
-    });
+    })
+    .catch(error=>{
+      if(error.response.status == 401){
+        navigate("/login");
+      }else{
+        console.log(error)
+      }
+    })
 };
     
     useEffect(() => {
         fetchData(1, 10);
       }, []);
-    
       const fetchData = (page: number, pageSize: number) => {
         axios
           .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
@@ -106,7 +101,7 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
             },
           })
           .then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.data.status == true) {
               setgetData(res.data.data);
               setOriginalData(res.data.data);
@@ -115,19 +110,64 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
               console.log(res.data.message);
             }
           })
-          .catch(error => {
-              console.log(error);
-            })
-        
+          .catch(error=>{
+            if(error.response.status == 401){
+              navigate("/login");
+            }else{
+              console.log(error)
+            }
+          })
       };
 
       const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-        const filteredData = originalData.filter(item =>
-            item.tenLop.toLowerCase().includes(e.target.value.toLowerCase())
-        );
-        setgetData(filteredData);
-      };
+        const value = e.target.value;
+        setSearch(value);
+        if(value ===""){
+          setgetData(originalData);
+          fetchData(1,10)
+        }
+        
+      }
+      const handleSearch = () => {
+            axios
+                .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&maLop=${search}`, {
+                    headers: {
+                        'API-Key': api,
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((res) => {
+                    console.log(res.data.pagination.total)
+                    if (res.data.pagination.total > 0) {
+                        setgetData(res.data.data);
+                        setPagination(res.data.pagination);
+                    } else {   
+                        setgetData([]);      
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+                
+                // axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&tenLop=${search}`, {
+                //     headers: {
+                //         'API-Key': api,
+                //         Authorization: `Bearer ${token}`,
+                //     },
+                // })
+                // .then((res) => {
+                //     console.log(res.data.pagination.total)
+                //     if (res.data.pagination.total > 0) {
+                //         setgetData(res.data.data);
+                //         setPagination(res.data.pagination);
+                //     } else {   
+                //         setgetData([]);      
+                //     }
+                // })
+                // .catch((error) => {
+                //     console.log(error);
+                // });  
+      }
 
       const handleTableChange = (pagination: any) => {
         const { current, pageSize } = pagination;
@@ -143,8 +183,8 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
                 </Link>
             </div>
             <div className='search'>
-              <input type="text" value={search} placeholder='Search class' onChange={handleSearchChange}/>
-              <button type='submit'><i className="fa fa-search" aria-hidden="true"></i></button>
+              <input type="text" placeholder='Search by class name or class code' value={search} onChange={handleSearchChange}/>
+              <button type='submit' onClick={handleSearch}><i className="fa fa-search" aria-hidden="true"></i></button>
             </div>
             <Table  dataSource={getdata}
                     pagination={pagination}

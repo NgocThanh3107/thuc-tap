@@ -24,7 +24,7 @@ const Read: React.FC = () => {
         id: getdata?.id,
         maLop: values.maLop,
         tenLop: values.tenLop,
-        moTa: values.maLop
+        moTa: values.moTa
       }
       axios.put("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
         data,
@@ -44,6 +44,13 @@ const Read: React.FC = () => {
         else{
           console.log(res.data.message)
           alert("Ma Lop da ton tai ")
+        }
+      })
+      .catch(error=>{
+        if(error.response.status == 401){
+          navigate("/login");
+        }else{
+          console.log(error)
         }
       })
 
@@ -78,11 +85,9 @@ const Read: React.FC = () => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
-        initialValues={{
-          tenLop: getdata?.tenLop,
-          maLop: getdata?.maLop,
-          id: getdata?.id
-        }}
+        initialValues={
+          getdata
+        }
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -100,6 +105,14 @@ const Read: React.FC = () => {
           label="Ma lop"
           name="maLop"
           rules={[{ required: true, message: 'Please input your ma lop!' }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item<FieldType>
+          label="Mo ta"
+          name="moTa"
+          rules={[{ required: true, message: 'Please input your mo ta!' }]}
         >
           <Input />
         </Form.Item>

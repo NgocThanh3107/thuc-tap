@@ -61,12 +61,56 @@ const SinhVien: React.FC = () =>{
           };
         
           const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            setSearch(e.target.value);
-            const filteredData = originalData.filter(item =>
-                item.tenSinhVien.toLowerCase().includes(e.target.value.toLowerCase())
-            );
-            setData(filteredData);
+            const value = e.target.value;
+            setSearch(value);
+            if(value===""){
+              setData(originalData)
+              fetchData(1,10)
+            }
           };
+
+
+        // tim theo ma
+        const handleSearch = () =>{
+            axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=1&pageSize=10&maSinhVien=${search}`, {
+              headers: {
+                  'API-Key': api,
+                  Authorization: `Bearer ${token}`,
+              },
+          })
+          .then((res) => {
+              console.log(res.data.pagination.total)
+              if (res.data.pagination.total > 0) {
+                  setData(res.data.data);
+                  setPagination(res.data.pagination);
+              } else {   
+                  setData([]);      
+              }
+          })
+          .catch((error) => {
+              console.log(error);
+          });  
+
+        // tim theo ten
+          // axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=1&pageSize=10&tenSinhVien=${search}`, {
+          //     headers: {
+          //         'API-Key': api,
+          //         Authorization: `Bearer ${token}`,
+          //     },
+          // })
+          // .then((res) => {
+          //     console.log(res.data.pagination.total)
+          //     if (res.data.pagination.total > 0) {
+          //         setData(res.data.data);
+          //         setPagination(res.data.pagination);
+          //     } else {   
+          //         setData([]);      
+          //     }
+          // })
+          // .catch((error) => {
+          //     console.log(error);
+          // });  
+        }
 
           const handleTableChange = (pagination: any) => {
             const { current, pageSize } = pagination;
@@ -124,14 +168,14 @@ const SinhVien: React.FC = () =>{
                 </Link>
             </div>
             <div className='search'>
-              <input type="text" value={search} placeholder='Search class' onChange={handleSearchChange}/>
-              <button type='submit'><i className="fa fa-search" aria-hidden="true"></i></button>
+              <input type="text" value={search} placeholder='Search by student name or student ID' onChange={handleSearchChange}/>
+              <button type='submit' onClick={handleSearch}><i className="fa fa-search" aria-hidden="true"></i></button>
             </div>
             <Table  dataSource={data}
                 pagination={pagination}
                 onChange={handleTableChange}
             >
-                <Column title={"Ten Sinh Vien"} dataIndex="tenSinhVien" key="tenSinhVien" />
+                <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
                 <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
                 <Column title="Lop" dataIndex="lop" key = "lop" 
                     render={(lop: LopProps) => (
@@ -146,7 +190,7 @@ const SinhVien: React.FC = () =>{
                         </span>
                     )}
                 />
-                <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
+                {/* <Column title="Mo Ta" dataIndex="moTa" key="moTa" /> */}
                 <Column
                 title="Action"
                 key="action"

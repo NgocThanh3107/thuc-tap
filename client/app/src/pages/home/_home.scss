@@ -1,11 +1,11 @@
 .app{
-   width: 80%;   
+   width: 100%;   
    display: block;
    height: auto;
    margin: auto;
    padding: 0;
    background-color: #fff;
-   border: 1px solid #cac5c5;
+//    border: 1px solid #cac5c5;    
 }
 .Outlet{
     width: 83%;
@@ -18,23 +18,25 @@
         border: 1px solid #cac5c5;
         margin: 0;
         background-color: #d4d0d0;
+        
     }
     padding-top: 40px;  
 }
 
 .sider_style{
     width: 15%;
-    height: 100%;
+    height: auto;
     text-align: center;
     color: #333;
     float: left;
     background-color: #d4d0d0;
+    margin-top: 40px;
 }
 .content_style{
     display: block;
     width: 100%;
     margin: auto;
-    height: 1100px;
+    height: auto;
     text-align: center;
     line-height: 20px;
     color: #333;

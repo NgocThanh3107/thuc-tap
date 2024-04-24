@@ -98,8 +98,12 @@ const Read_sv: React.FC = () => {
           console.log(res.data.message);
         }
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(error=> {
+        if(error.response.status==401){
+          navigate("/login")
+        }else{
+          console.log(error)
+        }
       });
   };
 
@@ -137,13 +141,13 @@ const Read_sv: React.FC = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        {/* <Form.Item<FieldType>
           label="Mo Ta"
           name="moTa"
           rules={[{ required: true, message: "Please enter the mo ta!" }]}
         >
           <Input />
-        </Form.Item>
+        </Form.Item> */}
         
         <Form.Item<FieldType>
           label="Lop"
