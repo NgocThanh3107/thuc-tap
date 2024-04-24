@@ -7,6 +7,8 @@ import './_content.scss'
 import LopProps from './crdu-LH';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input} from 'antd';
 
 interface DataType {
     key: string;
@@ -55,9 +57,13 @@ const SinhVien: React.FC = () =>{
                   console.log(res.data.message);
                 }
               })
-              .catch(function (error) {
-                console.log(error);
-              });
+              .catch(error=>{
+                if(error.response.status == 401){
+                  navigate("/login");
+                }else{
+                  console.log(error)
+                }
+              })
           };
         
           const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +74,6 @@ const SinhVien: React.FC = () =>{
               fetchData(1,10)
             }
           };
-
 
         // tim theo ma
         const handleSearch = () =>{
@@ -87,9 +92,13 @@ const SinhVien: React.FC = () =>{
                   setData([]);      
               }
           })
-          .catch((error) => {
-              console.log(error);
-          });  
+          .catch(error=>{
+            if(error.response.status == 401){
+              navigate("/login");
+            }else{
+              console.log(error)
+            }
+          })  
 
         // tim theo ten
           // axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=1&pageSize=10&tenSinhVien=${search}`, {
@@ -157,19 +166,21 @@ const SinhVien: React.FC = () =>{
 
 
     return (
-        <div>
+        <div className='table-style'>
             {contextHolder}
-            <div className='create'>
+            <p className='create'>
                 <Link href="/create_sinhvien" 
                     onClick={(e) => {e.preventDefault();
                     navigate("/create_sinhvien");
                     }}>
-                    <i className="fa fa-plus" aria-hidden="true"></i> Create
+                    <i className="fa fa-plus" aria-hidden="true"></i> Add new students
                 </Link>
-            </div>
+            </p>
             <div className='search'>
-              <input type="text" value={search} placeholder='Search by student name or student ID' onChange={handleSearchChange}/>
-              <button type='submit' onClick={handleSearch}><i className="fa fa-search" aria-hidden="true"></i></button>
+            <Input type='text' placeholder="Search by student ID" value={search} onChange={handleSearchChange}/>
+              <Button type="primary" onClick={handleSearch} icon={<SearchOutlined />}>
+                Search
+              </Button>
             </div>
             <Table  dataSource={data}
                 pagination={pagination}

@@ -6,7 +6,8 @@ import Link from 'antd/es/typography/Link';
 import './_content.scss'
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import { error } from 'console';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input} from 'antd';
 
 
 interface DataType {
@@ -145,9 +146,13 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
                         setgetData([]);      
                     }
                 })
-                .catch((error) => {
-                    console.log(error);
-                });
+                .catch(error=>{
+                  if(error.response.status == 401){
+                    navigate("/login");
+                  }else{
+                    console.log(error)
+                  }
+                })
                 
                 // axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&tenLop=${search}`, {
                 //     headers: {
@@ -175,16 +180,18 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
       };
 
     return (
-        <div>
+        <div className='table-style'>
             {contextHolder}
-            <div className='create'>
+            <p className='create'>
                 <Link href="/create_lophoc" onClick={(e) => { e.preventDefault(); navigate("/create_lophoc"); }}>
-                    <i className="fa fa-plus" aria-hidden="true"></i> Create
+                    <i className="fa fa-plus" aria-hidden="true"></i> Add new Class
                 </Link>
-            </div>
+            </p>
             <div className='search'>
-              <input type="text" placeholder='Search by class name or class code' value={search} onChange={handleSearchChange}/>
-              <button type='submit' onClick={handleSearch}><i className="fa fa-search" aria-hidden="true"></i></button>
+            <Input type='text' placeholder="Search by class ID" value={search} onChange={handleSearchChange}/>
+              <Button type="primary" onClick={handleSearch} icon={<SearchOutlined />}>
+                Search
+              </Button>
             </div>
             <Table  dataSource={getdata}
                     pagination={pagination}

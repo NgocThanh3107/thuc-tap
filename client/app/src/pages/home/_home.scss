@@ -14,13 +14,17 @@
     height: 100%;
     margin-left: 1%;
     position: relative;
+    margin-top: 10px;
     table{
         border: 1px solid #cac5c5;
         margin: 0;
         background-color: #d4d0d0;
+        th{
+            font-size: 17px;
+            color: rgb(138, 9, 15);
+        }
         
-    }
-    padding-top: 40px;  
+    }  
 }
 
 .sider_style{
@@ -48,6 +52,7 @@
     width: 100%;
     background-color: rgb(135, 134, 139);
     text-align: center;
+    line-height: 100px;
     
     // height: 100px;
 }
