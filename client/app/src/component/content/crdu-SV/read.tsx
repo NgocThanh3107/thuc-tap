@@ -155,7 +155,7 @@ const Read_sv: React.FC = () => {
         >
           <Select
             onChange={handleChange}
-            style={{ width: 400 , textAlign: "left" }} 
+            style={{ width: 265 , textAlign: "left" }} 
             options={
               data1.map((v, key) => {
                 return {

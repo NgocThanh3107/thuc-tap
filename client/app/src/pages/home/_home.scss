@@ -7,7 +7,7 @@
    background-color: #fff;
 //    border: 1px solid #cac5c5;    
 }
-.Outlet{
+.table-style{
     width: 83%;
     display: block;
     float: left;
@@ -15,13 +15,13 @@
     margin-left: 1%;
     position: relative;
     margin-top: 10px;
+  
     table{
         border: 1px solid #cac5c5;
         margin: 0;
         background-color: #d4d0d0;
         th{
             font-size: 17px;
-            color: rgb(138, 9, 15);
         }
         
     }  
@@ -34,7 +34,8 @@
     color: #333;
     float: left;
     background-color: #d4d0d0;
-    margin-top: 40px;
+    margin-top: 45px;
+    border-radius: 10%;
 }
 .content_style{
     display: block;

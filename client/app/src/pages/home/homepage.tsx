@@ -50,9 +50,7 @@ const Homepage: React.FC = () =>{
             <div className='sider_style' >
               <Menu_header />
             </div>
-            <div className='Outlet'>
-              <Outlet />
-            </div>        
+            <Outlet />      
           </div>
           <div className='footer'>
               footer

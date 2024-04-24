@@ -91,68 +91,71 @@ const Create_sv: React.FC = () =>{
       
       
   return(
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 600 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      // autoComplete="off"
-    >
-      <Form.Item<FieldType>
-        label="Ten Sinh Vien"
-        name="tenSinhvien"
-        rules={[{ required: true, message: "Enter student's name!" }]}
+    <div className='add-new'>
+      <h1>Add new Students</h1>
+      <Form
+        name="basic"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        // autoComplete="off"
       >
-        <Input />
-      </Form.Item>
-  
-      <Form.Item<FieldType>
-        label="Ma Sinh Vien"
-        name="maSinhvien"
-        rules={[{ required: true, message: "Enter student's code!" }]}
-      >
-        <Input/>
-      </Form.Item>
-
-      {/* <Form.Item<FieldType>
-        label="Mo Ta"
-        name="moTa"
-        rules={[{ required: true, message: "Enter mo ta!" }]}
-      >
-        <Input/>
-      </Form.Item> */}
-
-      <Form.Item<FieldType> 
-        label = " ID"
-        name="id"
+        <Form.Item<FieldType>
+          label="Ten Sinh Vien"
+          name="tenSinhvien"
+          rules={[{ required: true, message: "Enter student's name!" }]}
         >
-            <Space wrap>
-                <Select
-                    style={{ width: 400 , textAlign: 'left' }}
-                    onChange={handleChange}
-                    defaultValue={"Choose Class"}
-                    options={
-                      data1.map((v,key)=>{
-                        return {
-                          value: v.id,
-                          label: v.tenLop
-                        }
-                      })
-                    }
-                >
-                </Select>
-            </Space>
+          <Input />
         </Form.Item>
-  
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
-          Create
-        </Button>
-      </Form.Item>
-    </Form>
+    
+        <Form.Item<FieldType>
+          label="Ma Sinh Vien"
+          name="maSinhvien"
+          rules={[{ required: true, message: "Enter student's code!" }]}
+        >
+          <Input/>
+        </Form.Item>
+
+        {/* <Form.Item<FieldType>
+          label="Mo Ta"
+          name="moTa"
+          rules={[{ required: true, message: "Enter mo ta!" }]}
+        >
+          <Input/>
+        </Form.Item> */}
+
+        <Form.Item<FieldType> 
+          label = " ID"
+          name="id"
+          >
+              <Space wrap>
+                  <Select
+                      style={{ width: 265 , textAlign: 'left' }}
+                      onChange={handleChange}
+                      defaultValue={"Choose Class"}
+                      options={
+                        data1.map((v,key)=>{
+                          return {
+                            value: v.id,
+                            label: v.tenLop
+                          }
+                        })
+                      }
+                  >
+                  </Select>
+              </Space>
+          </Form.Item>
+    
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button type="primary" htmlType="submit">
+            Create
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
   }
   
