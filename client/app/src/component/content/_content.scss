@@ -4,18 +4,23 @@
     a{
         color:green;
     }
+    .red-color{
+        color: rgb(211, 72, 72);
+    }
 }
 .create{
     position: absolute;
-    top: 30px;
-    right: 30px;
+    margin: 0;
+    top: 60px;
+    right: 50px;
     z-index: 1;
-    background-color: #3e680e;
-    padding: 5px 10px;
-    border-radius: 5%;
     a{
-       color: #fff;
+       color: green;
        text-decoration: none;
+       font-weight: bold;
+       padding: 5px 10px;
+       border: solid 1px green;
+       border-radius: 6px;
     }
 }
 .read{
@@ -36,21 +41,12 @@
     @extend .read;
 }
 .search{
-    width: 100%;
-    text-align: right;
+    width: 15%;
+    float: right;
     display: block;
     margin-bottom: 5px;
-    button{
-        height: 32px;
-     }
-    input{
-        width: 200px;
-    }
     
 }
-// .table-style{
-//     display: block;
-//     width: 100%;
-// }
+
 
 

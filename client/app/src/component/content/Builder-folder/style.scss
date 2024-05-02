@@ -1,0 +1,44 @@
+
+.folder-main{
+    width: 30%;
+    float: left;
+    height: auto;
+    margin-top: 50px;
+    text-align: left;
+    // background-color: antiquewhite;
+    .folder-style{
+        padding: 20px;
+        background-color: rgb(238, 230, 220);
+    }
+}
+.c-c{
+    margin: 0;
+    padding: 0;
+    
+    ul{
+        padding: 0;
+        margin: 0;
+        li{
+            display: inline-block;  
+            a{
+                color: #fff;
+                font-size: 15px;
+                padding: 8px;
+                margin-left: 10px;
+                background-color: rgb(57, 107, 245);
+                border-radius: 7px;
+            }
+        }
+    }
+}
+.choose{
+    p{
+        button{
+            padding: 8px;
+            margin-left: 5px;
+            border-radius: 7px;
+            color: #fff;
+            background-color: rgb(170, 33, 33);
+        }
+    }
+}

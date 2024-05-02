@@ -1,6 +1,9 @@
+
+import React from "react";
+import "./_home.scss";
 function Nopage(){
     return(
-        <p>No page</p>
+        <p className="No-page">No page</p>
     )
 }
 export default Nopage;

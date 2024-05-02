@@ -6,9 +6,10 @@ import Headers from '../../components/header/header';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Nopage from './Nopage';
+import Footer from './footer';
 
 
-const Homepage: React.FC = () =>{
+const Homepage = () =>{
 
   let token = localStorage.getItem("token");
   let navigate = useNavigate();
@@ -47,15 +48,13 @@ const Homepage: React.FC = () =>{
         <div className='app'>
           <Headers />
           <div className='content_style'>
-            <div className='sider_style' >
+            <div className='sider_style'>
               <Menu_header />
             </div>
-            <Outlet />      
+            <Outlet />    
           </div>
-          <div className='footer'>
-              footer
-          </div>
-        </div>
+          <Footer />
+        </div> 
     )
   }else{
     return(

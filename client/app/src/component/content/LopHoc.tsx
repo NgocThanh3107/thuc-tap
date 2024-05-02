@@ -9,7 +9,6 @@ import { message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input} from 'antd';
 
-
 interface DataType {
     key: string;
     tenLop: string;
@@ -27,9 +26,8 @@ interface PaginationProps {
 
 
 const { Column } = Table;
-
 const LopHoc: React.FC = () => {
-   
+  
     let navigate = useNavigate();
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
@@ -37,72 +35,24 @@ const LopHoc: React.FC = () => {
     const [originalData, setOriginalData] = useState<DataType[]>([]);
 
     const [pagination, setPagination] = useState<PaginationProps>()
-    
+    console.log(pagination)
     const [getdata, setgetData] = useState<DataType[]>([]);
 
     const [messageApi, contextHolder] = message.useMessage();
 
     const [search, setSearch] = useState<string>("");
-
-    // console.log(search)
-const del = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    const getId = e.currentTarget.id;
-  
-    axios.delete("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
-    {
-        headers: {
-            "API-Key" : api,
-            "Authorization": `Bearer ${token}`
-        },
-        data : [getId]
-    }        
-    )
-    .then(res=>{
-        if(res.data.status == true){
-          const key = 'updatable';
-          messageApi.open({
-            key,
-            type: 'loading',
-            content: 'Đang xóa...',
-          });
-          setTimeout(() => {
-            messageApi.open({
-              key,
-              type: 'success',
-              content: 'Đã xóa!',
-              duration: 2,
-            });
-          }, 300);
-
-          const newData = getdata.filter(item => item.id != getId);
-          setgetData(newData);
-        } else{
-              console.log(res.data.message)
-          }
-    })
-    .catch(error=>{
-      if(error.response.status == 401){
-        navigate("/login");
-      }else{
-        console.log(error)
-      }
-    })
-};
-    
     useEffect(() => {
-        fetchData(1, 10);
-      }, []);
+      fetchData(1, 10);
+    }, []);
+
       const fetchData = (page: number, pageSize: number) => {
-        axios
-          .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
+        axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
             headers: {
               'API-Key': api,
               Authorization: `Bearer ${token}`,
             },
           })
           .then((res) => {
-            // console.log(res)
             if (res.data.status == true) {
               setgetData(res.data.data);
               setOriginalData(res.data.data);
@@ -127,9 +77,12 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
           setgetData(originalData);
           fetchData(1,10)
         }
-        
       }
       const handleSearch = () => {
+        if (search.trim() === "") {
+          setgetData(originalData);
+          setPagination(undefined);
+        } else {
             axios
                 .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&maLop=${search}`, {
                     headers: {
@@ -138,12 +91,12 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
                     },
                 })
                 .then((res) => {
-                    console.log(res.data.pagination.total)
                     if (res.data.pagination.total > 0) {
                         setgetData(res.data.data);
                         setPagination(res.data.pagination);
                     } else {   
                         setgetData([]);      
+                        setPagination(undefined);
                     }
                 })
                 .catch(error=>{
@@ -153,7 +106,7 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
                     console.log(error)
                   }
                 })
-                
+              }
                 // axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&tenLop=${search}`, {
                 //     headers: {
                 //         'API-Key': api,
@@ -179,19 +132,64 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
         fetchData(current, pageSize);
       };
 
+      const del = (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        const getId = e.currentTarget.id;
+      
+        axios.delete("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
+        {
+            headers: {
+                "API-Key" : api,
+                "Authorization": `Bearer ${token}`
+            },
+            data : [getId]
+        }        
+        )
+        .then(res=>{
+            if(res.data.status == true){
+              const key = 'updatable';
+              messageApi.open({
+                key,
+                type: 'loading',
+                content: 'Đang xóa...',
+              });
+              setTimeout(() => {
+                messageApi.open({
+                  key,
+                  type: 'success',
+                  content: 'Đã xóa!',
+                  duration: 2,
+                });
+              }, 300);
+    
+              const newData = getdata.filter(item => item.id != getId);
+              setgetData(newData);
+            } else{
+                  console.log(res.data.message)
+              }
+        })
+        .catch(error=>{
+          if(error.response.status == 401){
+            navigate("/login");
+          }else{
+            console.log(error)
+          }
+        })
+    };
+
     return (
         <div className='table-style'>
             {contextHolder}
             <p className='create'>
                 <Link href="/create_lophoc" onClick={(e) => { e.preventDefault(); navigate("/create_lophoc"); }}>
-                    <i className="fa fa-plus" aria-hidden="true"></i> Add new Class
+                <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Class
                 </Link>
             </p>
             <div className='search'>
-            <Input type='text' placeholder="Search by class ID" value={search} onChange={handleSearchChange}/>
-              <Button type="primary" onClick={handleSearch} icon={<SearchOutlined />}>
-                Search
-              </Button>
+              <Space.Compact>
+                <Input placeholder='Search by Class ID' value={search} onChange={handleSearchChange} />
+                <Button onClick={handleSearch} type="primary">Search</Button>
+              </Space.Compact>
             </div>
             <Table  dataSource={getdata}
                     pagination={pagination}
@@ -206,15 +204,13 @@ const del = (e: React.MouseEvent<HTMLElement>) => {
                     render={(getdata: DataType) => (
                         <Space size="middle" className='style_a'>
                             <Link href={"/read/" + getdata?.id} onClick={(e) => { e.preventDefault(); navigate("/read/" + getdata?.id); }}>
-                                <i className="fa fa-book" aria-hidden="true"></i> Edit
+                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
                             </Link>
-                            <a onClick={del} id={getdata?.id}><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
-                            
+                            <a className='red-color' onClick={del} id={getdata?.id}><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
                         </Space>
                     )}
                 />
-            </Table>
-            
+            </Table>     
         </div>
     )
     

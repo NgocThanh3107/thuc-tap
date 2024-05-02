@@ -1,3 +1,4 @@
+
 .app{
    width: 100%;   
    display: block;
@@ -26,16 +27,15 @@
         
     }  
 }
-
 .sider_style{
     width: 15%;
     height: auto;
     text-align: center;
     color: #333;
     float: left;
-    background-color: #d4d0d0;
+    // background-color: #d4d0d0;
     margin-top: 45px;
-    border-radius: 10%;
+    // border-radius: 10%;
 }
 .content_style{
     display: block;
@@ -48,12 +48,22 @@
     float: left;
     background-color: #fff;
     min-height: 20px;
+    // position: sticky;
+    top: 120px;
+    overflow: auto;
 }
-.footer{
-    width: 100%;
-    background-color: rgb(135, 134, 139);
+.footer {
+    margin:0 auto;
+    width:100%;
+    height:auto;
+    overflow:hidden;
     text-align: center;
-    line-height: 100px;
-    
-    // height: 100px;
+    line-height: 80px;
+    background-color: #cac5c5;
+}
+.No-page{
+    font-size: 70px;
+    text-align: center;
+    margin-top: 300px;
+    font-weight: bold;
 }

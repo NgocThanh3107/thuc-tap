@@ -45,9 +45,18 @@ const Headers: React.FC = () => {
   
   return (
     <div className='header'>  
-      <h3><Link href="/"><i className="fa fa-home" aria-hidden="true"></i>HOME</Link></h3>
-        {CheckLogin()}
-      <p><Link href='/account'><Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} /></Link></p>
+      <div className='nav'>
+          <ul>
+            <li><Link href="/"><i className="fa fa-home" aria-hidden="true"></i>Home</Link></li>
+            <li><a href="">About</a></li>
+            <li><a href="">Services</a></li>
+            <li><a href="">Contact</a></li>
+          </ul>
+      </div>
+      <div className='nav-right'>
+          {CheckLogin()}
+          <p><Link href='/account'><Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} /></Link></p>
+      </div>
     </div>
   );
 };

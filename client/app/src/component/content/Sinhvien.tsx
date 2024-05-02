@@ -7,7 +7,6 @@ import './_content.scss'
 import LopProps from './crdu-LH';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input} from 'antd';
 
 interface DataType {
@@ -84,12 +83,13 @@ const SinhVien: React.FC = () =>{
               },
           })
           .then((res) => {
-              console.log(res.data.pagination.total)
+              // console.log(res.data.pagination.total)
               if (res.data.pagination.total > 0) {
                   setData(res.data.data);
                   setPagination(res.data.pagination);
               } else {   
-                  setData([]);      
+                  setData([]);  
+                  setPagination(undefined); 
               }
           })
           .catch(error=>{
@@ -173,14 +173,14 @@ const SinhVien: React.FC = () =>{
                     onClick={(e) => {e.preventDefault();
                     navigate("/create_sinhvien");
                     }}>
-                    <i className="fa fa-plus" aria-hidden="true"></i> Add new students
+                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new students
                 </Link>
             </p>
             <div className='search'>
-            <Input type='text' placeholder="Search by student ID" value={search} onChange={handleSearchChange}/>
-              <Button type="primary" onClick={handleSearch} icon={<SearchOutlined />}>
-                Search
-              </Button>
+            <Space.Compact>
+                <Input placeholder='Search by Students ID' value={search} onChange={handleSearchChange}/>
+                <Button onClick={handleSearch} type="primary">Search</Button>
+              </Space.Compact>
             </div>
             <Table  dataSource={data}
                 pagination={pagination}
@@ -207,8 +207,8 @@ const SinhVien: React.FC = () =>{
                 key="action"
                 render={( data: DataType) => (
                     <Space size="middle" className='style_a'>
-                    <a href={"/read_sinhvien/" + data?.id} onClick={(e) => {e.preventDefault();navigate("/read_sinhvien/" + data?.id)}}><i className="fa fa-book" aria-hidden="true" ></i> Edit</a>
-                    <a onClick={del} id = {data?.id} ><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
+                    <a href={"/read_sinhvien/" + data?.id} onClick={(e) => {e.preventDefault();navigate("/read_sinhvien/" + data?.id)}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                    <a className='red-color' onClick={del} id = {data?.id} ><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
                     </Space>
                 )}
                 />
