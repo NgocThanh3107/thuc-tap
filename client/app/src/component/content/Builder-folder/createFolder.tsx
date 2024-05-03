@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { FormProps } from 'antd';
-import { Button, Select, Form, Input } from 'antd';
+import { Button, Select, Form, Input, message } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,8 @@ const CreateFolder: React.FC = () => {
     let navigate = useNavigate();
     const [getdata, setGetData] = useState<DataFolderProps[]>([]);
     const [idParent, setIdParent] = useState<Number>();
+    const [nameError, setNameError] = useState<string>("");
+    const [sortError, setSortError] = useState<string>("");
     useEffect(()=>{
       axios.get(`http://192.168.5.240/api/v1/folder?page=1&pageSize=10`, {
             headers: {
@@ -31,6 +33,13 @@ const CreateFolder: React.FC = () => {
         console.log(res)
         if(res.data.status === true){
           setGetData(res.data.data)
+        }
+      })
+      .catch(error =>{
+        if(error.response.status === 401){
+          navigate("/login");
+        }else{
+          console.log(error)
         }
       })
     },[])
@@ -55,20 +64,31 @@ const onFinish: FormProps<DataFolderProps>['onFinish'] = (values) => {
         .then(res =>{
             console.log(res)
             if(res.data.status == true){
-                alert("Thanh cong")
+                alert("Finish")
                 navigate("/administrator/internship/builder/folder.html")
             }
         })
-        .catch(error =>{
-            if(error.response.status == 401){
-              navigate("/login");
-            }
-            if(error.response.data.status == false){     
-              alert("Ten folder da ton tai")
-            }else{
-              console.log(error)
-            }
-          })
+        .catch((error: any) => {
+          if(error.response.status === 401){
+            navigate("/login");
+          }else{
+          console.log(error)
+          const errorDescription = error.response.data.errorDescription;
+          const sortError = errorDescription.find((errorItem: any) => errorItem.field === "sort");
+          const nameError = errorDescription.find((errorItem: any) => errorItem.field === "name");
+      
+          if (sortError) {
+            setSortError(error.response.data.message); 
+          } else {
+              setSortError(""); 
+          }
+          if (nameError) {
+              setNameError(error.response.data.message); 
+          } else {
+              setNameError("");
+          }
+        }
+      });
     
 };
 
@@ -96,6 +116,8 @@ const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo)
         label="Name"
         name="name"
         rules={[{ required: true, message: 'Please input your username!' }]}
+        validateStatus={nameError ? "error" : ""}
+        help={nameError ? nameError : ""}
         >
         <Input />
         </Form.Item>
@@ -104,6 +126,8 @@ const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo)
         label="Sort"
         name="sort"
         rules={[{ required: true, message: 'Please input your sort!' }]}
+        validateStatus={sortError ? "error" : ""}
+        help={sortError ? sortError : ""}
         >
         <Input />
         </Form.Item>
@@ -111,7 +135,6 @@ const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo)
         <Form.Item<DataFolderProps>
         label="Description"
         name="description"
-        // rules={[{ required: true, message: 'Please input your description!' }]}
         >
         <Input />
         </Form.Item>
@@ -122,7 +145,7 @@ const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo)
         >
           <Select
             onChange={handleChange}
-            style={{ width: 265 , textAlign: "left" }} 
+            style={{ width: 190 , textAlign: "left" }} 
             options={
               getdata.map((v, key) => {
                 return {
@@ -138,7 +161,7 @@ const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo)
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit">
-            Create
+          Create
         </Button>
         </Form.Item>
     </Form>

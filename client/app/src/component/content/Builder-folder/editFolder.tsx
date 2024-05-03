@@ -28,7 +28,8 @@ function EditFolder(){
     const [getdata, setGetData] = useState<DataFolderProps>();
     const [getdata1, setGetData1] = useState<DataFolderProps[]>([]);
     const [idParent,setIdParent] = useState<number | undefined>(undefined);
-    // const [parent, setParent] = useState<ParentProps>();
+    const [parentError, setParentError] = useState<string>("");
+    
     console.log(getdata)
     let params = useParams();
     let navigate = useNavigate();
@@ -45,11 +46,10 @@ function EditFolder(){
             console.log(res)
             if(res.data.status == true){
               setGetData(res.data.data);
-              // setParent(res.data.data.parent);
             }
            
         })
-        .catch(error=>{
+        .catch(error =>{
             if(error.response.status === 401){
               navigate("/login");
             }else{
@@ -69,6 +69,13 @@ function EditFolder(){
               setGetData1(res.data.data)
             }
           })
+          .catch(error =>{
+            if(error.response.status === 401){
+              navigate("/login");
+            }else{
+              console.log(error)
+            }
+          })
     },[])
   
     const onFinish: FormProps<DataFolderProps>['onFinish'] = (values) => {
@@ -77,7 +84,7 @@ function EditFolder(){
             id: getdata?.id,
             name: values.name,
             sort: values.sort,
-            description: values.description,
+            ...(values.description && { description: values.description }),
             ...(idParent && { parent: { id: idParent } })
           }
         axios.put(`http://192.168.5.240/api/v1/folder`,
@@ -100,7 +107,13 @@ function EditFolder(){
           if(error.response.status === 401){
             navigate("/login");
           }else{
-            console.log(error)
+            const errorDescription = error.response.data.errorDescription;
+            const parentError = errorDescription.find((errorItem: any) => errorItem.field === "parent");
+            if (parentError) {
+              setParentError(error.response.data.message); 
+            } else {
+              setParentError(""); 
+            }
           }
         })
     };
@@ -145,7 +158,7 @@ function EditFolder(){
         <Form.Item<DataFolderProps>
           label="Description"
           name="description"
-          rules={[{ required: true, message: 'Please input your description!' }]}
+          // rules={[{ required: true, message: 'Please input your description!' }]}
         >
           <Input />
         </Form.Item>
@@ -153,7 +166,8 @@ function EditFolder(){
         <Form.Item<DataFolderProps>
             label="Parent"
             name={["parent", "id"]}
-            
+            validateStatus={parentError ? "error" : ""}
+            help={parentError ? parentError : ""}
         >
           <Select
             onChange={handleChange}

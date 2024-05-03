@@ -1,6 +1,7 @@
 
 .folder-main{
-    width: 30%;
+    display: block;
+    width: 50%;
     float: left;
     height: auto;
     margin-top: 50px;
@@ -12,9 +13,10 @@
     }
 }
 .c-c{
+    width: 100%;
     margin: 0;
     padding: 0;
-    
+    display: block;
     ul{
         padding: 0;
         margin: 0;
@@ -33,12 +35,20 @@
 }
 .choose{
     p{
-        button{
-            padding: 8px;
+        a{
+            margin-top: 5px;
+            text-decoration: none;
+            padding: 5px;
             margin-left: 5px;
             border-radius: 7px;
             color: #fff;
             background-color: rgb(170, 33, 33);
         }
+    }
+}
+
+@media screen and (max-width: 820px){
+    .folder-main{
+        width: 60%;
     }
 }

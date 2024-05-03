@@ -6,7 +6,7 @@ import type { GetProps, TreeDataNode } from 'antd';
 import { useNavigate } from "react-router-dom";
 import Link from "antd/es/typography/Link";
 import './style.scss';
-
+import EditFolder from "./editFolder";
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
 const { DirectoryTree } = Tree;
 
@@ -24,6 +24,7 @@ const TreeFolder = () => {
     let token = localStorage.getItem("token");
     const [data, setData] = useState<DataFolderProps[]>([]);
     // let params = useParams();
+    const [showEditFolder, setShowEditFolder] = useState(false); 
     let navigate = useNavigate();
     useEffect(() => {
         axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
@@ -63,7 +64,8 @@ const TreeFolder = () => {
         console.log('Trigger Select', keys, info);
         info.selectedNodes.map((v)=>{
             if(v.isLeaf == true){
-              navigate('/http://192.168.5.240/api/v1/folder/' + keys)
+              setShowEditFolder(true);
+              navigate("/editfolder/"+ keys)
             }
         })
     };
@@ -84,9 +86,11 @@ const TreeFolder = () => {
             // onExpand={onExpand}
             treeData={treeData}
           />
+          {/* {showEditFolder && <EditFolder />} */}
       </div>   
     );
 }
 
 export default TreeFolder;
+
 

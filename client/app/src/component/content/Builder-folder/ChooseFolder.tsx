@@ -16,9 +16,10 @@ const ChooseFolder: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [treeData, setTreeData] = useState<DataFolderProps[]>([]);
   const [value, setValue] = useState<string[]>();
-    console.log(value)
+  console.log(value)
+  const navigate = useNavigate();
   useEffect(() => {
-    axios.get(`http://192.168.5.240/api/v1/folder?page=1&pageSize=10`, {
+    axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
       headers: {
         "API-Key": api,
         "Authorization": `Bearer ${token}`
@@ -31,8 +32,12 @@ const ChooseFolder: React.FC = () => {
           setTreeData(formattedData);
         }
       })
-      .catch(error => {
+      .catch(error=>{
+        if(error.response.status === 401){
+          navigate("/login");
+        }else{
         console.error("Error fetching data:", error);
+        }
       });
   }, []);
 
@@ -49,46 +54,51 @@ const ChooseFolder: React.FC = () => {
     setValue(newValue);
   };
 
-  const del = () => {
-        axios.delete(`http://192.168.5.240/api/v1/folder`, 
-          {
+  const del = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    if (!value || value.length === 0) {
+        messageApi.error("Please select folder(s) to delete.");
+        return;
+    }
+
+    try {
+        const res = await axios.delete(`http://192.168.5.240/api/v1/folder`, {
             headers: {
                 "API-Key": api,
                 "Authorization": `Bearer ${token}`
             },
-            data :value     
-          }
-        )
-        .then(res  =>{
-            console.log(res)
-            if(res.data.status == true){
-                const key = 'updatable';
-                messageApi.open({
-                    key,
-                    type: 'loading',
-                    content: 'Đang xóa...',
-                });
-                setTimeout(() => {
-                    messageApi.open({
-                    key,
-                    type: 'success',
-                    content: 'Đã xóa!',
-                    duration: 2,
-                    });
-                }, 300);
+            data: value
+        });
 
-                const newData = treeData.filter((item) => !value?.includes(item.value));
-                setTreeData(newData);
-                setValue([])
-              }else{
-                  console.log(res.data.message)
-              }
-        })
-        .catch((error) => {
-            console.error("Error deleting folder:", error);
-            messageApi.error("Error deleting folder. Select folder to delete ."); 
-          });
-  } 
+        if (res.data.status === true) {
+            const updatedTreeData = removeFoldersFromTree(treeData, value);
+            setTreeData(updatedTreeData);
+
+            messageApi.success("Folders deleted successfully.");
+            setValue([]);
+        } else {
+            messageApi.error(res.data.message || "Error deleting folders.");
+        }
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+            navigate("/login");
+        } else {
+            console.log("Error deleting folders:", error);
+            messageApi.error("Error deleting folders. Please try again later.");
+        }
+    }
+};
+
+const removeFoldersFromTree = (tree: DataFolderProps[], folderIds: string[]): DataFolderProps[] => {
+    return tree.map((node) => {
+        if (node.children && node.children.length > 0) {
+            node.children = removeFoldersFromTree(node.children, folderIds);
+        }
+        node.children = node.children?.filter((child) => !folderIds.includes(child.value));
+        return node;
+    }).filter((node) => !folderIds.includes(node.value));
+};
+ 
 
   return (
     <div className="choose">
@@ -105,7 +115,7 @@ const ChooseFolder: React.FC = () => {
         onChange={onChange}
         treeData={treeData}
         />
-        <p style={{float :'left',marginTop: 50 }}><button type="submit" onClick={del}><i className="fa fa-trash" aria-hidden="true"></i> Delete</button></p>
+        <p style={{float :'left',marginTop: 55 }}><a onClick={del}  href=""><i className="fa fa-trash" aria-hidden="true"></i> Delete</a></p>
     </div>
   );
 };

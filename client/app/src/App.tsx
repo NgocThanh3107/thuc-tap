@@ -16,6 +16,7 @@ import TreeFolder from './component/content/Builder-folder/treeFolder';
 import EditFolder from './component/content/Builder-folder/editFolder';
 import CreateFolder from './component/content/Builder-folder/createFolder';
 import ChooseFolder from './component/content/Builder-folder/ChooseFolder';
+import AllForm from './component/content/Builder-form/allForm';
 
 function App() {
 
@@ -32,10 +33,11 @@ function App() {
           <Route path='/administrator/builder/data/lop-hoc.html' element={<LopHoc />} />
           <Route path='/read/:id' element={<Read />} />  
           <Route path='/create_lophoc' element={<Create />} />  
-          <Route path='/administrator/internship/builder/folder.html' element={<TreeFolder />} />
-          <Route path='/http://192.168.5.240/api/v1/folder/:id' element={<EditFolder />}/>
+          <Route path='/administrator/internship/builder/folder.html' element={<TreeFolder />}/>
+          <Route path='/editfolder/:id' element={<EditFolder />}/>
           <Route path='/create-folder' element={<CreateFolder />}/>
           <Route path='/choosefolder' element={<ChooseFolder />} />
+          <Route path='/administrator/internship/builder/form.html' element={<AllForm />} />
         </Route>
         <Route path='/login' element={<Login />} />
         <Route path='/test' element={<Test />} />

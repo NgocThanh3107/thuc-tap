@@ -9,7 +9,7 @@
 //    border: 1px solid #cac5c5;    
 }
 .table-style{
-    width: 83%;
+    width: 78%;
     display: block;
     float: left;
     height: 100%;
@@ -28,7 +28,7 @@
     }  
 }
 .sider_style{
-    width: 15%;
+    width: 20%;
     height: auto;
     text-align: center;
     color: #333;
@@ -37,6 +37,7 @@
     margin-top: 45px;
     // border-radius: 10%;
 }
+
 .content_style{
     display: block;
     width: 100%;
@@ -52,6 +53,17 @@
     top: 120px;
     overflow: auto;
 }
+// @media screen and (max-width: 390px) {
+//     .app{
+//         width: 100%;
+//     }
+//     .sider_style{
+//         width: 30%;
+//     } 
+//     .folder-main{
+//         width: 100%;
+//     }   
+// }
 .footer {
     margin:0 auto;
     width:100%;
@@ -66,4 +78,25 @@
     text-align: center;
     margin-top: 300px;
     font-weight: bold;
+}
+
+  
+@media screen and (max-width: 820px) {
+    .sider_style {
+        width: 30%;
+        font-size: 14px; 
+        border-radius: 5px;
+    }
+    .table-style{
+        width: 68%;
+    }
+    
+    // .header{
+    //     .nav{
+    //         width: 60%;
+    //     }
+    //     .nav-right{
+    //         width: 40%;
+    //     }
+    // }
 }

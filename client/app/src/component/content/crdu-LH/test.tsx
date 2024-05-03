@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Menu } from 'antd';
 import axios from 'axios';
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
 import Link from 'antd/es/typography/Link';
 import 'font-awesome/css/font-awesome.min.css';
-import { noAuto } from '@fortawesome/fontawesome-svg-core';
-import { NONAME } from 'dns';
+
 const { SubMenu, Item } = Menu;
 
 interface ChildItemProps {

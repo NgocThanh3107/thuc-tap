@@ -1,2 +1,15 @@
 @import 'header';
 @import 'content';
+@import 'home';
+
+@media screen and (max-width: 1024px) {
+    .app{
+        width: 100%;
+    }
+    .sider_style{
+        width: 50%;
+    } 
+    .folder-main{
+        width: 50%;
+    }   
+}
