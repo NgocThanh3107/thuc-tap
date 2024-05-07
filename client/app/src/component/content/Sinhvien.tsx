@@ -177,7 +177,7 @@ const SinhVien: React.FC = () =>{
                 </Link>
             </p>
             <div className='search'>
-            <Space.Compact>
+              <Space.Compact>
                 <Input placeholder='Search by Students ID' value={search} onChange={handleSearchChange}/>
                 <Button onClick={handleSearch} type="primary">Search</Button>
               </Space.Compact>

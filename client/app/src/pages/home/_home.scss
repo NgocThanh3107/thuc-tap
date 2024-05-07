@@ -34,7 +34,7 @@
     color: #333;
     float: left;
     // background-color: #d4d0d0;
-    margin-top: 45px;
+    // margin-top: 45px;
     // border-radius: 10%;
 }
 
@@ -42,15 +42,15 @@
     display: block;
     width: 100%;
     margin: auto;
-    height: auto;
+    height: 1000px;
     text-align: center;
     line-height: 20px;
     color: #333;
     float: left;
-    background-color: #fff;
+    background-color: #e7e7e7;
     min-height: 20px;
     // position: sticky;
-    top: 120px;
+    // top: 120px;
     overflow: auto;
 }
 // @media screen and (max-width: 390px) {
@@ -88,15 +88,6 @@
         border-radius: 5px;
     }
     .table-style{
-        width: 68%;
+        width: 6%;
     }
-    
-    // .header{
-    //     .nav{
-    //         width: 60%;
-    //     }
-    //     .nav-right{
-    //         width: 40%;
-    //     }
-    // }
 }
