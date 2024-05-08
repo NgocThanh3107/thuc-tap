@@ -6,14 +6,6 @@ import Link from 'antd/es/typography/Link';
 import 'font-awesome/css/font-awesome.min.css';
 import { useNavigate } from 'react-router-dom';
 
-// interface ChildItemProps {
-//     id: number;
-//     pageTitle: string;
-//     name: string;
-//     url: string;
-//     iconClass: string;
-//     children: ChildItemProps[];
-// }
 interface MenuItemProps {
     id: number;
     name: string;
@@ -53,17 +45,18 @@ const Menu_header: React.FC = () => {
 
       const renderMenuItems = (menuItems: MenuItemProps[]) => {
         return menuItems.map(menuItem => {
+            const icon = menuItem.iconClass || "fa fa-angle-double-right";
             if (menuItem.children.length > 0) {
                 return (
-                    <SubMenu className='SubMenu1' key={menuItem.id} title={menuItem.pageTitle}>
+                    <SubMenu key={menuItem.id} title={<span><i className={icon}></i> {menuItem.pageTitle}</span>}>
                         {renderMenuItems(menuItem.children)}
                     </SubMenu>
                 );
             } else {
                 return (
-                    <Item className='Menu-header' key={menuItem.id}>
+                    <Item key={menuItem.id}>
                         <Link onClick={() => handleNavigation(menuItem.url)}>
-                            <i className={menuItem.iconClass}></i> {menuItem.pageTitle}
+                            <i className={icon}></i> {menuItem.pageTitle}
                         </Link>
                     </Item>
                 );
@@ -72,57 +65,10 @@ const Menu_header: React.FC = () => {
       };
 
       return (
-          <Menu className='Menu-header' mode="inline" style={{ width: 256 }}>
+          <Menu className='menu-header' mode="inline" style={{ width: 256 }}>
               {renderMenuItems(data)}
           </Menu>
       );
 
-        // return (
-        //     <Menu className='Menu-header' mode="inline" style={{ width: 256 }}>
-        //         {data.map((menuItem) => {
-        //             if(menuItem.children.length > 0){
-        //                 return(    
-        //                   <SubMenu className='SubMenu' key={menuItem.id} title={menuItem.pageTitle}>                    
-        //                     {menuItem.children.map((childItem) =>{
-        //                       if(childItem.children.length > 0){
-        //                         return (
-        //                           <SubMenu className='SubMenu1' key={childItem.id} title={childItem.pageTitle}>
-        //                             {childItem.children.map((children1)=> (
-        //                                 <Item key={children1.id} >
-        //                                 <Link onClick={() => handleNavigation(children1.url!)}>
-        //                                   <i className={children1.iconClass}></i> 
-        //                                   {children1.pageTitle}
-        //                                 </Link>
-        //                             </Item>
-        //                             ))
-        //                           }
-        //                           </SubMenu>
-        //                         )
-        //                       }else{
-        //                         return(
-        //                           <Item key={childItem.id} >
-        //                                 <Link onClick={() => handleNavigation(childItem.url!)} >
-        //                                   <i className={childItem.iconClass}></i> 
-        //                                   {childItem.pageTitle}
-        //                                 </Link>
-        //                             </Item>
-        //                         )
-        //                       }
-        //                     }
-        //                     )}    
-        //                   </SubMenu>
-        //                 )
-        //             }else{
-        //                 return(
-        //                   <Item className='no-children' key={menuItem.id}>
-        //                     <Link onClick={() => handleNavigation(menuItem.url!)} >
-        //                       <i className={menuItem.iconClass}></i> {menuItem.pageTitle}
-        //                     </Link>
-        //                   </Item>
-        //                 )
-        //             }
-        //             })}
-        //     </Menu>
-        // )      
     }
 export default Menu_header;

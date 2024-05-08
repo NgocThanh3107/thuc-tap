@@ -5,8 +5,18 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
-import { TreeSelect } from 'antd';
+import { TreeSelect, Select } from 'antd';
 import type { SyntheticEvent } from 'react';
+  interface DataFormProps {
+    name?: string;
+    id: number;
+    code?: number;
+    description: string;
+    key?: number;
+    checkAccess: boolean;
+    showView: boolean;
+    folder: DataFolderProps
+  }
   interface DataFolderProps {
     name?: string;
     id: number;
@@ -28,19 +38,21 @@ import type { SyntheticEvent } from 'react';
     children?: DataFolderProps1[];
   }
 
-function EditFolder(){
+function EditForm(){
+
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
-    const [getdata, setGetData] = useState<DataFolderProps>();
-    const [parentError, setParentError] = useState<string>("");
+    const [getdata, setGetData] = useState<DataFormProps>();
+    const idFolderCu = (getdata?.folder?.id);
     const [treeData, setTreeData] = useState<DataFolderProps1[]>([]);
     const [value, setValue] = useState<string[]>();
-  
     let params = useParams();
     let navigate = useNavigate();
+    const [check, setCheck] = useState<boolean>();
+    const [show, setShow] = useState<boolean>();
 
     useEffect(()=>{
-        axios.get('http://192.168.5.240/api/v1/folder/'+ params.id,{
+        axios.get('http://192.168.5.240//api/v1/builder/form/'+ params.id,{
             headers: {
                 "API-Key" : api,
                 "Authorization": `Bearer ${token}`
@@ -93,16 +105,21 @@ function EditFolder(){
       }));
     };
   
-    const onFinish: FormProps<DataFolderProps>['onFinish'] = (values) => {
+    const onFinish: FormProps<DataFormProps>['onFinish'] = (values) => {
         console.log('Success:', values);
           const data = {
             id: getdata?.id,
             name: values.name,
-            sort: values.sort,
+            code: values.code,
             ...(values.description && { description: values.description }),
-            ...(value && { parent: { id: value } })
+            folder: {
+                id: value !== undefined ? value : idFolderCu
+            },
+            checkAccess: check,
+            showView: show
+            
           }
-        axios.put(`http://192.168.5.240/api/v1/folder`,
+        axios.put(`http://192.168.5.240/api/v1/builder/form`,
           data,
           {
             headers: {
@@ -115,25 +132,19 @@ function EditFolder(){
           console.log(res)
           if(res.data.status === true){
             alert("Xong")
-            navigate("/administrator/internship/builder/folder.html")
+            navigate("/administrator/internship/builder/form.html")
           }
         })
-        .catch(error=>{
+        .catch(error =>{
           if(error.response.status === 401){
             navigate("/login");
           }else{
-            const errorDescription = error.response.data.errorDescription;
-            const parentError = errorDescription.find((errorItem: any) => errorItem.field === "parent");
-            if (parentError) {
-              setParentError(error.response.data.message); 
-            } else {
-              setParentError(""); 
-            }
+            console.log(error)
           }
         })
     };
       
-      const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo) => {
+      const onFinishFailed: FormProps<DataFormProps>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
       };
 
@@ -144,6 +155,15 @@ function EditFolder(){
       const onPopupScroll = (e: SyntheticEvent) => {
         console.log('onPopupScroll', e);
       };
+      const handleCheckChange = (value: { value: boolean; label: React.ReactNode }) => {
+        console.log(value.value);
+        setCheck(value.value);
+    };
+    
+    const handleShowChange = (value: { value: boolean; label: React.ReactNode }) => {
+        console.log(value.value);
+        setShow(value.value);
+    };
     return(
       <div className="edit-folder">
         <h1>Edit and Update folder</h1>
@@ -160,7 +180,7 @@ function EditFolder(){
           key={getdata ? "1" : "0"}
         >
 
-          <Form.Item<DataFolderProps>
+          <Form.Item<DataFormProps>
             label="Name"
             name="name"
             rules={[{ required: true, message: 'Please input your name!' }]}
@@ -168,27 +188,25 @@ function EditFolder(){
             <Input />
           </Form.Item>
 
-          <Form.Item<DataFolderProps>
-            label="Sort"
-            name="sort"
+          <Form.Item<DataFormProps>
+            label="Code"
+            name="code"
             rules={[{ required: true, message: 'Please input your sort!' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item<DataFolderProps>
+          <Form.Item<DataFormProps>
             label="Description"
             name="description"
-            // rules={[{ required: true, message: 'Please input your description!' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item<DataFolderProps>
-              label="Parent"
-              name={["parent", "id"]}
-              validateStatus={parentError ? "error" : ""}
-              help={parentError ? parentError : ""}
+          <Form.Item<DataFormProps>
+              label="Folder"
+              name={['folder', 'name']}
+              
           >
             <TreeSelect
               showSearch
@@ -201,8 +219,55 @@ function EditFolder(){
               onChange={onChange}
               treeData={treeData}
               onPopupScroll={onPopupScroll}
+            //   defaultValue={getdata && getdata.folder && getdata.folder.name ? [getdata.folder.name] : undefined}
             />
           </Form.Item>
+
+          <Form.Item<DataFormProps>
+                label="CheckAccess"
+                name="checkAccess"
+                rules={[{ required: true, message: 'Please choose your checkAccess!' }]}
+                >
+                <Select
+                    labelInValue
+                    placeholder='Please Select'
+                    style={{ width: '100%' }}
+                    onChange={handleCheckChange}
+                    options={[
+                    {
+                        value: true,
+                        label: "True",
+                    },
+                    {
+                        value: false,
+                        label: "False",
+                    },
+                    ]}
+                />
+                </Form.Item>
+
+                <Form.Item<DataFormProps>
+                label="ShowView"
+                name="showView"
+                rules={[{ required: true, message: 'Please choose your showView!' }]}
+                >
+                <Select
+                    labelInValue
+                    placeholder='Please Select'
+                    style={{ width: '100%' }}
+                    onChange={handleShowChange}
+                    options={[
+                    {
+                        value: true,
+                        label: "True",
+                    },
+                    {
+                        value: false,
+                        label: "False",
+                    },
+                    ]}
+                />
+                </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
@@ -214,6 +279,6 @@ function EditFolder(){
 );
     
 }
-export default EditFolder;
+export default EditForm;
 
 

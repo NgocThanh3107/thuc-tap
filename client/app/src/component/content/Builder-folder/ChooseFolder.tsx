@@ -102,6 +102,7 @@ const removeFoldersFromTree = (tree: DataFolderProps[], folderIds: string[]): Da
 
   return (
     <div className="choose">
+      <h1>Filter Folder</h1>
         {contextHolder}
         <TreeSelect
         showSearch

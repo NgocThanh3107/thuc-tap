@@ -24,7 +24,7 @@ const Read_sv: React.FC = () => {
       maSinhVien: values.maSinhVien,
       tenSinhVien: values.tenSinhVien,
       lop: {
-        id: idLop
+        id: idLop !== undefined ? idLop : idLopCu
       }
     };
     
@@ -58,6 +58,7 @@ const Read_sv: React.FC = () => {
   const [getdata, setData] = useState<FieldType>();
   const [data1, setData1] = useState<LopProps[]>([]);
   const params = useParams();
+  const idLopCu = (getdata?.lop?.id);
 
   useEffect(() => {
     axios.get("http://192.168.5.240/api/v1/builder/form/sinh-vien/data/" + params.id,
@@ -69,7 +70,7 @@ const Read_sv: React.FC = () => {
       }
     )
         .then(res=> {
-          console.log(res)
+          console.log(res.data.data)
           if(res.data.status == true){
             setData(res.data.data)
           }else{

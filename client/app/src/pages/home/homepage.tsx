@@ -47,13 +47,17 @@ const Homepage = () =>{
     return (
         <div className='app'>
           <Headers />
-          <div className='content_style'>
-            <div className='sider_style'>
-              <Menu_header />
+          <div className='container'>
+            <div className='content_style'>
+              <div className='sider_style'>
+                <Menu_header />
+              </div>
+              <Outlet />    
             </div>
-            <Outlet />    
+            <Footer/>
           </div>
-          <Footer />
+
+          
         </div> 
     )
   }else{

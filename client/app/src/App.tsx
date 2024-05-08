@@ -17,6 +17,9 @@ import EditFolder from './component/content/Builder-folder/editFolder';
 import CreateFolder from './component/content/Builder-folder/createFolder';
 import ChooseFolder from './component/content/Builder-folder/ChooseFolder';
 import AllForm from './component/content/Builder-form/allForm';
+import CreateForm from './component/content/Builder-form/createForm';
+import EditForm from './component/content/Builder-form/editForm';
+import FilterForm from './component/content/Builder-form/filterForm';
 
 function App() {
 
@@ -38,6 +41,9 @@ function App() {
           <Route path='/create-folder' element={<CreateFolder />}/>
           <Route path='/choosefolder' element={<ChooseFolder />} />
           <Route path='/administrator/internship/builder/form.html' element={<AllForm />} />
+          <Route path='/create-form' element={<CreateForm />}/>
+          <Route path='/editform/:id' element={<EditForm />}/>
+          <Route path='/filterform' element={<FilterForm />} />
         </Route>
         <Route path='/login' element={<Login />} />
         <Route path='/test' element={<Test />} />

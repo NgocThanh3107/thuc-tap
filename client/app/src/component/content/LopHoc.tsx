@@ -179,18 +179,21 @@ const LopHoc: React.FC = () => {
 
     return (
         <div className='table-style'>
+          <h1>Quản lý lớp học</h1>
+          <div className='s-c'>
+                <p className='create'>
+                    <Link href="/create_lophoc" onClick={(e) => { e.preventDefault(); navigate("/create_lophoc"); }}>
+                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Class
+                    </Link>
+                </p>
+                <p className='search'>
+                  <Space.Compact>
+                    <Input placeholder='Search by Class ID' value={search} onChange={handleSearchChange} />
+                    <Button onClick={handleSearch} type="primary">Search</Button>
+                  </Space.Compact>
+                </p>
+          </div>
             {contextHolder}
-            <p className='create'>
-                <Link href="/create_lophoc" onClick={(e) => { e.preventDefault(); navigate("/create_lophoc"); }}>
-                <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Class
-                </Link>
-            </p>
-            <div className='search'>
-              <Space.Compact>
-                <Input placeholder='Search by Class ID' value={search} onChange={handleSearchChange} />
-                <Button onClick={handleSearch} type="primary">Search</Button>
-              </Space.Compact>
-            </div>
             <Table  dataSource={getdata}
                     pagination={pagination}
                     onChange={handleTableChange}

@@ -9,6 +9,7 @@ import './style.scss';
 import { Divider, Menu, Space, Table, Dropdown, message } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { Button, Input} from 'antd';
+import { normalize } from "path";
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
 const { DirectoryTree } = Tree;
 
@@ -36,12 +37,6 @@ interface PaginationProps {
 
 const TreeFolder = () => {
 
-  // const menu = (
-  //   <Menu>
-  //     <Menu.Item onClick={() => handleDelete(record.id)} key="1">Delete</Menu.Item>
-  //     <Menu.Item key="2">Edit</Menu.Item>
-  //   </Menu>
-  // );
   const columns: TableColumnsType<DataType> = [
     {
       title: 'STT',
@@ -89,6 +84,7 @@ const TreeFolder = () => {
     const [IdParent, setIdParent] = useState<number | undefined>();  
     const [messageApi, contextHolder] = message.useMessage();
     const [search, setSearch] = useState<string>('');
+    const [pageTitle, setPageTitle] = useState("Folder");
 
     // console.log(IdParent)
     let navigate = useNavigate();
@@ -101,6 +97,7 @@ const TreeFolder = () => {
             }
         })
         .then(res => {
+          console.log(res)
             if(res.data.status === true) {
               setGetData(res.data.data);
               setOriginalData(res.data.data);
@@ -160,6 +157,10 @@ const TreeFolder = () => {
         // info.selectedNodes.map((v)=>{
               setIdParent(keys[0] as number);  
             fetchData(1,10, keys[0] as number)
+            const selectedNode = treeData.find(node => node.key === keys[0]);
+            if (selectedNode) {
+                setPageTitle(selectedNode.title as string);
+            }
         // })
     }
     
@@ -213,7 +214,6 @@ const TreeFolder = () => {
             const newTreeData = removeNode(prevTreeData, folderId);
             return newTreeData;
           });
-          
         }
       })
       .catch(error =>{
@@ -264,7 +264,7 @@ const TreeFolder = () => {
 
     return (
       <div className="folder-main">
-        <h1>Folder</h1>
+        <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
           <div className="c-c">
             <p className="filter"><Link href="/create-folder" onClick={(e) => {e.preventDefault();navigate("/create-folder")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Link></p>
             <p className="filter"><Link href="/choosefolder" onClick={(e) => {e.preventDefault();navigate("/choosefolder")}}><i className="fa fa-filter" aria-hidden="true"></i> Filter</Link></p>

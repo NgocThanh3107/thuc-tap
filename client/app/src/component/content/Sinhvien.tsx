@@ -167,20 +167,23 @@ const SinhVien: React.FC = () =>{
 
     return (
         <div className='table-style'>
+          <h1>Quản lý sinh viên</h1>
             {contextHolder}
-            <p className='create'>
-                <Link href="/create_sinhvien" 
-                    onClick={(e) => {e.preventDefault();
-                    navigate("/create_sinhvien");
-                    }}>
-                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new students
-                </Link>
-            </p>
-            <div className='search'>
-              <Space.Compact>
-                <Input placeholder='Search by Students ID' value={search} onChange={handleSearchChange}/>
-                <Button onClick={handleSearch} type="primary">Search</Button>
-              </Space.Compact>
+            <div className='s-c'>
+              <p className='create'>
+                  <Link href="/create_sinhvien" 
+                      onClick={(e) => {e.preventDefault();
+                      navigate("/create_sinhvien");
+                      }}>
+                      <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new students
+                  </Link>
+              </p>
+              <p className='search'>
+                <Space.Compact>
+                  <Input placeholder='Search by Students ID' value={search} onChange={handleSearchChange}/>
+                  <Button onClick={handleSearch} type="primary">Search</Button>
+                </Space.Compact>
+              </p>
             </div>
             <Table  dataSource={data}
                 pagination={pagination}
@@ -213,7 +216,6 @@ const SinhVien: React.FC = () =>{
                 )}
                 />
             </Table>
-            
         </div>
     )
 }

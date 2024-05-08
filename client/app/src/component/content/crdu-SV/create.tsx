@@ -19,7 +19,8 @@ const Create_sv: React.FC = () =>{
         };
 
         const [data1, setData1] = useState<LopProps[]>([]);
-        const [lop, setLop]= useState<string>()
+        const [lop, setLop]= useState<string>();
+        const [codeError, setCodeError] = useState<string>("");
 
         useEffect(()=>{
           fetchData(1, 100);
@@ -70,13 +71,19 @@ const Create_sv: React.FC = () =>{
                   }
                   
               })
-              .catch(error => {
-                if (error.response.status === 401) {
-                    console.log("Token không hợp lệ");
-                    navigate("/login");
+              .catch((error: any) => {
+                if(error.response.status === 401){
+                  navigate("/login");
+                }else{
+                console.log(error)
+                const errorDescription = error.response.data.errorDescription;
+                const codeError = errorDescription.find((errorItem: any) => errorItem.field === "maSinhVien");
+                if (codeError) {
+                  setCodeError(error.response.data.message); 
                 } else {
-                    console.log(error);
+                  setCodeError(""); 
                 }
+              }
             });
           }
         };
@@ -115,6 +122,8 @@ const Create_sv: React.FC = () =>{
           label="Ma Sinh Vien"
           name="maSinhvien"
           rules={[{ required: true, message: "Enter student's code!" }]}
+          validateStatus={codeError ? "error" : ""}
+            help={codeError ? codeError : ""}
         >
           <Input/>
         </Form.Item>

@@ -23,7 +23,7 @@ const Create: React.FC = () =>{
               tenLop: values.tenLop,
               moTa: values.moTa
           }
-          console.log(data)
+          // console.log(data)
           axios.post("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
           data,
           {
