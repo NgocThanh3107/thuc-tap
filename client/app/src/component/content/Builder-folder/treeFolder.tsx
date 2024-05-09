@@ -10,6 +10,7 @@ import { Divider, Menu, Space, Table, Dropdown, message } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { Button, Input} from 'antd';
 import { normalize } from "path";
+
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
 const { DirectoryTree } = Tree;
 
@@ -21,11 +22,11 @@ interface DataFolderProps {
   parent: DataFolderProps[];
 }
 interface DataType {
-  key: React.Key;
-  name: string;
-  description: string;
-  id: number;
-  parent: DataType[];
+  key?: React.Key;
+  name?: string;
+  description?: string;
+  id?: number;
+  parent?: DataType[];
 }
 interface PaginationProps {
   pageSize? : number;
@@ -48,7 +49,6 @@ const TreeFolder = () => {
     {
       title: 'Name',
       dataIndex: 'name',
-      // render: (text: string) => <a>{text}</a>,
     },
     {
       title: 'Description',
@@ -59,16 +59,7 @@ const TreeFolder = () => {
       dataIndex: '',
       render: (record) => (
         <div>
-          <Dropdown overlay={
-            <Menu>
-              <Menu.Item onClick={() => handleDelete(record?.id)} key="1">Delete</Menu.Item>
-              <Menu.Item onClick={() => navigate('/editfolder/'+ record?.id)} key="2">Edit</Menu.Item>
-            </Menu>
-          } trigger={['click']}>
-            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-            <i className="fa fa-bars" aria-hidden="true"></i>
-            </a>
-          </Dropdown>
+          <a onClick={() => navigate('/editfolder/'+ record?.id)} key="2">Edit</a>
         </div>
       )
     }
@@ -84,9 +75,9 @@ const TreeFolder = () => {
     const [IdParent, setIdParent] = useState<number | undefined>();  
     const [messageApi, contextHolder] = message.useMessage();
     const [search, setSearch] = useState<string>('');
-    const [pageTitle, setPageTitle] = useState("Folder");
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-    // console.log(IdParent)
+    console.log(selectedRowKeys)
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -97,7 +88,7 @@ const TreeFolder = () => {
             }
         })
         .then(res => {
-          console.log(res)
+          // console.log(res)
             if(res.data.status === true) {
               setGetData(res.data.data);
               setOriginalData(res.data.data);
@@ -123,6 +114,7 @@ const TreeFolder = () => {
           },
         })
         .then((res) => {
+          // console.log(res)
           if (res.data.pagination.total > 0) {
             setGetData1(res.data.data);
             setPagination(res.data.pagination);
@@ -154,41 +146,37 @@ const TreeFolder = () => {
 
     const onSelect: DirectoryTreeProps['onSelect'] = (keys, info) => {
         console.log('Trigger Select', keys, info);
-        // info.selectedNodes.map((v)=>{
-              setIdParent(keys[0] as number);  
+        info.selectedNodes.map((v)=>{
+            setIdParent(keys[0] as number);  
             fetchData(1,10, keys[0] as number)
-            const selectedNode = treeData.find(node => node.key === keys[0]);
-            if (selectedNode) {
-                setPageTitle(selectedNode.title as string);
-            }
-        // })
+        })
     }
     
-
-    const removeNode = (treeData: DataFolderProps[], id: number): DataFolderProps[] => {
-      return treeData.map(node => {
-        if (node.id === id) {
-          return [];
-        }
-        if (node.children) {
-          return {
-            ...node,
-            children: removeNode(node.children, id)
-          };
-        }
-        return node;
-      }).flat();
+    const deleteFolderFromTreeData = (id: number) => {
+      const findAndDelete = (data: DataFolderProps[], targetId: number) => {
+        return data.filter(item => {
+          if (item.id === targetId) {
+            return false; // Loại bỏ folder có id là targetId
+          }
+          if (item.children && item.children.length > 0) {
+            item.children = findAndDelete(item.children, targetId); // Tiếp tục tìm kiếm trong các con của folder hiện tại
+          }
+          return true; // Giữ folder nếu không phải là folder cần xóa
+        });
+      };
+    
+      setGetData(findAndDelete(getData, id)); // Cập nhật lại dữ liệu của treeData sau khi xóa
     };
     
-    const handleDelete = (folderId: number) => {
-      console.log(folderId)
+
+    const handleDelete = () => {
       axios.delete(`http://192.168.5.240/api/v1/folder`,
         {
           headers: {
             "API-Key" : api,
             "Authorization": `Bearer ${token}`
           },
-          data: [folderId]
+          data: selectedRowKeys
         }
       )
       .then(res=>{
@@ -209,11 +197,10 @@ const TreeFolder = () => {
                       });
                   }, 300);
 
-          setGetData1(prevData => prevData.filter(folder => folder.id !== folderId));
-          setGetData(prevTreeData => {
-            const newTreeData = removeNode(prevTreeData, folderId);
-            return newTreeData;
-          });
+          const updatedData = getData1.filter(item => !selectedRowKeys.includes(item.id as React.Key));
+          setGetData1(updatedData);
+          deleteFolderFromTreeData(selectedRowKeys[0] as number);
+          setSelectedRowKeys([]);
         }
       })
       .catch(error =>{
@@ -257,17 +244,29 @@ const TreeFolder = () => {
         }
       })
     }
+
+
     const handleTableChange = (pagination: any) => {
       const { current, pageSize, parent } = pagination;
       fetchData(current, pageSize, parent);
     };
 
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+    };
+  
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: onSelectChange,
+    };
+    
+    const hasSelected = selectedRowKeys.length > 0;
+
     return (
       <div className="folder-main">
         <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
           <div className="c-c">
-            <p className="filter"><Link href="/create-folder" onClick={(e) => {e.preventDefault();navigate("/create-folder")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Link></p>
-            <p className="filter"><Link href="/choosefolder" onClick={(e) => {e.preventDefault();navigate("/choosefolder")}}><i className="fa fa-filter" aria-hidden="true"></i> Filter</Link></p>
+            <p className="add"><Link href="/create-folder" onClick={(e) => {e.preventDefault();navigate("/create-folder")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Link></p>
             <p className='search-table'>
               <Space.Compact>
                 <Input placeholder='Search folder' value={search} onChange={handleSearchChange}/>
@@ -287,11 +286,23 @@ const TreeFolder = () => {
             </div>
             {contextHolder}
             <div className="table-folder">
-              <Table 
+              <div className="del-folder" style={{ marginBottom: 16 }}>
+                {hasSelected && (
+                <Button onClick={handleDelete} style={{color:'red'}} >
+                  Delete
+                </Button>
+                )}
+                <span style={{ marginLeft: 8 }}>
+                  {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                </span>
+              </div>
+              <Table   
+                rowKey={"id"}             
                 onChange={handleTableChange}
                 pagination={pagination}
                 columns={columns}
                 dataSource={getData1}
+                rowSelection={rowSelection}
               />
             </div>
           </div>
@@ -300,7 +311,6 @@ const TreeFolder = () => {
 }
 
 export default TreeFolder;
-
 
 
 

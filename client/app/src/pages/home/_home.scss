@@ -16,7 +16,9 @@
     margin-left: 1%;
     // position: relative;
     margin-top: 10px;
-    
+    button{
+        text-align: left;
+    }
     table{
         border: 1px solid #cac5c5;
         margin: auto;
@@ -48,7 +50,8 @@ html, body {
     display: flex;
     flex-direction: column;
     min-height: 92vh; /* Đảm bảo container có ít nhất chiều cao của màn hình */
-    box-sizing: border-box; /* Include padding and border in the element's total height and width */
+    box-sizing: border-box; 
+    /* Include padding and border in the element's total height and width */
 }
 
 .sider_style{
@@ -59,7 +62,7 @@ html, body {
     float: left;
     background-color: #fff;
     height: 84vh;
-    
+    // flex-shrink: 0;
 }
 .content_style {
     flex: 1; /* Phần nội dung mở rộng để lấp đầy phần còn lại của container */

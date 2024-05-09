@@ -204,7 +204,7 @@ const SinhVien: React.FC = () =>{
                         </span>
                     )}
                 />
-                {/* <Column title="Mo Ta" dataIndex="moTa" key="moTa" /> */}
+                <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
                 <Column
                 title="Action"
                 key="action"

@@ -31,6 +31,7 @@ interface DataFolderProps {
         const [messageApi, contextHolder] = message.useMessage();
         const [originalData, setOriginalData] = useState<DataFormProps[]>([]);
         const [search, setSearch] = useState<string>("");
+        const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
         useEffect(() => {
           axios.get(`http://192.168.5.240/api/v1/builder/form`, {
               headers: {
@@ -119,21 +120,21 @@ interface DataFolderProps {
             key: 'action',
             render: (record) => (
               <Space className="style_a" size="middle">
-                <a className='red-color' href="" onClick={(e) =>{ e.preventDefault(); handleDelete(record?.id)}}>Delete</a>
                 <a onClick={(e) =>{ e.preventDefault(); navigate('/editform/'+ record?.id)}} href={"/editform/" + record?.id}>Edit</a>
               </Space>
             ),
           },
         ];
 
-        const handleDelete = (idForm : number) => {
+        const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
+          e.preventDefault();
           axios.delete(`http://192.168.5.240/api/v1/builder/form`,
             {
               headers: {
                 "API-Key" : api,
                 "Authorization": `Bearer ${token}`
               },
-              data: [idForm]
+              data: selectedRowKeys
             }
           )
           .then(res=>{
@@ -153,7 +154,11 @@ interface DataFolderProps {
                       duration: 2,
                       });
                   }, 300);
-              setGetData(prevData => prevData.filter(form => form.id !== idForm));
+
+                  const updatedData = getData.filter(item => !selectedRowKeys.includes(item.id as React.Key));
+                  setGetData(updatedData);
+                  
+                  setSelectedRowKeys([]);
             }else{
               console.log(res)
             }
@@ -166,22 +171,40 @@ interface DataFolderProps {
             }
           })
         }
-        
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const hasSelected = selectedRowKeys.length > 0;
+        console.log(selectedRowKeys)
     return(
       <div className="table-style">
         {contextHolder}
         <h1>Form <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
         <div className="s-c">
-          <p className="create"><Link href="/create-form" onClick={(e) => {e.preventDefault();navigate("/create-form")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Thêm mới</Link></p>
           <p className='search'>
             <Space.Compact>
               <Input placeholder='Search by code ' value={search} onChange={handleSearchChange}/>
               <Button onClick={handleSearch}  type="primary">Search</Button>
             </Space.Compact>
           </p>
-          <p className="filter"><Link href="/filterform" onClick={(e) => {e.preventDefault();navigate("/filterform")}}><i className="fa fa-filter" aria-hidden="true"></i> Filter</Link></p>
+          <p className="create"><Link href="/create-form" onClick={(e) => {e.preventDefault();navigate("/create-form")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Thêm mới</Link></p>
+          {hasSelected && (
+              <div className="delete">
+                  <p><a href="" onClick={handleDelete}>Delete</a></p>
+                  <span style={{ marginLeft: 8 }}>
+                      {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                  </span>
+              </div>
+          )}
         </div>
-        <Table columns={columns} dataSource={getData} />
+        <Table rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
       </div>
     );
       

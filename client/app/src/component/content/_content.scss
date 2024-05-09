@@ -15,42 +15,36 @@
     display: block;
         p{
             display: inline-block;
-            a{
-                color: #fff;
-                font-size: 15px;
-                padding: 8px;
-                margin-right: 10px;
-                background-color: rgb(57, 107, 245);
-                border-radius: 7px;
-            } 
         }
         .create{
             float: right;
+            a{
+                color: #fff;
+                font-size: 15px;
+                padding: 6px;
+                margin-right: 30px;
+                margin-bottom: 0;
+                background-color: rgb(31, 154, 226);
+                border-radius: 7px;
+            } 
         }
         .search{
-            float: left;
-            margin-bottom: 10px;
-        }
-        .filter{
             float: right;
+        } 
+        .delete{
+            float: left;
+            p{
+                a{
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                    background-color: rgb(189, 4, 4);
+                    text-decoration: none;
+                    color: #fff;
+                }
+            }
         }
-            
 }
-// .create{
-//     // position: absolute;
-//     margin: 0;
-//     // top: 60px;
-//     // right:10px;
-//     // z-index: 1;
-//     a{
-//        color: green;
-//        text-decoration: none;
-//        font-weight: bold;
-//        padding: 5px 10px;
-//        border: solid 1px green;
-//        border-radius: 6px;
-//     }
-// }
+
 .read{
     width: 50%;
     display: block;

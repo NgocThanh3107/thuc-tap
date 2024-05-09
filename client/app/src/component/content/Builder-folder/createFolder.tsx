@@ -136,7 +136,7 @@ const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo)
             <Form.Item<DataFolderProps>
             label="Name"
             name="name"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            rules={[{ required: true, message: 'Please input your username!' , validateTrigger: 'onChange' }]}
             validateStatus={nameError ? "error" : ""}
             help={nameError ? nameError : ""}
             >
@@ -175,10 +175,8 @@ const onFinishFailed: FormProps<DataFolderProps>['onFinishFailed'] = (errorInfo)
                 onChange={onChange}
                 treeData={treeData}
                 onPopupScroll={onPopupScroll}
-              />
-                
+              />   
             </Form.Item>
-
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
               Create
