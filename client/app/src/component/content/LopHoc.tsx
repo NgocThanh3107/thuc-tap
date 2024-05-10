@@ -198,6 +198,7 @@ const LopHoc: React.FC = () => {
                     pagination={pagination}
                     onChange={handleTableChange}
             >
+                <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
                 <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
                 <Column title="Ma lop" dataIndex="maLop" key="maLop" />
                 <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
@@ -213,7 +214,8 @@ const LopHoc: React.FC = () => {
                         </Space>
                     )}
                 />
-            </Table>     
+            </Table>
+                 
         </div>
     )
     

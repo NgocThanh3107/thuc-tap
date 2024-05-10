@@ -1,12 +1,12 @@
 
 .folder-main{
     display: block;
-    width: 78%;
+    width: 96%;
     float: left;
     height: auto;
-    margin-left: 1%;
     text-align: left;
     background-color: #e7e7e7;
+    padding: 0 2% 2% 2%;
     .folder-style{
         padding: 20px;
         background-color: rgb(226, 229, 231);
@@ -16,7 +16,7 @@
 .c-c{
     width:100%;
     margin: 0;
-    padding: 0;
+    // padding:0 2%;
     display: block;
         p{
             display: inline-block;
@@ -36,6 +36,9 @@
         .search-folder{
             float: left;
             margin-bottom: 10px;
+        }
+        .search-form{
+            float: left;
         }
             
 }

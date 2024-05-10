@@ -189,6 +189,7 @@ const SinhVien: React.FC = () =>{
                 pagination={pagination}
                 onChange={handleTableChange}
             >
+                <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
                 <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
                 <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
                 <Column title="Lop" dataIndex="lop" key = "lop" 

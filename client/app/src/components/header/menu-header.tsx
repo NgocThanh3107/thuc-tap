@@ -65,9 +65,9 @@ const Menu_header: React.FC = () => {
       };
 
       return (
-          <Menu className='menu-header' mode="inline" style={{ width: 256 }}>
-              {renderMenuItems(data)}
-          </Menu>
+        <Menu className='menu-header' mode="inline" style={{ width: 256 }}>
+            {renderMenuItems(data)}
+        </Menu>
       );
 
     }

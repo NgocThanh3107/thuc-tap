@@ -40,6 +40,7 @@ interface DataFolderProps {
               },
             })
             .then((res) => {
+              console.log(res)
               if (res.data.status == true) {
                 setGetData(res.data.data);
                 setOriginalData(res.data.data);
@@ -187,24 +188,30 @@ interface DataFolderProps {
       <div className="table-style">
         {contextHolder}
         <h1>Form <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
-        <div className="s-c">
-          <p className='search'>
+        <div className="c-c">
+          <p className='search-form'>
             <Space.Compact>
               <Input placeholder='Search by code ' value={search} onChange={handleSearchChange}/>
-              <Button onClick={handleSearch}  type="primary">Search</Button>
+              <Button onClick={handleSearch} type="primary">Search</Button>
             </Space.Compact>
           </p>
-          <p className="create"><Link href="/create-form" onClick={(e) => {e.preventDefault();navigate("/create-form")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Thêm mới</Link></p>
-          {hasSelected && (
-              <div className="delete">
-                  <p><a href="" onClick={handleDelete}>Delete</a></p>
-                  <span style={{ marginLeft: 8 }}>
-                      {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-                  </span>
-              </div>
-          )}
+          <p className="add"><Link href="/create-form" onClick={(e) => {e.preventDefault();navigate("/create-form")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Form</Link></p>
         </div>
-        <Table rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
+        <div className="form-style">
+          <div className="table-form">
+            <div className="del-f" style={{ marginBottom: 16, textAlign:'left' }}>
+              {hasSelected && (
+              <Button type="primary" danger onClick={handleDelete} >
+                Delete
+              </Button>
+              )}
+              <span style={{ marginLeft: 8 }}>
+                {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+              </span>
+            </div>
+          <Table className="table" rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
+          </div>
+        </div>  
       </div>
     );
       

@@ -48,16 +48,14 @@ const Homepage = () =>{
         <div className='app'>
           <Headers />
           <div className='container'>
+            <div className='sider_style'>
+              <Menu_header />
+            </div>
             <div className='content_style'>
-              <div className='sider_style'>
-                <Menu_header />
-              </div>
               <Outlet />    
             </div>
             <Footer/>
           </div>
-
-          
         </div> 
     )
   }else{
