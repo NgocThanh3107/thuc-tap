@@ -18,7 +18,9 @@ import CreateFolder from './component/content/Builder-folder/createFolder';
 import AllForm from './component/content/Builder-form/allForm';
 import CreateForm from './component/content/Builder-form/createForm';
 import EditForm from './component/content/Builder-form/editForm';
-import AllFormField from './component/content/Builder-formfield/allFormField';
+import AllFormField from './component/content/Builder-form/allFormField';
+import CreateFormField from './component/content/Builder-form/createFormField';
+import EditFormField from './component/content/Builder-form/editFormField';
 
 function App() {
 
@@ -41,7 +43,9 @@ function App() {
           <Route path='/administrator/internship/builder/form.html' element={<AllForm />} />
           <Route path='/create-form' element={<CreateForm />}/>
           <Route path='/editform/:id' element={<EditForm />}/>
-          <Route path='/administrator/internship/builder/formfield.html' element= {<AllFormField/>} />
+          <Route path='/formfield/:id' element= {<AllFormField/>} />
+          <Route path='/create-formfield' element={<CreateFormField />}/>
+          <Route path='/editformfield/:id' element={<EditFormField />}/>
         </Route>
         <Route path='/login' element={<Login />} />
         <Route path='/test' element={<Test />} />

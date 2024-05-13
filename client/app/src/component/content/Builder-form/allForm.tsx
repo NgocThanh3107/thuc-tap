@@ -96,6 +96,11 @@ interface DataFolderProps {
         
         const columns: TableProps<DataFormProps>['columns'] = [
           {
+            title: 'STT',
+            dataIndex: '',
+            render: (text, record, index) => index + 1
+          },
+          {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
@@ -106,11 +111,11 @@ interface DataFolderProps {
             dataIndex: 'code',
             key: 'code',
           },
-          {
-            title: 'Folder',
-            dataIndex: ['folder', 'name'],
-            key: 'folder',
-          },
+          // {
+          //   title: 'Folder',
+          //   dataIndex: ['folder', 'name'],
+          //   key: 'folder',
+          // },
           {
             title: 'Description',
             dataIndex: 'description',
@@ -122,6 +127,7 @@ interface DataFolderProps {
             render: (record) => (
               <Space className="style_a" size="middle">
                 <a onClick={(e) =>{ e.preventDefault(); navigate('/editform/'+ record?.id)}} href={"/editform/" + record?.id}>Edit</a>
+                <a onClick={(e) =>{ e.preventDefault(); navigate('/formfield/'+ record?.id)}} href={"/formfield/" + record?.id}>Show More</a>
               </Space>
             ),
           },

@@ -1,9 +1,6 @@
 .style_a{
     text-decoration: none;
     font-weight: bold;
-    a{
-        color:green;
-    }
     .red-color{
         color: rgb(211, 72, 72);
     }
@@ -53,21 +50,29 @@
     }
 }
 .read{
-    width: 50%;
+    width: 80%;
     display: block;
     text-align: center;
-    margin-left: 250px;
-    form{
-        padding-left: 200px;
-    }
+    // margin-left: 250px;
     h1{
-        color: #777676;
-        padding-bottom: 10px;
-        padding-right: 200px;
+        color: #494545;
+        text-align: center
+    }
+}
+.edit-lop{
+    width: 90%;
+    text-align: center;
+    // display:block;
+    margin: auto;
+    form{
+        margin:auto;
     }
 }
 .add-new{
     @extend .read;
+    form{
+        margin: auto;
+    }
 }
 .table-form{
     display: block;

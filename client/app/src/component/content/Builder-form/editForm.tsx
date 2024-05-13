@@ -52,7 +52,7 @@ function EditForm(){
     const [show, setShow] = useState<boolean>();
 
     useEffect(()=>{
-        axios.get('http://192.168.5.240//api/v1/builder/form/'+ params.id,{
+        axios.get('http://192.168.5.240/api/v1/builder/form/'+ params.id,{
             headers: {
                 "API-Key" : api,
                 "Authorization": `Bearer ${token}`
@@ -64,7 +64,6 @@ function EditForm(){
             if(res.data.status == true){
               setGetData(res.data.data);
             }
-           
         })
         .catch(error =>{
             if(error.response.status === 401){
@@ -116,8 +115,7 @@ function EditForm(){
                 id: value !== undefined ? value : idFolderCu
             },
             checkAccess: check,
-            showView: show
-            
+            showView: show 
           }
         axios.put(`http://192.168.5.240/api/v1/builder/form`,
           data,
@@ -166,7 +164,7 @@ function EditForm(){
     };
     return(
       <div className="edit-folder">
-        <h1>Edit and Update folder</h1>
+        <h1>Edit and Update form</h1>
         <br />
         <Form
           name="basic"

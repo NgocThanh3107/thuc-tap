@@ -142,7 +142,7 @@ const Create_sv: React.FC = () =>{
           >
               <Space wrap>
                   <Select
-                      style={{ width: 265 , textAlign: 'left' }}
+                      style={{ width: 400 , textAlign: 'left' }}
                       onChange={handleChange}
                       defaultValue={"Choose Class"}
                       options={

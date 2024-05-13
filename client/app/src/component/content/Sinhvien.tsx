@@ -167,7 +167,7 @@ const SinhVien: React.FC = () =>{
 
     return (
         <div className='table-style'>
-          <h1>Quản lý sinh viên</h1>
+          <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
             {contextHolder}
             <div className='s-c'>
               <p className='create'>

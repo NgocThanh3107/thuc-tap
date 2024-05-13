@@ -37,6 +37,7 @@ const LopHoc: React.FC = () => {
     const [pagination, setPagination] = useState<PaginationProps>()
     console.log(pagination)
     const [getdata, setgetData] = useState<DataType[]>([]);
+    console.log(getdata)
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -179,7 +180,7 @@ const LopHoc: React.FC = () => {
 
     return (
         <div className='table-style'>
-          <h1>Quản lý lớp học</h1>
+          <h1>Quản lý lớp học <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
           <div className='s-c'>
                 <p className='create'>
                     <Link href="/create_lophoc" onClick={(e) => { e.preventDefault(); navigate("/create_lophoc"); }}>

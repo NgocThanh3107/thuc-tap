@@ -80,49 +80,51 @@ const Read: React.FC = () => {
   return (
     <div className="read">
       <h1>Edit and Update</h1>
-      <Form<FieldType>
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={
-          getdata
-        }
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-        key={getdata ? "1" : "0"}
-      >
-        <Form.Item<FieldType>
-          label="Ten Lop"
-          name="tenLop"
-          rules={[{ required: true, message: 'Please input your ten lop!' }]}
+      <div className="edit-lop">
+        <Form<FieldType>
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={
+            getdata
+          }
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+          key={getdata ? "1" : "0"}
         >
-          <Input />
-        </Form.Item>
+          <Form.Item<FieldType>
+            label="Ten Lop"
+            name="tenLop"
+            rules={[{ required: true, message: 'Please input your ten lop!' }]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item<FieldType>
-          label="Ma lop"
-          name="maLop"
-          rules={[{ required: true, message: 'Please input your ma lop!' }]}
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item<FieldType>
+            label="Ma lop"
+            name="maLop"
+            rules={[{ required: true, message: 'Please input your ma lop!' }]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item<FieldType>
-          label="Mo ta"
-          name="moTa"
-          rules={[{ required: true, message: 'Please input your mo ta!' }]}
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item<FieldType>
+            label="Mo ta"
+            name="moTa"
+            rules={[{ required: true, message: 'Please input your mo ta!' }]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Update
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              Update
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
     
   )

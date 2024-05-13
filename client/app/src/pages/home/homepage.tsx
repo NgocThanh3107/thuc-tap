@@ -54,8 +54,8 @@ const Homepage = () =>{
             <div className='content_style'>
               <Outlet />    
             </div>
-            <Footer/>
           </div>
+          <Footer/>
         </div> 
     )
   }else{
