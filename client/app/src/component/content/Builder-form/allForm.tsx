@@ -5,7 +5,11 @@ import { Space, Table, message, Input, Button } from 'antd';
 import type { TableProps } from 'antd';
 import Link from "antd/es/typography/Link";
 import { useNavigate } from "react-router-dom";
-import Search from "antd/es/transfer/search";
+import  { useContext, useLayoutEffect } from 'react';
+import { StyleProvider } from '@ant-design/cssinjs';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { App, ConfigProvider, Modal} from 'antd';
+
 interface DataFormProps{
     id: number;
     folder: DataFolderProps;
@@ -126,58 +130,67 @@ interface DataFolderProps {
             key: 'action',
             render: (record) => (
               <Space className="style_a" size="middle">
-                <a onClick={(e) =>{ e.preventDefault(); navigate('/editform/'+ record?.id)}} href={"/editform/" + record?.id}>Edit</a>
+                <a onClick={(e) =>{ e.preventDefault(); navigate('/edit-form/'+ record?.id)}} href={"/edit-form/" + record?.id}>Edit</a>
                 <a onClick={(e) =>{ e.preventDefault(); navigate('/formfield/'+ record?.id)}} href={"/formfield/" + record?.id}>Show More</a>
               </Space>
             ),
           },
         ];
 
-        const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
-          e.preventDefault();
-          axios.delete(`http://192.168.5.240/api/v1/builder/form`,
-            {
-              headers: {
-                "API-Key" : api,
-                "Authorization": `Bearer ${token}`
-              },
-              data: selectedRowKeys
-            }
-          )
-          .then(res=>{
-            console.log(res)
-            if(res.data.status=== true){
-              const key = 'updatable';
+    const handleDelete = () => {
+      Modal.confirm({
+        title: `Do you want to delete ${selectedRowKeys.length} items?`,
+        icon: <ExclamationCircleFilled />,
+        content: 'This action cannot be undone.',
+        onOk() {
+          // Perform delete operation here
+          axios.delete(`http://192.168.5.240/api/v1/builder/form`, {
+            headers: {
+              "API-Key": api,
+              "Authorization": `Bearer ${token}`
+            },
+            data: selectedRowKeys
+          })
+            .then(res => {
+              if (res.data.status === true) {
+                const key = 'updatable';
+                messageApi.open({
+                  key,
+                  type: 'loading',
+                  content: 'Deleting...',
+                });
+                setTimeout(() => {
                   messageApi.open({
-                      key,
-                      type: 'loading',
-                      content: 'Đang xóa...',
+                    key,
+                    type: 'success',
+                    content: 'Deleted successfully!',
+                    duration: 2,
                   });
-                  setTimeout(() => {
-                      messageApi.open({
-                      key,
-                      type: 'success',
-                      content: 'Đã xóa!',
-                      duration: 2,
-                      });
-                  }, 300);
+                }, 300);
+  
+                const updatedData = getData.filter(item => !selectedRowKeys.includes(item.id as React.Key));
+                setGetData(updatedData);
+  
+                setSelectedRowKeys([]);
+              } else {
+                console.log(res)
+              }
+            })
+            .catch(error => {
+              if (error.response.status === 401) {
+                navigate("/login");
+              } else {
+                console.log(error)
+              }
+            })
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
+    };
+          
 
-                  const updatedData = getData.filter(item => !selectedRowKeys.includes(item.id as React.Key));
-                  setGetData(updatedData);
-                  
-                  setSelectedRowKeys([]);
-            }else{
-              console.log(res)
-            }
-          })
-          .catch(error =>{
-            if(error.response.status === 401){
-              navigate("/login");
-            }else{
-              console.log(error)
-            }
-          })
-        }
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
@@ -189,7 +202,23 @@ interface DataFolderProps {
     onChange: onSelectChange,
   };
   const hasSelected = selectedRowKeys.length > 0;
-        console.log(selectedRowKeys)
+
+    const { locale, theme } = useContext(ConfigProvider.ConfigContext);
+
+    useLayoutEffect(() => {
+      ConfigProvider.config({
+        holderRender: (children) => (
+          <StyleProvider hashPriority="high">
+            <ConfigProvider prefixCls="static" iconPrefixCls="icon" locale={locale} theme={theme}>
+              <App message={{ maxCount: 1 }} notification={{ maxCount: 1 }}>
+                {children}
+              </App>
+            </ConfigProvider>
+          </StyleProvider>
+        ),
+      });
+    }, [locale, theme]);
+  
     return(
       <div className="table-style">
         {contextHolder}
@@ -217,7 +246,7 @@ interface DataFolderProps {
             </div>
           <Table className="table" rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
           </div>
-        </div>  
+        </div>
       </div>
     );
       
@@ -225,3 +254,7 @@ interface DataFolderProps {
   
   export default AllForm;
   
+
+  
+  
+

@@ -6,10 +6,13 @@ import type { GetProps, TreeDataNode } from 'antd';
 import { useNavigate } from "react-router-dom";
 import Link from "antd/es/typography/Link";
 import './style.scss';
-import { Divider, Menu, Space, Table, Dropdown, message } from 'antd';
+import { Space, Table, message } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { Button, Input} from 'antd';
-import { normalize } from "path";
+import  { useContext, useLayoutEffect } from 'react';
+import { StyleProvider } from '@ant-design/cssinjs';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { App, ConfigProvider, Modal, notification } from 'antd';
 
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
 const { DirectoryTree } = Tree;
@@ -36,7 +39,6 @@ interface PaginationProps {
   page?: number;
 }
 
-
 const TreeFolder = () => {
 
   const columns: TableColumnsType<DataType> = [
@@ -60,7 +62,7 @@ const TreeFolder = () => {
       dataIndex: '',
       render: (record) => (
         <div>
-          <a className="style_a" onClick={() => navigate('/editfolder/'+ record?.id)} key="2">Edit</a>
+          <a className="style_a" onClick={() => navigate('/editfolder/'+ record?.id)}>Edit</a>
         </div>
       )
     }
@@ -76,7 +78,8 @@ const TreeFolder = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [search, setSearch] = useState<string>('');
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
+    const [selectedTreeFolderKeys, setSelectedTreeFolderKeys] = useState<number[]>([]);
+    
     console.log(selectedRowKeys)
     let navigate = useNavigate();
 
@@ -89,7 +92,6 @@ const TreeFolder = () => {
             }
         })
         .then(res => {
-          // console.log(res)
             if(res.data.status === true) {
               setGetData(res.data.data);
               setOriginalData(res.data.data);
@@ -104,7 +106,6 @@ const TreeFolder = () => {
         })
 
         fetchData(1, 10, undefined);
-        // fetchData(currentPage, pageSize);
     }, []);
 
     const fetchData = (page: number, pageSize: number,parent: number | undefined) => {
@@ -116,7 +117,6 @@ const TreeFolder = () => {
           },
         })
         .then((res) => {
-          // console.log(res)
           if (res.data.pagination.total > 0) {
             setGetData1(res.data.data);
             setPagination(res.data.pagination);
@@ -149,10 +149,14 @@ const TreeFolder = () => {
     const onSelect: DirectoryTreeProps['onSelect'] = (keys, info) => {
         console.log('Trigger Select', keys, info);
         info.selectedNodes.map((v)=>{
+          console.log(v)
             setIdParent(keys[0] as number);  
-            fetchData(1,10, keys[0] as number)
+            fetchData(1,10, keys[0] as number);
         })
     }
+    const onExpand: DirectoryTreeProps['onExpand'] = (keys, info) => {
+      console.log('Trigger Expand',  info.node);
+    };
     
     const deleteFolderTreeData = (id: number, data: DataFolderProps[]): DataFolderProps[] => {
       return data.filter(item => {
@@ -166,57 +170,68 @@ const TreeFolder = () => {
       });
     };
     
-    
-    
     const handleDelete = () => {
-      axios.delete(`http://192.168.5.240/api/v1/folder`,
-        {
-          headers: {
-            "API-Key" : api,
-            "Authorization": `Bearer ${token}`
-          },
-          data: selectedRowKeys
-        }
-      )
-      .then(res=>{
-        console.log(res)
-        if(res.data.status === true){
-          const key = 'updatable';
-                  messageApi.open({
-                      key,
-                      type: 'loading',
-                      content: 'Đang xóa...',
-                  });
-                  setTimeout(() => {
+      Modal.confirm({
+        title: `Do you want to delete ${selectedRowKeys.length} items?`,
+        icon: <ExclamationCircleFilled />,
+        content: 'This action cannot be undone.',
+        onOk() {
+          axios.delete(`http://192.168.5.240/api/v1/folder`,
+            {
+              headers: {
+                "API-Key" : api,
+                "Authorization": `Bearer ${token}`
+              },
+              data: selectedRowKeys
+            }
+          )
+          .then(res=>{
+            console.log(res)
+            if(res.data.status === true){
+              const key = 'updatable';
                       messageApi.open({
-                      key,
-                      type: 'success',
-                      content: 'Đã xóa!',
-                      duration: 2,
+                          key,
+                          type: 'loading',
+                          content: 'Đang xóa...',
                       });
-                  }, 300);
+                      setTimeout(() => {
+                          messageApi.open({
+                          key,
+                          type: 'success',
+                          content: 'Đã xóa!',
+                          duration: 2,
+                          });
+                      }, 300);
 
-          const updatedTreeData = selectedRowKeys.reduce((acc, key) => {
-            return deleteFolderTreeData(key as number, acc);
-          }, [...getData]);
-          setGetData(updatedTreeData);
-          const updatedData = getData1.filter(
-            (item) => item.id !== undefined && !selectedRowKeys.includes(item.id)
-          );
-          setGetData1(updatedData);
-          setSelectedRowKeys([]);
-        }
-      })
-      .catch(error =>{
-        if(error.response.status === 401){
-          navigate("/login");
-        }else{
-          console.log(error)
-        }
-      })
+                  const updatedTreeData = selectedRowKeys.reduce((acc, key) => {
+                    return deleteFolderTreeData(key as number, acc);
+                  }, [...getData]);
+                  setGetData(updatedTreeData);
+          
+                  // Xóa thư mục từ bảng
+                  const updatedData = getData1.filter(
+                    (item) => item.id !== undefined && !selectedRowKeys.includes(item.id)
+                  );
+                  setGetData1(updatedData);
+          
+                  setSelectedRowKeys([]);
+            }
+          })
+          .catch(error =>{
+            if(error.response.status === 401){
+              navigate("/login");
+            }else{
+              console.log(error)
+            }
+          })
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
     }
-    
 
+    
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setSearch(value);
@@ -254,26 +269,21 @@ const TreeFolder = () => {
       fetchData(current, pageSize, IdParent);
     };
 
-    const [selectedTreeFolderKeys, setSelectedTreeFolderKeys] = useState<number[]>([]); // Thêm state mới để lưu trữ ID của các thư mục được chọn từ cây
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+      setSelectedRowKeys(newSelectedRowKeys);
 
-    // Lấy ID của các thư mục từ cây tương ứng với các thư mục được chọn từ bảng
-    const selectedTreeFolderIds: number[] = [];
-    newSelectedRowKeys.forEach(key => {
-      const selectedFolder = getData1.find(item => item.id === key);
-      if (selectedFolder) {
-        selectedTreeFolderIds.push(selectedFolder.id as number);
-      }
-    });
+      const selectedTreeFolderIds: number[] = [];
+      newSelectedRowKeys.forEach(key => {
+        const selectedFolder = getData1.find(item => item.id === key);
+        if (selectedFolder) {
+          selectedTreeFolderIds.push(selectedFolder.id as number);
+        }
+      });
 
-    setSelectedTreeFolderKeys(selectedTreeFolderIds); // Cập nhật ID của các thư mục từ cây
-
-    // Log ID của các thư mục trong cây
-    console.log("Selected tree folder keys:", selectedTreeFolderKeys);
-  };
-
+      setSelectedTreeFolderKeys(selectedTreeFolderIds);
+      console.log("Selected tree folder keys:", selectedTreeFolderKeys);
+    };
   
     const rowSelection = {
       selectedRowKeys,
@@ -282,8 +292,26 @@ const TreeFolder = () => {
     
     const hasSelected = selectedRowKeys.length > 0;
 
+
+
+    const { locale, theme } = useContext(ConfigProvider.ConfigContext);
+    
+    useLayoutEffect(() => {
+      ConfigProvider.config({
+        holderRender: (children) => (
+          <StyleProvider hashPriority="high">
+            <ConfigProvider prefixCls="static" iconPrefixCls="icon" locale={locale} theme={theme}>
+              <App message={{ maxCount: 1 }} notification={{ maxCount: 1 }}>
+                {children}
+              </App>
+            </ConfigProvider>
+          </StyleProvider>
+        ),
+      });
+    }, [locale, theme]);
     return (
       <div className="folder-main">
+        {contextHolder}
         <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
           <div className="c-c">
             <p className="add"><Link href="/create-folder" onClick={(e) => {e.preventDefault();navigate("/create-folder")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Link></p>
@@ -302,9 +330,9 @@ const TreeFolder = () => {
                 defaultExpandAll
                 onSelect={onSelect}
                 treeData={treeData}
+                onExpand={onExpand}
               />
             </div>
-            {contextHolder}
             <div className="table-folder">
               <div className="del-f" style={{ marginBottom: 16 }}>
                 {hasSelected && (
@@ -331,11 +359,3 @@ const TreeFolder = () => {
 }
 
 export default TreeFolder;
-
-
-
-
-
-
-
-

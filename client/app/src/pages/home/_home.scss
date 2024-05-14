@@ -50,7 +50,6 @@ html, body {
     box-sizing: border-box;
     position: relative;
     padding-bottom: 100px;
-
 }
 
 .sider_style{
@@ -60,6 +59,8 @@ html, body {
     color: #333;
     float: left;
     background-color: #fff;
+    // max-height: 70vh; 
+    // overflow-y: auto;
 }
 .content_style {
     display: block;
@@ -69,7 +70,7 @@ html, body {
     height: auto;
     text-align: center;
     background-color: #e7e7e7;
-}
+} 
 
 .footer {
     width: 100%;

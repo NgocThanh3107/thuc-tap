@@ -137,7 +137,7 @@ const Create_sv: React.FC = () =>{
         </Form.Item> */}
 
         <Form.Item<FieldType> 
-          label = " ID"
+          label = " Lop"
           name="id"
           >
               <Space wrap>

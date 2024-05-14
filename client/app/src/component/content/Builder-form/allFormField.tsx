@@ -24,95 +24,94 @@ const AllFormField = () => {
         const [search, setSearch] = useState<string>("");
         const [originalData, setOriginalData] = useState<FormFieldProps[]>([]);
         
-        useEffect(()=>{
-            axios.get('http://192.168.5.240/api/v1/builder/form/' + params.id + '/field',
+    useEffect(()=>{
+        axios.get('http://192.168.5.240/api/v1/builder/form/' + params.id + '/field',
+        {
+            headers: {
+                "API-Key" : api,
+                "Authorization": `Bearer ${token}`
+            }
+        }
+        )
+        .then(res =>{
+            if(res.data.status === true){
+                setgetData(res.data.data)
+                setOriginalData(res.data.data)
+            }
+        }
+        )
+
+        if (params.id) {
+            localStorage.setItem('idFormField', params.id);
+        }
+    },[])
+
+    const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        axios.delete('http://192.168.5.240/api/v1/builder/form/'+ params.id + '/field',
             {
-                headers: {
-                    "API-Key" : api,
-                    "Authorization": `Bearer ${token}`
-                }
+            headers: {
+                "API-Key" : api,
+                "Authorization": `Bearer ${token}`
+            },
+            data: selectedRowKeys
             }
-            )
-            .then(res =>{
-                if(res.data.status === true){
-                    setgetData(res.data.data)
-                    setOriginalData(res.data.data)
-                }
-            }
-            )
-
-            if (params.id) {
-                localStorage.setItem('idFormField', params.id);
-            }
-        },[])
-
-        const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
-            e.preventDefault();
-            axios.delete('http://192.168.5.240/api/v1/builder/form/'+ params.id + '/field',
-              {
-                headers: {
-                  "API-Key" : api,
-                  "Authorization": `Bearer ${token}`
-                },
-                data: selectedRowKeys
-              }
-            )
-            .then(res=>{
-              console.log(res)
-              if(res.data.status=== true){
-                const key = 'updatable';
+        )
+        .then(res=>{
+            console.log(res)
+            if(res.data.status=== true){
+            const key = 'updatable';
+                messageApi.open({
+                    key,
+                    type: 'loading',
+                    content: 'Đang xóa...',
+                });
+                setTimeout(() => {
                     messageApi.open({
-                        key,
-                        type: 'loading',
-                        content: 'Đang xóa...',
+                    key,
+                    type: 'success',
+                    content: 'Đã xóa!',
+                    duration: 2,
                     });
-                    setTimeout(() => {
-                        messageApi.open({
-                        key,
-                        type: 'success',
-                        content: 'Đã xóa!',
-                        duration: 2,
-                        });
-                    }, 300);
-  
-                    const updatedData = getData.filter(item => !selectedRowKeys.includes(item.id as React.Key));
-                    setgetData(updatedData);
-                    setSelectedRowKeys([]);
-              }else{
-                console.log(res)
-              }
-            })
-            .catch(error =>{
-              if(error.response.status === 401){
-                navigate("/login");
-              }else{
-                console.log(error)
-              }
-            })
-          }
+                }, 300);
 
-          const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+                const updatedData = getData.filter(item => !selectedRowKeys.includes(item.id as React.Key));
+                setgetData(updatedData);
+                setSelectedRowKeys([]);
+            }else{
+            console.log(res)
+            }
+        })
+        .catch(error =>{
+            if(error.response.status === 401){
+            navigate("/login");
+            }else{
+            console.log(error)
+            }
+        })
+    }
+
+        const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
             console.log('selectedRowKeys changed: ', newSelectedRowKeys);
             setSelectedRowKeys(newSelectedRowKeys);
-          };
-        
-          const rowSelection = {
+        };
+    
+        const rowSelection = {
             selectedRowKeys,
             onChange: onSelectChange,
-          };
-          const hasSelected = selectedRowKeys.length > 0;
-        
-        
+        };
 
-          const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const hasSelected = selectedRowKeys.length > 0;
+    
+        const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const value = e.target.value;
             setSearch(value);
             if(value ===""){
-              setgetData(originalData);
+                setgetData(originalData);
             }
-          }
-    
-          const handleSearch = () => {
+        }
+
+        const handleSearch = () => {
             if (search.trim() === "") {
                 setgetData(originalData);
             } else {
@@ -142,10 +141,10 @@ const AllFormField = () => {
 
         const columns: TableProps<FormFieldProps>['columns'] = [
             {
-                title: 'STT',
-                dataIndex: '',
-                render: (text, record, index) => index + 1,
-              },
+              title: 'STT',
+              dataIndex: '',
+              render: (text, record, index) => index + 1,
+            },
             {
               title: 'Name',
               dataIndex: 'name',
@@ -177,18 +176,19 @@ const AllFormField = () => {
               ),
             },
           ];
+
     return(
         <div className="table-style">
             {contextHolder}
             <h1>Form Fields <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             <div className="c-c">
-            <p className='search-form'>
-                <Space.Compact>
-                <Input placeholder='Search by apiKey ' value={search} onChange={handleSearchChange}/>
-                <Button onClick={handleSearch} type="primary">Search</Button>
-                </Space.Compact>
-            </p>
-            <p className="add"><Link href="/create-formfield" onClick={(e) => {e.preventDefault();navigate("/create-formfield")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add New</Link></p>
+                <p className='search-form'>
+                    <Space.Compact>
+                    <Input placeholder='Search by apiKey ' value={search} onChange={handleSearchChange}/>
+                    <Button onClick={handleSearch} type="primary">Search</Button>
+                    </Space.Compact>
+                </p>
+                <p className="add"><Link href="/create-formfield" onClick={(e) => {e.preventDefault();navigate("/create-formfield")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add New</Link></p>
             </div>
             <div className="form-style">
                 <div className="table-form">

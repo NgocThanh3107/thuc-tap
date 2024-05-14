@@ -6,8 +6,11 @@ import Link from 'antd/es/typography/Link';
 import './_content.scss'
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input} from 'antd';
+import  { useContext, useLayoutEffect } from 'react';
+import { StyleProvider } from '@ant-design/cssinjs';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { App, ConfigProvider, Modal} from 'antd';
 
 interface DataType {
     key: string;
@@ -42,6 +45,7 @@ const LopHoc: React.FC = () => {
     const [messageApi, contextHolder] = message.useMessage();
 
     const [search, setSearch] = useState<string>("");
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     useEffect(() => {
       fetchData(1, 10);
     }, []);
@@ -133,51 +137,87 @@ const LopHoc: React.FC = () => {
         fetchData(current, pageSize);
       };
 
-      const del = (e: React.MouseEvent<HTMLElement>) => {
-        e.preventDefault();
-        const getId = e.currentTarget.id;
-      
-        axios.delete("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
-        {
-            headers: {
-                "API-Key" : api,
-                "Authorization": `Bearer ${token}`
-            },
-            data : [getId]
-        }        
-        )
-        .then(res=>{
-            if(res.data.status == true){
-              const key = 'updatable';
-              messageApi.open({
-                key,
-                type: 'loading',
-                content: 'Đang xóa...',
-              });
-              setTimeout(() => {
-                messageApi.open({
-                  key,
-                  type: 'success',
-                  content: 'Đã xóa!',
-                  duration: 2,
-                });
-              }, 300);
-    
-              const newData = getdata.filter(item => item.id != getId);
-              setgetData(newData);
-            } else{
-                  console.log(res.data.message)
+      const handleDelete = () => {
+        Modal.confirm({
+          title: `Do you want to delete ${selectedRowKeys.length} items?`,
+          icon: <ExclamationCircleFilled />,
+          content: 'This action cannot be undone.',
+          onOk() {
+            axios.delete("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
+            {
+                headers: {
+                    "API-Key" : api,
+                    "Authorization": `Bearer ${token}`
+                },
+                data : selectedRowKeys
+            }        
+            )
+            .then(res=>{
+                if(res.data.status == true){
+                  const key = 'updatable';
+                  messageApi.open({
+                    key,
+                    type: 'loading',
+                    content: 'Đang xóa...',
+                  });
+                  setTimeout(() => {
+                    messageApi.open({
+                      key,
+                      type: 'success',
+                      content: 'Đã xóa!',
+                      duration: 2,
+                    });
+                  }, 300);
+        
+                  const newData = getdata.filter(item => item.id && !selectedRowKeys.includes(item.id));
+                  setgetData(newData);
+                  setSelectedRowKeys([]);
+                } else{
+                      console.log(res.data.message)
+                  }
+            })
+            .catch(error=>{
+              if(error.response.status == 401){
+                navigate("/login");
+              }else{
+                console.log(error)
               }
-        })
-        .catch(error=>{
-          if(error.response.status == 401){
-            navigate("/login");
-          }else{
-            console.log(error)
-          }
-        })
+            })
+          },
+            onCancel() {
+              console.log('Cancel');
+            }
+        });
     };
 
+    const onSelectChange = (selectedRowKeys: React.Key[]) => {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      setSelectedRowKeys(selectedRowKeys);
+    };
+  
+    const rowSelection = {
+      onChange: onSelectChange,
+    };
+    const hasSelected = selectedRowKeys.length > 0;
+        console.log(selectedRowKeys)
+
+
+
+    const { locale, theme } = useContext(ConfigProvider.ConfigContext);
+
+    useLayoutEffect(() => {
+      ConfigProvider.config({
+        holderRender: (children) => (
+          <StyleProvider hashPriority="high">
+            <ConfigProvider prefixCls="static" iconPrefixCls="icon" locale={locale} theme={theme}>
+              <App message={{ maxCount: 1 }} notification={{ maxCount: 1 }}>
+                {children}
+              </App>
+            </ConfigProvider>
+          </StyleProvider>
+        ),
+      });
+    }, [locale, theme]);
     return (
         <div className='table-style'>
           <h1>Quản lý lớp học <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
@@ -195,28 +235,41 @@ const LopHoc: React.FC = () => {
                 </p>
           </div>
             {contextHolder}
-            <Table  dataSource={getdata}
-                    pagination={pagination}
-                    onChange={handleTableChange}
-            >
-                <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
-                <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
-                <Column title="Ma lop" dataIndex="maLop" key="maLop" />
-                <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
-                <Column
-                    title="Action"
-                    key="action"
-                    render={(getdata: DataType) => (
-                        <Space size="middle" className='style_a'>
-                            <Link href={"/read/" + getdata?.id} onClick={(e) => { e.preventDefault(); navigate("/read/" + getdata?.id); }}>
-                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
-                            </Link>
-                            <a className='red-color' onClick={del} id={getdata?.id}><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
-                        </Space>
-                    )}
-                />
-            </Table>
-                 
+            <div className='table-form'>
+              <div className="del-f" style={{ marginBottom: 16, textAlign:'left' }}>
+                {hasSelected && (
+                <Button type="primary" danger onClick={handleDelete} >
+                  Delete
+                </Button>
+                )}
+                <span style={{ marginLeft: 8 }}>
+                  {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                </span>
+              </div>
+              <Table  dataSource={getdata}
+                      pagination={pagination}
+                      onChange={handleTableChange}
+                      rowSelection={rowSelection}
+                      rowKey='id'
+              >
+                  <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
+                  <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
+                  <Column title="Ma lop" dataIndex="maLop" key="maLop" />
+                  <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
+                  <Column
+                      title="Action"
+                      key="action"
+                      render={(getdata: DataType) => (
+                          <Space size="middle" className='style_a'>
+                              <Link href={"/read/" + getdata?.id} onClick={(e) => { e.preventDefault(); navigate("/read/" + getdata?.id); }}>
+                              <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                              </Link>
+                              {/* <a className='red-color' onClick={del} id={getdata?.id}><i className="fa fa-trash" aria-hidden="true"></i> Delete</a> */}
+                          </Space>
+                      )}
+                  />
+              </Table>
+            </div>   
         </div>
     )
     

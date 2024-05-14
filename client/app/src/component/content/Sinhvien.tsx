@@ -8,6 +8,10 @@ import LopProps from './crdu-LH';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import { Button, Input} from 'antd';
+import  { useContext, useLayoutEffect } from 'react';
+import { StyleProvider } from '@ant-design/cssinjs';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { App, ConfigProvider, Modal} from 'antd';
 
 interface DataType {
     key: string;
@@ -35,6 +39,7 @@ const SinhVien: React.FC = () =>{
     const [messageApi, contextHolder] = message.useMessage();
     const [originalData, setOriginalData] = useState<DataType[]>([]);
     const [search, setSearch] = useState<string>('');
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
         useEffect(() => {
             fetchData(1, 10); 
           }, []);
@@ -126,45 +131,81 @@ const SinhVien: React.FC = () =>{
             fetchData(current, pageSize);
           };
          
-          const del = (e: React.MouseEvent<HTMLElement>) => { 
-            e.preventDefault();
-            let getId = e.currentTarget.id;
-      
-            axios.delete("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
-            {
-                headers: {
-                    "API-Key" : api,
-                    "Authorization": `Bearer ${token}`
-                },
-                data : [getId]
-            }        
-            )
-            .then(res=>{
-                if(res.data.status == true){
-                  const key = 'updatable';
-                  messageApi.open({
-                      key,
-                      type: 'loading',
-                      content: 'Đang xóa...',
-                  });
-                  setTimeout(() => {
+          const handleDelete = () => { 
+            
+            Modal.confirm({
+              title: `Do you want to delete ${selectedRowKeys.length} items?`,
+              icon: <ExclamationCircleFilled />,
+              content: 'This action cannot be undone.',
+              onOk() {
+                axios.delete("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
+                {
+                    headers: {
+                        "API-Key" : api,
+                        "Authorization": `Bearer ${token}`
+                    },
+                    data : selectedRowKeys
+                }        
+                )
+                .then(res=>{
+                    if(res.data.status == true){
+                      const key = 'updatable';
                       messageApi.open({
-                      key,
-                      type: 'success',
-                      content: 'Đã xóa!',
-                      duration: 2,
+                          key,
+                          type: 'loading',
+                          content: 'Đang xóa...',
                       });
-                  }, 300);
+                      setTimeout(() => {
+                          messageApi.open({
+                          key,
+                          type: 'success',
+                          content: 'Đã xóa!',
+                          duration: 2,
+                          });
+                      }, 300);
 
-                  const newData = data.filter(item => item.id != getId);
-                  setData(newData);
-                }else{
-                    console.log(res.data.message)
-                }
-            })  
+                      const newData = data.filter(item => item.id && !selectedRowKeys.includes(item.id));
+                      setData(newData);
+                      setSelectedRowKeys([]);
+                    }else{
+                        console.log(res.data.message)
+                    }
+                })
+              },
+              onCancel() {
+                console.log('Cancel');
+              },
+            });
     };   
 
 
+    const onSelectChange = (selectedRowKeys: React.Key[]) => {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      setSelectedRowKeys(selectedRowKeys);
+    };
+  
+    const rowSelection = {
+      onChange: onSelectChange,
+    };
+    const hasSelected = selectedRowKeys.length > 0;
+        console.log(selectedRowKeys)
+
+
+    const { locale, theme } = useContext(ConfigProvider.ConfigContext);
+
+    useLayoutEffect(() => {
+      ConfigProvider.config({
+        holderRender: (children) => (
+          <StyleProvider hashPriority="high">
+            <ConfigProvider prefixCls="static" iconPrefixCls="icon" locale={locale} theme={theme}>
+              <App message={{ maxCount: 1 }} notification={{ maxCount: 1 }}>
+                {children}
+              </App>
+            </ConfigProvider>
+          </StyleProvider>
+        ),
+      });
+    }, [locale, theme]);
     return (
         <div className='table-style'>
           <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
@@ -185,38 +226,52 @@ const SinhVien: React.FC = () =>{
                 </Space.Compact>
               </p>
             </div>
-            <Table  dataSource={data}
-                pagination={pagination}
-                onChange={handleTableChange}
-            >
-                <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
-                <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
-                <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
-                <Column title="Lop" dataIndex="lop" key = "lop" 
-                    render={(lop: LopProps) => (
-                        <span>
-                            {lop && lop.tenLop ? (
-                                <Tag color="blue" key={lop.id}>
-                                    {lop.tenLop}
-                                </Tag>
-                            ) : (
-                                <span>Không có lớp</span>
-                            )}
-                        </span>
-                    )}
-                />
-                <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
-                <Column
-                title="Action"
-                key="action"
-                render={( data: DataType) => (
-                    <Space size="middle" className='style_a'>
-                    <a href={"/read_sinhvien/" + data?.id} onClick={(e) => {e.preventDefault();navigate("/read_sinhvien/" + data?.id)}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
-                    <a className='red-color' onClick={del} id = {data?.id} ><i className="fa fa-trash" aria-hidden="true"></i> Delete</a>
-                    </Space>
-                )}
-                />
-            </Table>
+            <div className='table-form'>
+              <div className="del-f" style={{ marginBottom: 16, textAlign:'left' }}>
+                  {hasSelected && (
+                  <Button type="primary" danger onClick={handleDelete} >
+                    Delete
+                  </Button>
+                  )}
+                  <span style={{ marginLeft: 8 }}>
+                    {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                  </span>
+              </div>
+              <Table  dataSource={data}
+                  pagination={pagination}
+                  onChange={handleTableChange}
+                  rowSelection={rowSelection}
+                  rowKey='id'
+              >
+                  <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
+                  <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
+                  <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
+                  <Column title="Lop" dataIndex="lop" key = "lop" 
+                      render={(lop: LopProps) => (
+                          <span>
+                              {lop && lop.tenLop ? (
+                                  <Tag color="blue" key={lop.id}>
+                                      {lop.tenLop}
+                                  </Tag>
+                              ) : (
+                                  <span>Không có lớp</span>
+                              )}
+                          </span>
+                      )}
+                  />
+                  <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
+                  <Column
+                  title="Action"
+                  key="action"
+                  render={( data: DataType) => (
+                      <Space size="middle" className='style_a'>
+                      <a href={"/read_sinhvien/" + data?.id} onClick={(e) => {e.preventDefault();navigate("/read_sinhvien/" + data?.id)}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                      {/* <a className='red-color' onClick={del} id = {data?.id} ><i className="fa fa-trash" aria-hidden="true"></i> Delete</a> */}
+                      </Space>
+                  )}
+                  />
+              </Table>
+            </div>
         </div>
     )
 }
