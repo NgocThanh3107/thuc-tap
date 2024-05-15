@@ -44,6 +44,8 @@
     const [value, setValue] = useState<string | undefined>(data?.folder?.id.toString());
     const [check, setCheck] = useState<boolean | undefined>(data?.checkAccess);
     const [show, setShow] = useState<boolean | undefined>(data?.showView);
+    const [nameError, setNameError] = useState<string>("");
+    const [codeError, setCodeError] = useState<string>("");
 
     useEffect(() => {
       axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
@@ -100,7 +102,8 @@
       })
       .then(res => {
         if (res.data.status === true) {
-          message.success("Thành công!");
+          // message.success("Thành công!");
+          isEdit ? alert("Updated successfully") : alert("Created successfully")
           navigate("/administrator/internship/builder/form.html");
         }
       })
@@ -108,7 +111,19 @@
         if (error.response.status === 401) {
           navigate("/login");
         } else {
-          console.log(error);
+          const errorDescription = error.response.data.errorDescription;
+          const nameError = errorDescription.find((errorItem: any) => errorItem.field === "name");
+          const codeError = errorDescription.find((errorItem: any) => errorItem.field === "code");
+          if(nameError){
+            setNameError(error.response.data.message)
+          } else {
+            setNameError("")
+          }
+          if(codeError) {
+            setCodeError(error.response.data.message)
+          } else {
+            setCodeError("")
+          }
         }
       });
     };
@@ -130,7 +145,7 @@
     };
 
     return (
-      <div className="edit-folder">
+      <div className="edit-create">
         <h1>{isEdit ? "Edit and Update form" : "Create New Form"}</h1>
         <br />
         <Form
@@ -148,6 +163,8 @@
             label="Name"
             name="name"
             rules={[{ required: true, message: 'Please input your name!' }]}
+            validateStatus={nameError ? "error" : ""}
+            help={nameError ? nameError : ""}
           >
             <Input />
           </Form.Item>
@@ -156,6 +173,8 @@
             label="Code"
             name="code"
             rules={[{ required: true, message: 'Please input your code!' }]}
+            validateStatus={codeError ? "error" : ""}
+            help={codeError ? codeError : ""}
           >
             <Input />
           </Form.Item>

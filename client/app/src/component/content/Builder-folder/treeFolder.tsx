@@ -12,7 +12,8 @@ import { Button, Input} from 'antd';
 import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { App, ConfigProvider, Modal, notification } from 'antd';
+import { App, ConfigProvider, Modal } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
 const { DirectoryTree } = Tree;
@@ -318,7 +319,9 @@ const TreeFolder = () => {
             <p className="search-form">
               <Space.Compact>
                 <Input placeholder='Search folder' value={search} onChange={handleSearchChange}/>
-                <Button onClick={handleSearch} type="primary">Search</Button>
+                <Button onClick={handleSearch} type="primary" icon={<SearchOutlined />}>
+                  Search
+                </Button>
               </Space.Compact>
             </p>
           </div>
@@ -337,7 +340,7 @@ const TreeFolder = () => {
               <div className="del-f" style={{ marginBottom: 16 }}>
                 {hasSelected && (
                 <Button type="primary" danger onClick={handleDelete}>
-                  Delete
+                 <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                 </Button>
                 )}
                 <span style={{ marginLeft: 8 }}>

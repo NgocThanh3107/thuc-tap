@@ -18,9 +18,9 @@ const Headers: React.FC = () => {
 
   function CheckLogin(){
     if (check) {
-      return <p><Link onClick={Logout}>Logout</Link></p>;
+      return <Link onClick={Logout}><i className="fa fa-sign-out" aria-hidden="true"></i> Logout</Link>
     } else {
-      return <p><Link href="/login">Login</Link></p>;
+      return <Link href="/login">Login</Link>
     }
     }
   
@@ -45,17 +45,19 @@ const Headers: React.FC = () => {
   
   return (
     <div className='header'>  
-      <div className='nav'>
+      <div className='nav_icon'><Link href="/"><i className="fa fa-home" aria-hidden="true"></i>Home</Link></div>
+      <div className='nav_center'>
           <ul>
-            <li><Link href="/"><i className="fa fa-home" aria-hidden="true"></i>Home</Link></li>
             <li><a href="">About</a></li>
             <li><a href="">Services</a></li>
             <li><a href="">Contact</a></li>
           </ul>
       </div>
-      <div className='nav-right'>
-          {CheckLogin()}
-          <p><Link href='/account'><Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} /></Link></p>
+      <div className='nav_right'>
+        <ul>
+          <li><Link href='/account'><i className="fa fa-user-o" aria-hidden="true"></i> Account</Link></li>
+          <li>{CheckLogin()}</li>
+        </ul>
       </div>
     </div>
   );

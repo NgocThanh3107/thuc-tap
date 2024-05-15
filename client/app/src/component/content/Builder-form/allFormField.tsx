@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Space, Input, Button, Table, message } from "antd";
 import Link from "antd/es/typography/Link";
 import type { TableProps } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 interface FormFieldProps{
     id: number;
@@ -185,17 +186,19 @@ const AllFormField = () => {
                 <p className='search-form'>
                     <Space.Compact>
                     <Input placeholder='Search by apiKey ' value={search} onChange={handleSearchChange}/>
-                    <Button onClick={handleSearch} type="primary">Search</Button>
+                    <Button onClick={handleSearch} type="primary" icon={<SearchOutlined />}>
+                      Search
+                    </Button>
                     </Space.Compact>
                 </p>
                 <p className="add"><Link href="/create-formfield" onClick={(e) => {e.preventDefault();navigate("/create-formfield")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add New</Link></p>
             </div>
             <div className="form-style">
-                <div className="table-form">
-                    <div className="del-f" style={{ marginBottom: 16, textAlign:'left' }}>
+                <div className="table-main">
+                    <div className="del-f">
                         {hasSelected && (
                         <Button type="primary" danger onClick={handleDelete} >
-                            Delete
+                           <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                         </Button>
                         )}
                         <span style={{ marginLeft: 8 }}>

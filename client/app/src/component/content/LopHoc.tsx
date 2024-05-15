@@ -11,6 +11,7 @@ import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 interface DataType {
     key: string;
@@ -230,16 +231,18 @@ const LopHoc: React.FC = () => {
                 <p className='search'>
                   <Space.Compact>
                     <Input placeholder='Search by Class ID' value={search} onChange={handleSearchChange} />
-                    <Button onClick={handleSearch} type="primary">Search</Button>
+                    <Button onClick={handleSearch} type="primary" icon={<SearchOutlined />}>
+                      Search
+                    </Button>
                   </Space.Compact>
                 </p>
           </div>
             {contextHolder}
-            <div className='table-form'>
-              <div className="del-f" style={{ marginBottom: 16, textAlign:'left' }}>
+            <div className='table-main'>
+              <div className="del-f">
                 {hasSelected && (
                 <Button type="primary" danger onClick={handleDelete} >
-                  Delete
+                 <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                 </Button>
                 )}
                 <span style={{ marginLeft: 8 }}>

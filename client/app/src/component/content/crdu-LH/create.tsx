@@ -3,9 +3,7 @@ import FormLop from "./FormLop";
 
 const Create = () => {
     return (
-        <div className="read">
             <FormLop isEdit={false} />
-        </div>
     );
 };
 

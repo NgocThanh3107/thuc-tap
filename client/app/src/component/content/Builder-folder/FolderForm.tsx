@@ -32,59 +32,60 @@ interface MyFormProps {
     data?: DataFolderProps;
   }
 
-  const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
+const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
   let api = localStorage.getItem("api");
   let token = localStorage.getItem("token");
   const [getdata, setGetData] = useState<DataFolderProps>();
   const [parentError, setParentError] = useState<string>("");
+  const [nameError, setNameError] = useState<string>("");
+  const [sortError, setSortError] = useState<string>("");
   const [treeData, setTreeData] = useState<DataFolderProps1[]>([]);
   const [value, setValue] = useState<string[]>();
   const [loading, setLoading] = useState<boolean>(false);
   let params = useParams();
   let navigate = useNavigate();
 
+  useEffect(()=>{
+      axios.get(`http://192.168.5.240/api/v1/folder/${params.id}`, {
+      headers: {
+          "API-Key": api,
+          "Authorization": `Bearer ${token}`
+      }
+      })
+      .then(res => {
+      if (res.data.status === true) {
+          setGetData(res.data.data);
+      }
+      })
+      .catch(error => {
+      if (error.response.status === 401) {
+          navigate("/login");
+      } else {
+          console.log(error);
+      }
+      });
 
-    useEffect(()=>{
-        axios.get(`http://192.168.5.240/api/v1/folder/${params.id}`, {
-        headers: {
-            "API-Key": api,
-            "Authorization": `Bearer ${token}`
-        }
-        })
-        .then(res => {
-        if (res.data.status === true) {
-            setGetData(res.data.data);
-        }
-        })
-        .catch(error => {
-        if (error.response.status === 401) {
-            navigate("/login");
-        } else {
-            console.log(error);
-        }
-        });
+      axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
+      headers: {
+          "API-Key": api,
+          "Authorization": `Bearer ${token}`
+      }
+      })
+      .then(res => {
+      if (res.data.status === true) {
+          const formattedData = formatTreeData(res.data.data);
+          setTreeData(formattedData);
+      }
+      })
+      .catch(error => {
+      if (error.response.status === 401) {
+          navigate("/login");
+      } else {
+          console.error("Error fetching data:", error);
+      }
+      }) 
 
-        axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
-        headers: {
-            "API-Key": api,
-            "Authorization": `Bearer ${token}`
-        }
-        })
-        .then(res => {
-        if (res.data.status === true) {
-            const formattedData = formatTreeData(res.data.data);
-            setTreeData(formattedData);
-        }
-        })
-        .catch(error => {
-        if (error.response.status === 401) {
-            navigate("/login");
-        } else {
-            console.error("Error fetching data:", error);
-        }
-        }) 
-
-    },[]);
+  }, [api, navigate, params.id, token]);
 
   const formatTreeData = (data: any[]): DataFolderProps1[] => {
     return data.map(item => ({
@@ -104,7 +105,7 @@ interface MyFormProps {
       ...(value && { parent: { id: value } })
     };
 
-    const apiEndpoint = isEdit ? `http://192.168.5.240/api/v1/folder` : `http://192.168.5.240/api/v1/folder`;
+    const apiEndpoint = `http://192.168.5.240/api/v1/folder`;
     const requestMethod = isEdit ? axios.put : axios.post;
 
     requestMethod(apiEndpoint, data, {
@@ -115,7 +116,8 @@ interface MyFormProps {
       })
       .then(res => {
         if (res.data.status === true) {
-          message.success("Thành công");
+          isEdit ? alert("Updated successfully") : alert("Created successfully")
+          // message.success(isEdit ? "Updated successfully" : "Created successfully");
           navigate("/administrator/internship/builder/folder.html");
         }
       })
@@ -125,10 +127,22 @@ interface MyFormProps {
         } else {
           const errorDescription = error.response.data.errorDescription;
           const parentError = errorDescription.find((errorItem: any) => errorItem.field === "parent");
+          const sortError = errorDescription.find((errorItem: any) => errorItem.field === "sort");
+          const nameError = errorDescription.find((errorItem: any) => errorItem.field === "name");
           if (parentError) {
             setParentError(error.response.data.message);
           } else {
             setParentError("");
+          }
+          if(sortError) {
+            setSortError(error.response.data.message);
+          } else {
+            setSortError("");
+          }
+          if(nameError) {
+            setNameError(error.response.data.message);
+          } else {
+            setNameError("");
           }
         }
       })
@@ -150,7 +164,7 @@ interface MyFormProps {
   };
 
   return (
-    <div className="edit-folder">
+    <div className="edit-create">
       <h1>{isEdit ? "Edit Folder" : "Create Folder"}</h1>
       <br />
       <Form
@@ -169,6 +183,8 @@ interface MyFormProps {
           label="Name"
           name="name"
           rules={[{ required: true, message: 'Please input your name!' }]}
+          validateStatus={nameError ? "error" : ""}
+          help={nameError ? nameError : ""}
         >
           <Input />
         </Form.Item>
@@ -177,6 +193,8 @@ interface MyFormProps {
           label="Sort"
           name="sort"
           rules={[{ required: true, message: 'Please input your sort!' }]}
+          validateStatus={sortError ? "error" : ""}
+          help={sortError ? sortError : ""}
         >
           <Input />
         </Form.Item>

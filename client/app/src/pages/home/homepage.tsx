@@ -35,7 +35,6 @@ const Homepage = () =>{
       })
       .catch(error => {
         if (error.response.status === 401) {
-            console.log("Token không hợp lệ");
             navigate("/login");
         } else {
             console.log(error);
@@ -48,10 +47,8 @@ const Homepage = () =>{
         <div className='app'>
           <Headers />
           <div className='container'>
-            <div className='sider_container'>
-              <div className='sider_style'>
-              <Menu_header />
-              </div>
+            <div className='sider_style'>
+            <Menu_header />
             </div>
             <div className='content_style'>
               <Outlet />    

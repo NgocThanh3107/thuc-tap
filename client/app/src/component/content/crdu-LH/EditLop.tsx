@@ -46,9 +46,7 @@ const EditLop: React.FC = () => {
   }
 
   return (
-    <div>
       <FormLop isEdit={true} data={data} id={id} />
-    </div>
   );
 };
 

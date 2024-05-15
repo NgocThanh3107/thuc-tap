@@ -48,9 +48,7 @@ function EditFolder(){
       }
 
     return(
-      <div>
           <FolderForm isEdit={true} data={getdata}/>
-      </div>
 );
     
 }
