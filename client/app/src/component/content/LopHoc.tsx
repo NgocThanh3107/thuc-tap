@@ -20,6 +20,7 @@ interface DataType {
     maLop: string;
     moTa: string;
     tags: string[];
+    tenQuocGia: string;
 }
 interface PaginationProps {
     pageSize? : number;
@@ -240,11 +241,9 @@ const LopHoc: React.FC = () => {
             {contextHolder}
             <div className='table-main'>
               <div className="del-f">
-                {hasSelected && (
-                <Button type="primary" danger onClick={handleDelete} >
+                <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
                  <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                 </Button>
-                )}
                 <span style={{ marginLeft: 8 }}>
                   {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
                 </span>
@@ -256,9 +255,10 @@ const LopHoc: React.FC = () => {
                       rowKey='id'
               >
                   <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
-                  <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
                   <Column title="Ma lop" dataIndex="maLop" key="maLop" />
+                  <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
                   <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
+                  {/* <Column title="Ten Quoc Gia" dataIndex="tenQuocGia" key="tenQuocGia" /> */}
                   <Column
                       title="Action"
                       key="action"

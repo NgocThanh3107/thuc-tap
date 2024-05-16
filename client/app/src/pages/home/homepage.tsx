@@ -13,7 +13,7 @@ const Homepage = () =>{
 
   let token = localStorage.getItem("token");
   let navigate = useNavigate();
-  let [check, setCheck] = useState<boolean>();
+  const [check, setCheck] = useState<boolean>();
   let api = localStorage.getItem("api");
 
     useEffect(()=>{

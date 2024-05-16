@@ -3,5 +3,6 @@ interface LopProps {
     maLop?: string;
     tenLop?: string;
     moTa?: string;
+    tenQuocGia?: string;
 }
 export default LopProps;

@@ -132,7 +132,7 @@ interface DataFolderProps {
             render: (record) => (
               <Space className="style_a" size="middle">
                 <a onClick={(e) =>{ e.preventDefault(); navigate('/edit-form/'+ record?.id)}} href={"/edit-form/" + record?.id}>Edit</a>
-                <a onClick={(e) =>{ e.preventDefault(); navigate('/formfield/'+ record?.id)}} href={"/formfield/" + record?.id}>Show More</a>
+                <a onClick={(e) =>{ e.preventDefault(); navigate('/formfield/'+ record?.id)}} href={"/formfield/" + record?.id}>Form Field</a>
               </Space>
             ),
           },
@@ -237,10 +237,8 @@ interface DataFolderProps {
         </div>
         <div className="form-style">
           <div className="table-main">
-            <div className="del-f">
-              {hasSelected && (
-              <Button type="primary" danger onClick={handleDelete} ><i className="fa fa-trash-o" aria-hidden="true"> </i> Delete</Button>
-              )}
+            <div className="del-f">     
+              <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected} ><i className="fa fa-trash-o" aria-hidden="true"> </i> Delete</Button>
               <span style={{ marginLeft: 8 }}>
                 {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
               </span>

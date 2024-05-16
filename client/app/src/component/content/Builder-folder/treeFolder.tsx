@@ -136,9 +136,9 @@ const TreeFolder = () => {
       }
     const convertData = (data: DataFolderProps[]): TreeDataNode[] => {
       return data.map((item) => ({
-        title: (
-          item.name
-        ),
+          title: (
+            item.name
+          ),
           key: item.id,
           isLeaf: !item.children || item.children.length === 0,
           children: item.children ? convertData(item.children) : undefined,
@@ -338,11 +338,9 @@ const TreeFolder = () => {
             </div>
             <div className="table-folder">
               <div className="del-f" style={{ marginBottom: 16 }}>
-                {hasSelected && (
-                <Button type="primary" danger onClick={handleDelete}>
+                <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
                  <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                 </Button>
-                )}
                 <span style={{ marginLeft: 8 }}>
                   {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
                 </span>

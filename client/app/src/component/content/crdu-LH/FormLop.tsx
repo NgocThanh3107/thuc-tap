@@ -7,7 +7,7 @@ import LopProps from '.';
 interface MyFormProps {
     isEdit: boolean;
     data?: LopProps;
-    id?: string; // Thêm trường id vào props
+    id?: string; 
 }
 
 const FormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
@@ -100,6 +100,14 @@ const FormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
                 >
                     <Input />
                 </Form.Item>
+
+                {/* <Form.Item
+                    label="Ten Quoc Gia"
+                    name="tenQuocGia"
+                    rules={[{ required: true, message: 'Please input your ten Quoc Gia!' }]}
+                >
+                    <Input />
+                </Form.Item> */}
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">

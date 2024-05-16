@@ -45,7 +45,7 @@ const Headers: React.FC = () => {
   
   return (
     <div className='header'>  
-      <div className='nav_icon'><Link href="/"><i className="fa fa-home" aria-hidden="true"></i>Home</Link></div>
+      <div className='nav_icon'><Link href="/" onClick={(e)=> {e.preventDefault(); navigate("/")}}><i className="fa fa-home" aria-hidden="true"></i>Home</Link></div>
       <div className='nav_center'>
           <ul>
             <li><a href="">About</a></li>

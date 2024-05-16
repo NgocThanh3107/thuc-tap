@@ -158,11 +158,6 @@ const AllFormField = () => {
               key: 'apiKey',
             },
             {
-                title: 'Type',
-                dataIndex: 'type',
-                key: 'type',
-              },
-            {
               title: 'Description',
               dataIndex: 'description',
               key: 'description',
@@ -195,12 +190,10 @@ const AllFormField = () => {
             </div>
             <div className="form-style">
                 <div className="table-main">
-                    <div className="del-f">
-                        {hasSelected && (
-                        <Button type="primary" danger onClick={handleDelete} >
+                    <div className="del-f"> 
+                        <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected} >
                            <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                         </Button>
-                        )}
                         <span style={{ marginLeft: 8 }}>
                             {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
                         </span>

@@ -230,14 +230,12 @@ const SinhVien: React.FC = () =>{
             </div>
             <div className='table-main'>
               <div className="del-f">
-                  {hasSelected && (
-                  <Button type="primary" danger onClick={handleDelete} >
-                   <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
-                  </Button>
-                  )}
-                  <span style={{ marginLeft: 8 }}>
-                    {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-                  </span>
+                <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
+                  <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
+                </Button>
+                <span style={{ marginLeft: 8 }}>
+                  {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                </span>
               </div>
               <Table  dataSource={data}
                   pagination={pagination}
@@ -245,9 +243,9 @@ const SinhVien: React.FC = () =>{
                   rowSelection={rowSelection}
                   rowKey='id'
               >
-                  <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
-                  <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
+                  <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} /> 
                   <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
+                  <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
                   <Column title="Lop" dataIndex="lop" key = "lop" 
                       render={(lop: LopProps) => (
                           <span>
