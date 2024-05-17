@@ -1,26 +1,26 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Homepage from './pages/home/homepage';
-import Account from './member/account';
-import Login from './member/login';
-import Sinhvien from './component/content/Sinhvien';
-import LopHoc from './component/content/LopHoc';
-import Create_sv from './component/content/crdu-SV/create';
-import Read_sv from './component/content/crdu-SV/read';
-import Test from './component/content/crdu-LH/test';
-import Nopage from './pages/home/Nopage';
-import TreeFolder from './component/content/Builder-folder/treeFolder';
-import EditFolder from './component/content/Builder-folder/editFolder';
-import CreateFolder from './component/content/Builder-folder/createFolder';
-import AllForm from './component/content/Builder-form/allForm';
-import CreateForm from './component/content/Builder-form/createForm';
-import AllFormField from './component/content/Builder-form/allFormField';
-import CreateFormField from './component/content/Builder-form/createFormField';
-import EditFormField from './component/content/Builder-form/editFormField';
-import EditForm from './component/content/Builder-form/EditForm';
-import EditLop from './component/content/crdu-LH/EditLop';
-import Create from './component/content/crdu-LH/create';
+import HomePage from './components/layout/HomePage';
+import Account from './components/member/Account';
+import Login from './components/member/Login';
+import SinhVien from './pages/home/SinhVien/SinhVien';
+import LopHoc from './pages/home/LopHoc/LopHoc';
+import CreateSinhVien from './pages/home/SinhVien/CreateAndEditSinhVien/CreateSinhVien';
+import EditSinhVien from './pages/home/SinhVien/CreateAndEditSinhVien/EditSinhVien';
+import NoPage from './components/layout/PageNotFound';
+import TreeFolder from './pages/home/Folder/Folder';
+import EditFolder from './pages/home/Folder/EditAndCreateFolder/EditFolder';
+import CreateFolder from './pages/home/Folder/EditAndCreateFolder/CreateFolder';
+import FormField from './pages/home/Form/FormField';
+import CreateForm from './pages/home/Folder/EditAndCreateFolder/CreateFolder';
+import Form from './pages/home/Form/Form';
+import CreateFormField from './pages/home/Form/CreateAndEditFormField/CreateFormField';
+import EditFormField from './pages/home/Form/CreateAndEditFormField/EditFormField';
+import EditForm from './pages/home/Form/CreateAndEditForm/EditForm';
+import EditLop from './pages/home/LopHoc/CreateAndEditLopHoc/EditLop';
+import CreateLop from './pages/home/LopHoc/CreateAndEditLopHoc/CreateLop';
+import PageNotFound from './components/layout/PageNotFound';
 
 function App() {
 
@@ -29,27 +29,26 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Homepage />}>
-          <Route path='/administrator/builder/data/sinh-vien.html' element={<Sinhvien />} />  
-          <Route path='/read_sinhvien/:id' element={<Read_sv />} />
-          <Route path='/account' element={<Account />} />
-          <Route path='/create_sinhvien' element={<Create_sv />}/>
+        <Route path='/' element={<HomePage />}>
+          <Route path='/administrator/builder/data/sinh-vien.html' element={<SinhVien />} />  
+          <Route path='/administrator/builder/data/sinh-vien/edit/:id.html' element={<EditSinhVien />} />
+          <Route path='/administrator/builder/data/sinh-vien/create.html' element={<CreateSinhVien />}/>
           <Route path='/administrator/builder/data/lop-hoc.html' element={<LopHoc />} />
-          <Route path='/read/:id' element={<EditLop />} />  
-          <Route path='/create_lophoc' element={<Create/>} />  
+          <Route path='/administrator/builder/data/lop-hoc/edit/:id.html' element={<EditLop />} />  
+          <Route path='/administrator/builder/data/lop-hoc/create.html' element={<CreateLop/>} />  
           <Route path='/administrator/internship/builder/folder.html' element={<TreeFolder />}/>
-          <Route path='/editfolder/:id' element={<EditFolder />}/>
-          <Route path='/create-folder' element={<CreateFolder />}/>
-          <Route path='/administrator/internship/builder/form.html' element={<AllForm />} />
-          <Route path='/create-form' element={<CreateForm />}/>
-          <Route path='/edit-form/:id' element={<EditForm />}/>
-          <Route path='/formfield/:id' element= {<AllFormField/>} />
-          <Route path='/create-formfield' element={<CreateFormField />}/>
-          <Route path='/editformfield/:id' element={<EditFormField />}/>
+          <Route path='/administrator/internship/builder/folder/edit/:id.html' element={<EditFolder />}/>
+          <Route path='/administrator/internship/builder/folder/create.html' element={<CreateFolder />}/>
+          <Route path='/administrator/internship/builder/form.html' element={<Form />} />
+          <Route path='/administrator/internship/builder/form/edit/:id.html' element={<EditForm />}/>
+          <Route path='/administrator/internship/builder/form/create.html' element={<CreateForm />}/>
+          <Route path='/administrator/internship/builder/formfield/:id.html' element= {<FormField/>} />
+          <Route path='/administrator/internship/builder/formfield/create.html' element={<CreateFormField />}/>
+          <Route path='/administrator/internship/builder/formfield/edit/:id.html' element={<EditFormField />}/>
         </Route>
+        <Route path='/account' element={<Account />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/test' element={<Test />} />
-        <Route path='*' element={<Nopage/>}/>
+        <Route path='*' element={<PageNotFound/>}/>
       </Routes>
     </BrowserRouter>
   );

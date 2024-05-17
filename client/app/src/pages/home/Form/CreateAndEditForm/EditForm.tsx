@@ -1,0 +1,57 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import MyForm from "./SharedForm";
+import { Flex, Spin } from "antd";
+
+const EditForm = () => {
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(true); 
+    let params = useParams();
+    let navigate = useNavigate();
+    let api = localStorage.getItem("api");
+    let token = localStorage.getItem("token");
+    
+    useEffect(() => {
+        axios.get(`http://192.168.5.240/api/v1/builder/form/${params.id}`, {
+            headers: {
+                "API-Key": api,
+                "Authorization": `Bearer ${token}`
+            }
+        })
+            .then(res => {
+                if (res.data.status === true) {
+                    setData(res.data.data);
+                }
+                setLoading(false); 
+            })
+            .catch(error => {
+                if (error.response.status === 401) {
+                    navigate("/login");
+                } else {
+                    console.log(error);
+                }
+                setLoading(false); 
+            });
+    }, [params.id]);
+
+    if (loading) {
+        return (
+            <Flex vertical style={{ height: '50vh' }} align="center" justify="center">
+              <Spin tip="Loading..." size="large" />
+            </Flex>
+        );
+    }
+
+    if (!data) {
+        return <div>No data available</div>; 
+    }
+
+    return (
+        <div>
+            <MyForm isEdit={true} data={data} />
+        </div>
+    );
+};
+
+export default EditForm;
