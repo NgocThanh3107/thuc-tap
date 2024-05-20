@@ -5,7 +5,6 @@ import Link from 'antd/es/typography/Link';
 import { useNavigate } from 'react-router-dom';
 import React from "react";
 
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
   let api = localStorage.getItem("api");
@@ -31,15 +30,13 @@ const Login: React.FC = () => {
         }
       })
       .then((res) => {
-        console.log(res)
-        if (res.data.status == false) {
-          console.log(res.data.message)
-          alert("incorrect username or password")
-        } else {
+        if (res.data.status == true) {
           localStorage.setItem("check", res.data.status)
           let token = res.data.data.token;
           localStorage.setItem("token", token)
           navigate("/")
+        } else {
+          alert("Username or Password incorrect")
         }
       })
       .catch(function (error) {

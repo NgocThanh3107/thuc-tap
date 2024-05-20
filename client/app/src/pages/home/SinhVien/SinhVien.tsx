@@ -1,9 +1,7 @@
 import React from 'react';
-import { Space, Table, Tag } from 'antd';
+import { Space, Table} from 'antd';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Link from 'antd/es/typography/Link';
-// import './_content.scss'
 import LopProps from '../LopHoc';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
@@ -12,7 +10,8 @@ import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import '../_pages.scss';
+
 interface DataType {
     key: string;
     tenSinhVien: string;
@@ -21,37 +20,40 @@ interface DataType {
     moTa : string;
     tags: string[];
     lop : LopProps;
-  }
-  interface paginationProps {
+}
+
+interface paginationProps {
     pageSize? : number;
     totalPage?: number;
     total ?: number;
     page?: number;
-  }
+}
 
 const {Column} = Table;
-const SinhVien: React.FC = () =>{
-    let navigate = useNavigate();
-    let api = localStorage.getItem("api");
-    let token = localStorage.getItem("token");
-    const [data, setData] = useState<DataType[]>([]);
-    const [pagination, setPagination] = useState<paginationProps>()
-    const [messageApi, contextHolder] = message.useMessage();
-    const [originalData, setOriginalData] = useState<DataType[]>([]);
-    const [search, setSearch] = useState<string>('');
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [startSTT, setStartSTT] = useState(0);
+
+  const SinhVien: React.FC = () =>{
+
+      let navigate = useNavigate();
+      let api = localStorage.getItem("api");
+      let token = localStorage.getItem("token");
+      const [data, setData] = useState<DataType[]>([]);
+      const [pagination, setPagination] = useState<paginationProps>()
+      const [messageApi, contextHolder] = message.useMessage();
+      const [originalData, setOriginalData] = useState<DataType[]>([]);
+      const [search, setSearch] = useState<string>('');
+      const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+      const [loading, setLoading] = useState(true);
+      const [startSTT, setStartSTT] = useState(0);
 
         useEffect(() => {
-            fetchData(1, 10); 
+            fetchData(1, 10);
           }, []);
         
           const fetchData = (page: number, pageSize: number) => {
             const start = (page - 1) * pageSize + 1;
-            setStartSTT(start);
+              setStartSTT(start);
             axios
-              .get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=${page}&pageSize=${pageSize}`, {
+              .get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data`, {
                 headers: {
                   'API-Key': api,
                   Authorization: `Bearer ${token}`,
@@ -74,7 +76,7 @@ const SinhVien: React.FC = () =>{
                   console.log(error)
                 }
                 setLoading(false)
-              })
+              });
           };
         
           const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,63 +84,41 @@ const SinhVien: React.FC = () =>{
             setSearch(value);
             if(value===""){
               setData(originalData)
-              fetchData(1,10)
+              // fetchData(1,10)
             }
           };
-
-        // tim theo ma
+        
         const handleSearch = () =>{
             axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=1&pageSize=10&maSinhVien=${search}`, {
               headers: {
-                  'API-Key': api,
-                  Authorization: `Bearer ${token}`,
+                'API-Key': api,
+                Authorization: `Bearer ${token}`,
               },
-          })
-          .then((res) => {
-             
+            })
+            .then((res) => {
               if (res.data.pagination.total > 0) {
-                  setData(res.data.data);
-                  setPagination(res.data.pagination);
+                setData(res.data.data);
+                setPagination(res.data.pagination);
               } else {   
                   setData([]);  
                   setPagination(undefined); 
               }
-          })
-          .catch(error=>{
-            if(error.response.status == 401){
-              navigate("/login");
-            }else{
-              console.log(error)
-            }
-          })  
-
-        // tim theo ten
-          // axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=1&pageSize=10&tenSinhVien=${search}`, {
-          //     headers: {
-          //         'API-Key': api,
-          //         Authorization: `Bearer ${token}`,
-          //     },
-          // })
-          // .then((res) => {
-          //     console.log(res.data.pagination.total)
-          //     if (res.data.pagination.total > 0) {
-          //         setData(res.data.data);
-          //         setPagination(res.data.pagination);
-          //     } else {   
-          //         setData([]);      
-          //     }
-          // })
-          // .catch((error) => {
-          //     console.log(error);
-          // });  
+            })
+            .catch(error=>{
+              if(error.response.status == 401){
+                navigate("/login");
+              }else{
+                console.log(error)
+              }
+            })  
         }
 
-      const handleTableChange = (pagination: any) => {
-        const { current, pageSize } = pagination;
-        fetchData(current, pageSize);
-      };
+        const handleTableChange = (pagination: any) => {
+          const { current, pageSize } = pagination;
+          fetchData(current, pageSize);
+        };
          
-          const handleDelete = () => { 
+        const handleDelete = () => { 
             
             Modal.confirm({
               title: `Do you want to delete ${selectedRowKeys.length} items?`,
@@ -147,79 +127,84 @@ const SinhVien: React.FC = () =>{
               onOk() {
                 axios.delete("http://192.168.5.240/api/v1/builder/form/sinh-vien/data",
                 {
-                    headers: {
-                        "API-Key" : api,
-                        "Authorization": `Bearer ${token}`
-                    },
-                    data : selectedRowKeys
-                }        
-                )
+                  headers: {
+                    "API-Key" : api,
+                    "Authorization": `Bearer ${token}`
+                  },
+                  data : selectedRowKeys
+                })      
                 .then(res=>{
-                    if(res.data.status == true){
-                      const key = 'updatable';
+                  if(res.data.status == true){
+                    const key = 'updatable';
+                    messageApi.open({
+                      key,
+                      type: 'loading',
+                      content: 'Đang xóa...',
+                    });
+                    setTimeout(() => {
                       messageApi.open({
-                          key,
-                          type: 'loading',
-                          content: 'Đang xóa...',
+                      key,
+                      type: 'success',
+                      content: 'Đã xóa!',
+                      duration: 2,
                       });
-                      setTimeout(() => {
-                          messageApi.open({
-                          key,
-                          type: 'success',
-                          content: 'Đã xóa!',
-                          duration: 2,
-                          });
-                      }, 300);
+                    }, 300);
 
-                      const newData = data.filter(item => item.id && !selectedRowKeys.includes(item.id));
-                      setData(newData);
-                      setSelectedRowKeys([]);
-                    }else{
-                        console.log(res.data.message)
+                    const newData = data.filter(item => item.id && !selectedRowKeys.includes(item.id));
+                    setData(newData);
+                    setSelectedRowKeys([]);
+                  } else{
+                      console.log(res.data.message)
                     }
                 })
+                .catch(error=>{
+                  if(error.response.status == 401){
+                    navigate("/login");
+                  }else{
+                    console.log(error)
+                  }
+                });
               },
               onCancel() {
                 console.log('Cancel');
               },
             });
-    };   
+        };   
 
+        const onSelectChange = (selectedRowKeys: React.Key[]) => {
+          setSelectedRowKeys(selectedRowKeys);
+        };
+      
+        const rowSelection = {
+          selectedRowKeys,
+          onChange: onSelectChange,
+        };
 
-    const onSelectChange = (selectedRowKeys: React.Key[]) => {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      setSelectedRowKeys(selectedRowKeys);
-    };
-  
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: onSelectChange,
-    };
-    const hasSelected = selectedRowKeys.length > 0;
+        const hasSelected = selectedRowKeys.length > 0;
 
-    console.log(pagination)
-    const { locale, theme } = useContext(ConfigProvider.ConfigContext);
+        const { locale, theme } = useContext(ConfigProvider.ConfigContext);
 
-    useLayoutEffect(() => {
-      ConfigProvider.config({
-        holderRender: (children) => (
-          <StyleProvider hashPriority="high">
-            <ConfigProvider prefixCls="static" iconPrefixCls="icon" locale={locale} theme={theme}>
-              <App message={{ maxCount: 1 }} notification={{ maxCount: 1 }}>
-                {children}
-              </App>
-            </ConfigProvider>
-          </StyleProvider>
-        ),
-      });
-    }, [locale, theme]);
+      useLayoutEffect(() => {
+        ConfigProvider.config({
+          holderRender: (children) => (
+            <StyleProvider hashPriority="high">
+              <ConfigProvider prefixCls="static" iconPrefixCls="icon" locale={locale} theme={theme}>
+                <App message={{ maxCount: 1 }} notification={{ maxCount: 1 }}>
+                  {children}
+                </App>
+              </ConfigProvider>
+            </StyleProvider>
+          ),
+        });
+      }, [locale, theme]);
 
+    
     return (
         <div className='table-style'>
           <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
             {contextHolder}
             <div className='table-main'>
-              <div className="del-f">
+              <div className="delete">
                 <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
                   <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                 </Button>
@@ -227,11 +212,11 @@ const SinhVien: React.FC = () =>{
                   {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
                 </span>
               </div>
-              <div className='c-c'>
+              <div className='action'>
                 <p className='create'>
-                    <Button onClick={(e) => {e.preventDefault(); navigate("/administrator/builder/data/sinh-vien/create.html");}}>
-                      <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new students
-                    </Button>
+                  <Button onClick={() => { navigate("/administrator/builder/data/sinh-vien/create.html");}}>
+                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new students
+                  </Button>
                 </p>
                 <p className='search'>
                   <Space.Compact>
@@ -241,39 +226,39 @@ const SinhVien: React.FC = () =>{
                 </p>
               </div>
               <Table  
-                  dataSource={data}
-                  pagination={pagination}
-                  onChange={handleTableChange}
-                  rowSelection={rowSelection}
-                  rowKey='id'
-                  loading={loading}
+                dataSource={data}
+                pagination={pagination}
+                onChange={handleTableChange}
+                rowSelection={rowSelection}
+                rowKey='id'
+                loading={loading}
               >
-                  <Column title="STT" dataIndex='' render={(text, record, index) => startSTT + index} /> 
-                  <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
-                  <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
-                  <Column title="Lop" dataIndex="lop" key = "lop" 
-                      render={(lop: LopProps) => (
-                          <span>
-                              {lop && lop.tenLop ? (
-                                  <span key={lop.id}>
-                                      {lop.tenLop}
-                                  </span>
-                              ) : (
-                                  <span>Không có lớp</span>
-                              )}
+                <Column title="STT" dataIndex='' render={(text, record, index) => startSTT + index} /> 
+                <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
+                <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
+                <Column title="Lop" dataIndex="lop" key = "lop" 
+                  render={(lop: LopProps) => (
+                    <span>
+                      {lop && lop.tenLop ? (
+                          <span key={lop.id}>
+                              {lop.tenLop}
                           </span>
+                      ) : (
+                          <span>Không có lớp</span>
                       )}
-                  />
-                  <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
-                  <Column
+                    </span>
+                  )}
+                />
+                <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
+                <Column
                   title="Action"
                   key="action"
                   render={( data: DataType) => (
-                      <Space size="middle" className='style_a'>
-                      <a onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
-                      </Space>
+                    <Space size="middle">
+                    <a onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                    </Space>
                   )}
-                  />
+                />
               </Table>
             </div>
         </div>

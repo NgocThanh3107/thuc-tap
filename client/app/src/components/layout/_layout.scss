@@ -10,31 +10,6 @@
     flex-direction: column;
     background-color: #fff;  
 }
-.table-style{
-    width: 96%;
-    display: block;
-    height: auto;
-    float: left;
-    padding: 2% ;
-    margin: auto;
-    background-color: #ecebeb;
-    button{
-        text-align: left;
-    }
-    table{
-        border: 1px solid #cac5c5;
-        margin: auto;
-        background-color: #fff;
-        th{
-            font-size: 17px;
-        }    
-    } 
-    h1{
-       text-align: left;
-       margin-bottom: 30px;
-      
-    } 
-}
 
 .PageNotFound{
     width: 100%;
@@ -96,7 +71,6 @@ html, body {
     background-color: #fff;
     font-size: 17px;
     font-weight: bold;
-    // border-radius: 10px;
     text-align: left;
         a{
             font-size: 17px;
@@ -125,30 +99,26 @@ html, body {
         ul{
             li{
                 display: inline-block;
-                padding-right: 20px;
+                padding-right: 25px;
                 a{
                     text-decoration: none;
                     color: #fff;
-                    font-size: 25px;
-                    font-weight: bold;
-                    padding: 0px 10px;
-                    // border-bottom: 1px solid #333;
+                    font-size: 20px;
                 }
             }
         }
     }
     .nav_icon{
-        width: 19%;
+        width: 20%;
         float: left;
-        padding-left: 1%;
+        padding-left: 20px;
         padding-top: 10px;
         text-align: left;
         a{
             text-decoration: none;
             color: #fff;
-            font-size: 35px;
+            font-size: 30px;
             font-weight: bold;
-            // padding: 10px;
         }
     }
     .nav_right{
@@ -162,8 +132,8 @@ html, body {
                 a{
                     text-decoration: none;
                     color: #fff;
-                    font-size: 20px;
-                    // font-weight: bold;
+                    font-size: 17px;
+                    font-weight: bold;
                 }
             }
         }
@@ -182,6 +152,7 @@ html, body {
         width: 100%;
         .nav_icon{
             width: 20%; 
+            padding: 0;
             a{
                 font-size: 25px;
             }
@@ -192,7 +163,7 @@ html, body {
                 li{
                     padding-right: 10px;
                     a{
-                        font-size: 20px;
+                        font-size: 17px;
                         padding: 0;
                     }
                 }
@@ -202,8 +173,9 @@ html, body {
             width: 30%;
             ul{
                 li{
+                    padding-right: 10px;
                     a{
-                        font-size: 15px;
+                        font-size: 13px;
                     }
                 }
             }
@@ -216,7 +188,6 @@ html, body {
     .sider_style {
         width: 100%;
         font-size: 14px; 
-        // border-radius: 5px;
         padding-bottom: 30px;
     }
     .table-style{
@@ -232,7 +203,6 @@ html, body {
     .content_style{
         width: 100%;
         padding: 0;
-        // background-color: #fff;
     }
     .footer{
         width: 100%;

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Flex, Spin} from 'antd';
 import MyFormField from "./SharedFormField";
 
-function EditFormField(){
+const EditFormField = () => {
 
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
@@ -16,32 +16,29 @@ function EditFormField(){
     let navigate = useNavigate();
     const idFFieldFrom = localStorage.getItem("idFormField");
 
-    useEffect(()=>{
+      useEffect(()=>{
         axios.get('http://192.168.5.240/api/v1/builder/form/'+ idFFieldFrom + '/field/'+ params.id,{
-            headers: {
-                "API-Key" : api,
-                "Authorization": `Bearer ${token}`
-            }
-        }
-        )
+          headers: {
+            "API-Key" : api,
+            "Authorization": `Bearer ${token}`
+          }
+        })
         .then(res =>{
-            console.log(res)
-            if(res.data.status == true){
-              setGetData(res.data.data);
-            }
-            setLoading(false)
+          console.log(res)
+          if(res.data.status == true){
+            setGetData(res.data.data);
+          }
+          setLoading(false)
         })
         .catch(error =>{
-            if(error.response.status === 401){
-              navigate("/login");
-            }else{
-              console.log(error)
-            }
-            setLoading(false)
-          })
-
-      },[])
-  
+          if(error.response.status === 401){
+            navigate("/login");
+          }else{
+            console.log(error)
+          }
+          setLoading(false)
+        });
+      },[]);
 
     if (loading) {
       return (
@@ -52,11 +49,11 @@ function EditFormField(){
     }
 
     if (!getdata) {
-        return <div>No data available</div>; 
+      return <div>No data available</div>; 
     }
     return(
       <MyFormField isEdit={true} data={getdata}/>
-    )
+    )  
     
 }
 export default EditFormField;

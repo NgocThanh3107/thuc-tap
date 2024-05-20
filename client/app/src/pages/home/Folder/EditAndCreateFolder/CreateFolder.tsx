@@ -1,9 +1,9 @@
 import React from "react";
-import FolderForm from "../SharedFormFolder";
+import FolderForm from "./SharedFormFolder";
 
 const CreateFolder = () => {
     return (
-            <FolderForm isEdit={false} />
+        <FolderForm isEdit={false} />
     );
 };
 

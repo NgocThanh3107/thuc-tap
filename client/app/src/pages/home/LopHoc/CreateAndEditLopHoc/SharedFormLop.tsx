@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { message, Form, Input, Button } from 'antd';
+import { Form, Input, Button } from 'antd';
 import LopProps from '..';
-// import '../styles/_content.scss';
 
 interface MyFormProps {
     isEdit: boolean;
@@ -23,7 +22,6 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
             tenLop: values.tenLop,
             moTa: values.moTa
         }
-        console.log("newData:", newData);
         const apiEndpoint = isEdit ? `http://192.168.5.240/api/v1/builder/form/lop-hoc/data` : 'http://192.168.5.240/api/v1/builder/form/lop-hoc/data';
         const requestMethod = isEdit ? axios.put : axios.post;
 
@@ -34,9 +32,7 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
             }
         })
         .then(res => {
-            console.log(res)
             if (res.data.status === true) {
-                // message.success('Thành công !');
                 isEdit ? alert("Updated successfully") : alert("Created successfully")
                 navigate('/administrator/builder/data/lop-hoc.html');
             } else {
@@ -101,14 +97,6 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
                 >
                     <Input />
                 </Form.Item>
-
-                {/* <Form.Item
-                    label="Ten Quoc Gia"
-                    name="tenQuocGia"
-                    rules={[{ required: true, message: 'Please input your ten Quoc Gia!' }]}
-                >
-                    <Input />
-                </Form.Item> */}
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">

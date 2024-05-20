@@ -1,11 +1,9 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import type { FormProps } from 'antd';
 import { Button, Form, Input,Select } from 'antd';
-// import '../styles/_content.scss';
+
   interface DataformFieldProps {
     name?: string;
     id: number;
@@ -40,56 +38,50 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
     let token = localStorage.getItem("token");
     let navigate = useNavigate();
     const idFFieldFrom = localStorage.getItem("idFormField");
-    // const [form] = Form.useForm();
-    const onFinish: FormProps<DataformFieldProps>['onFinish'] = (values) => {
 
-        console.log('Success:', values);
-          const newdata = {
-            ...values,
-            id: data?.id    
-          }
-// console.log(data)
+    const onFinish: FormProps<DataformFieldProps>['onFinish'] = (values) => {
+        const newdata = {
+          ...values,
+          id: data?.id    
+        }
         const apiEndpoint = isEdit ? 'http://192.168.5.240/api/v1/builder/form/'+ idFFieldFrom + '/field' : 'http://192.168.5.240/api/v1/builder/form/'+ idFFieldFrom + '/field';
         const requestMethod = isEdit ? axios.put : axios.post;
 
         requestMethod(apiEndpoint, newdata, {
-            headers: {
-            "API-Key": api,
-            "Authorization": `Bearer ${token}`
-            }
+          headers: {
+          "API-Key": api,
+          "Authorization": `Bearer ${token}`
+          }
         })
         .then(res => {
-            if (res.data.status === true) {
-            isEdit ? alert("Updated successfully") : alert("Created successfully");
-            navigate("/formfield/" + idFFieldFrom);
-            }
+          if (res.data.status === true) {
+          isEdit ? alert("Updated successfully") : alert("Created successfully");
+          navigate("/formfield/" + idFFieldFrom);
+          }
         })
         .catch(error => {
-            if (error.response.status === 401) {
-            navigate("/login");
-            } else {
-                const errorDescription = error.response.data.errorDescription;
-                // const formErrors = errorDescription.map((errorItem: any) => ({
-                //   name: errorItem.field,
-                //   errors: [errorItem.message],
-                // }));
-                // form.setFields(formErrors);
-            }
+          if (error.response.status === 401) {
+          navigate("/login");
+          } else {
+              const errorDescription = error.response.data.errorDescription;
+              // const formErrors = errorDescription.map((errorItem: any) => ({
+              //   name: errorItem.field,
+              //   errors: [errorItem.message],
+              // }));
+              // form.setFields(formErrors);
+          }
         });
         };
       
-        
     const onFinishFailed: FormProps<DataformFieldProps>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
-    
 
     };
+
     return(
       <div className="edit-create">
         <h1>{isEdit ? "Edit and Update FormField" : "Create FormField"}</h1>
-        <br />
         <Form
-        //   form={form}
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}

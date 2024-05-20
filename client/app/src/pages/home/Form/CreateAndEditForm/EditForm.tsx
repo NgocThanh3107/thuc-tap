@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import MyForm from "./SharedForm";
 import { Flex, Spin } from "antd";
+import SharedForm from "./SharedForm";
 
 const EditForm = () => {
     const [data, setData] = useState<any>(null);
@@ -18,7 +18,7 @@ const EditForm = () => {
                 "API-Key": api,
                 "Authorization": `Bearer ${token}`
             }
-        })
+            })
             .then(res => {
                 if (res.data.status === true) {
                     setData(res.data.data);
@@ -38,7 +38,7 @@ const EditForm = () => {
     if (loading) {
         return (
             <Flex vertical style={{ height: '50vh' }} align="center" justify="center">
-              <Spin tip="Loading..." size="large" />
+                <Spin tip="Loading..." size="large" />
             </Flex>
         );
     }
@@ -49,7 +49,7 @@ const EditForm = () => {
 
     return (
         <div>
-            <MyForm isEdit={true} data={data} />
+            <SharedForm isEdit={true} data={data} />
         </div>
     );
 };

@@ -3,7 +3,7 @@ import SharedFormLop from "./SharedFormLop";
 
 const CreateLop = () => {
     return (
-            <SharedFormLop isEdit={false} />
+        <SharedFormLop isEdit={false} />
     );
 };
 

@@ -1,8 +1,8 @@
   import axios from "axios";
   import React, { useEffect, useState } from "react";
-  import { useParams, useNavigate } from "react-router-dom";
+  import { useNavigate } from "react-router-dom";
   import { Form, Input, Button, TreeSelect, Select, message } from "antd";
-  // import '../styles/_content.scss';
+
   interface DataFormProps {
     name?: string;
     id?: number;
@@ -47,30 +47,29 @@
     const [nameError, setNameError] = useState<string>("");
     const [codeError, setCodeError] = useState<string>("");
 
-    useEffect(() => {
-      axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
-        headers: {
-          "API-Key": api,
-          "Authorization": `Bearer ${token}`
-        }
-      })
-        .then(res => {
-          console.log(res)  
-          if (res.data.status === true) {
-            const formattedData = formatTreeData(res.data.data);
-            setTreeData(formattedData);
+      useEffect(() => {
+        axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
+          headers: {
+            "API-Key": api,
+            "Authorization": `Bearer ${token}`
           }
-          setLoading(false);
         })
-        .catch(error => {
-          if (error.response.status === 401) {
-            navigate("/login");
-          } else {
-            console.error("Error fetching data:", error);
-          }
-          setLoading(false);
-        });
-    }, []);
+          .then(res => {
+            if (res.data.status === true) {
+              const formattedData = formatTreeData(res.data.data);
+              setTreeData(formattedData);
+            }
+            setLoading(false);
+          })
+          .catch(error => {
+            if (error.response.status === 401) {
+              navigate("/login");
+            } else {
+              console.error("Error fetching data:", error);
+            }
+            setLoading(false);
+          });
+      }, []);
 
     const formatTreeData = (data: any[]): DataFolderProps[] => {
       return data.map(item => ({
@@ -102,7 +101,6 @@
       })
       .then(res => {
         if (res.data.status === true) {
-          // message.success("Thành công!");
           isEdit ? alert("Updated successfully") : alert("Created successfully");
           navigate("/administrator/internship/builder/form.html");
         }
@@ -147,7 +145,6 @@
     return (
       <div className="edit-create">
         <h1>{isEdit ? "Edit and Update form" : "Create New Form"}</h1>
-        <br />
         <Form
           form={form}
           name="basic"

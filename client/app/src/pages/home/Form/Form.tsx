@@ -3,14 +3,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Space, Table, message, Input, Button } from 'antd';
 import type { TableProps } from 'antd';
-import Link from "antd/es/typography/Link";
 import { useNavigate } from "react-router-dom";
 import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-// import './_home.scss';
+
 interface DataFormProps{
     id: number;
     folder: DataFolderProps;
@@ -38,31 +36,31 @@ interface DataFolderProps {
         const [search, setSearch] = useState<string>("");
         const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
         const [loading, setLoading] = useState(true);
-        useEffect(() => {
-          axios.get(`http://192.168.5.240/api/v1/builder/form`, {
+          useEffect(() => {
+            axios.get(`http://192.168.5.240/api/v1/builder/form`, {
               headers: {
                 'API-Key': api,
                 Authorization: `Bearer ${token}`,
               },
-            })
-            .then((res) => {
-              console.log(res)
-              if (res.data.status == true) {
-                setGetData(res.data.data);
-                setOriginalData(res.data.data);
-              } else {
-                console.log(res.data.message);
-              }
-              setLoading(false)
-            })
-            .catch(error=>{
-              if(error.response.status == 401){
-                navigate("/login");
-              }else{
-                console.log(error)
-              }
-              setLoading(false)
-            })
+              })
+              .then((res) => {
+                console.log(res)
+                if (res.data.status == true) {
+                  setGetData(res.data.data);
+                  setOriginalData(res.data.data);
+                } else {
+                  console.log(res.data.message);
+                }
+                setLoading(false)
+              })
+              .catch(error=>{
+                if(error.response.status == 401){
+                  navigate("/login");
+                }else{
+                  console.log(error)
+                }
+                setLoading(false)
+              });
           }, []);
       
 
@@ -79,27 +77,27 @@ interface DataFolderProps {
           setGetData(originalData);
         } else {
             axios
-                .get(`http://192.168.5.240/api/v1/builder/form?code=${search}`, {
-                    headers: {
-                        'API-Key': api,
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((res) => {
-                  if(res.data.status===true){
-                    setGetData(res.data.data)
-                  }else{
-                    setGetData([]);
-                  }
-                })
-                .catch(error=>{
-                  if(error.response.status == 401){
-                    navigate("/login");
-                  }else{
-                    console.log(error)
-                  }
-                })
-              } 
+              .get(`http://192.168.5.240/api/v1/builder/form?code=${search}`, {
+                  headers: {
+                      'API-Key': api,
+                      Authorization: `Bearer ${token}`,
+                  },
+              })
+              .then((res) => {
+                if(res.data.status===true){
+                  setGetData(res.data.data)
+                }else{
+                  setGetData([]);
+                }
+              })
+              .catch(error=>{
+                if(error.response.status == 401){
+                  navigate("/login");
+                }else{
+                  console.log(error)
+                }
+              })
+          } 
       }
         
         const columns: TableProps<DataFormProps>['columns'] = [
@@ -119,11 +117,6 @@ interface DataFolderProps {
             dataIndex: 'code',
             key: 'code',
           },
-          // {
-          //   title: 'Folder',
-          //   dataIndex: ['folder', 'name'],
-          //   key: 'folder',
-          // },
           {
             title: 'Description',
             dataIndex: 'description',
@@ -133,7 +126,7 @@ interface DataFolderProps {
             title: 'Action',
             key: 'action',
             render: (record) => (
-              <Space className="style_a" size="middle">
+              <Space size="middle">
                 <a onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/form/edit/'+ record?.id + '.html')}} >Edit</a>
                 <a onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/'+ record?.id + '.html')}} >Form Field</a>
               </Space>
@@ -147,14 +140,13 @@ interface DataFolderProps {
         icon: <ExclamationCircleFilled />,
         content: 'This action cannot be undone.',
         onOk() {
-          // Perform delete operation here
           axios.delete(`http://192.168.5.240/api/v1/builder/form`, {
             headers: {
               "API-Key": api,
               "Authorization": `Bearer ${token}`
             },
             data: selectedRowKeys
-          })
+            })
             .then(res => {
               if (res.data.status === true) {
                 const key = 'updatable';
@@ -186,7 +178,7 @@ interface DataFolderProps {
               } else {
                 console.log(error)
               }
-            })
+            });
         },
         onCancel() {
           console.log('Cancel');
@@ -194,8 +186,6 @@ interface DataFolderProps {
       });
     };
           
-
-
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
@@ -229,14 +219,14 @@ interface DataFolderProps {
         <h1>Form <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
         <div className="form-style">
           <div className="table-main">
-            <div className="del-f">     
+            <div className="delete">     
               <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected} ><i className="fa fa-trash-o" aria-hidden="true"> </i> Delete</Button>
               <span style={{ marginLeft: 8 }}>
                 {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
               </span>
             </div>
-            <div className="c-c">
-              <p className="create"><Button onClick={(e) => {e.preventDefault();navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Form</Button></p>
+            <div className="action">
+              <p className="create"><Button onClick={() => {navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Form</Button></p>
               <p className='search'>
                 <Space.Compact>
                   <Input placeholder='Search by code ' value={search} onChange={handleSearchChange}/>

@@ -4,8 +4,6 @@ import React from 'react';
 import { Tree } from 'antd';
 import type { GetProps, TreeDataNode } from 'antd';
 import { useNavigate } from "react-router-dom";
-import Link from "antd/es/typography/Link";
-import './style.scss';
 import { Space, Table, message } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { Button, Input} from 'antd';
@@ -13,8 +11,8 @@ import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import '../_pages.scss';
+
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
 const { DirectoryTree } = Tree;
 
@@ -46,7 +44,7 @@ const Folder = () => {
     {
       title: 'STT',
       dataIndex: '',
-      render: (text, record, index) => index + 1,
+      render: (text, record, index) => startSTT + index ,
       width: '5%',
       align: 'center'
     },
@@ -63,7 +61,7 @@ const Folder = () => {
       dataIndex: '',
       render: (record) => (
         <div>
-          <a className="style_a" onClick={(e) =>{e.preventDefault(); navigate('/administrator/internship/builder/folder/edit/'+ record?.id + '.html')}}>Edit</a>
+          <a onClick={(e) =>{e.preventDefault(); navigate('/administrator/internship/builder/folder/edit/'+ record?.id + '.html')}}>Edit</a>
         </div>
       )
     }
@@ -71,6 +69,7 @@ const Folder = () => {
 
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
+    let navigate = useNavigate();
     const [getData, setGetData] = useState<DataFolderProps[]>([]);
     const [getData1, setGetData1] = useState<DataType[]>([]);
     const [originalData, setOriginalData] = useState<DataFolderProps[]>([]);
@@ -79,24 +78,22 @@ const Folder = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [search, setSearch] = useState<string>('');
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [selectedTreeFolderKeys, setSelectedTreeFolderKeys] = useState<number[]>([]);
     const [loading,setLoading] = useState(true);
-    
-    console.log(selectedRowKeys)
-    let navigate = useNavigate();
+    const [startSTT, setStartSTT] = useState(0);
+    const [allSelectedIds, setAllSelectedIds] = useState<number[]>([]);
 
-    useEffect(() => {
+      useEffect(() => {
         axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
-            headers: {
-                "API-Key" : api,
-                "Authorization": `Bearer ${token}`
-            }
+          headers: {
+              "API-Key" : api,
+              "Authorization": `Bearer ${token}`
+          }
         })
         .then(res => {
-            if(res.data.status === true) {
-              setGetData(res.data.data);
-              setOriginalData(res.data.data);
-            }    
+          if(res.data.status === true) {
+            setGetData(res.data.data);
+            setOriginalData(res.data.data);
+          }    
         })
         .catch(error=>{
           if(error.response.status == 401){
@@ -107,7 +104,7 @@ const Folder = () => {
         })
 
         fetchData(1, 10, undefined);
-    }, []);
+      }, []);
 
     const fetchData = (page: number, pageSize: number,parent: number | undefined) => {
       axios
@@ -121,6 +118,8 @@ const Folder = () => {
           if (res.data.pagination.total > 0) {
             setGetData1(res.data.data);
             setPagination(res.data.pagination);
+            const start = (page - 1) * pageSize + 1;
+            setStartSTT(start);
         } else {   
             setGetData1([]);      
             setPagination(undefined);
@@ -138,31 +137,26 @@ const Folder = () => {
       }
     const convertData = (data: DataFolderProps[]): TreeDataNode[] => {
       return data.map((item) => ({
-          title: (
-            item.name
-          ),
-          key: item.id,
-          isLeaf: !item.children || item.children.length === 0,
-          children: item.children ? convertData(item.children) : undefined,
+        title: (
+          item.name
+        ),
+        key: item.id,
+        isLeaf: !item.children || item.children.length === 0,
+        children: item.children ? convertData(item.children) : undefined,
       }));
-  };
+    };
 
     const treeData: TreeDataNode[] = convertData(getData);
 
     const onSelect: DirectoryTreeProps['onSelect'] = (keys, info) => {
-        console.log('Trigger Select', keys, info);
         info.selectedNodes.map((v)=>{
           console.log(v)
-            setIdParent(keys[0] as number);  
+            setIdParent(keys[0] as number);
             fetchData(1,10, keys[0] as number);
         })
     }
-    const onExpand: DirectoryTreeProps['onExpand'] = (keys, info) => {
-      console.log('Trigger Expand',  info.node);
-    };
     
     const deleteFolderTreeData = (id: number, data: DataFolderProps[]): DataFolderProps[] => {
-      console.log(id)
       return data.filter(item => {
         if (item.id === id) {
           return false;
@@ -180,45 +174,45 @@ const Folder = () => {
         icon: <ExclamationCircleFilled />,
         content: 'This action cannot be undone.',
         onOk() {
+          const idsToDelete = allSelectedIds.length > 0 ? allSelectedIds : selectedRowKeys;
           axios.delete(`http://192.168.5.240/api/v1/folder`,
             {
               headers: {
                 "API-Key" : api,
                 "Authorization": `Bearer ${token}`
               },
-              data: selectedRowKeys
+              data: idsToDelete
             }
           )
           .then(res=>{
             console.log(res)
             if(res.data.status === true){
               const key = 'updatable';
-                      messageApi.open({
-                          key,
-                          type: 'loading',
-                          content: 'Đang xóa...',
-                      });
-                      setTimeout(() => {
-                          messageApi.open({
-                          key,
-                          type: 'success',
-                          content: 'Đã xóa!',
-                          duration: 2,
-                          });
-                      }, 300);
+                messageApi.open({
+                  key,
+                  type: 'loading',
+                  content: 'Đang xóa...',
+                });
+                setTimeout(() => {
+                  messageApi.open({
+                  key,
+                  type: 'success',
+                  content: 'Đã xóa!',
+                  duration: 2,
+                  });
+                }, 300);
 
-                  const updatedTreeData = selectedRowKeys.reduce((acc, key) => {
-                    return deleteFolderTreeData(key as number, acc);
-                  }, [...getData]);
-                  setGetData(updatedTreeData);
-          
-                  // Xóa thư mục từ bảng
-                  const updatedData = getData1.filter(
-                    (item) => item.id !== undefined && !selectedRowKeys.includes(item.id)
-                  );
-                  setGetData1(updatedData);
-          
-                  setSelectedRowKeys([]);
+                const updatedTreeData = selectedRowKeys.reduce((acc, key) => {
+                  return deleteFolderTreeData(key as number, acc);
+                }, [...getData]);
+                setGetData(updatedTreeData);
+        
+                const updatedData = getData1.filter(
+                  (item) => item.id !== undefined && !selectedRowKeys.includes(item.id)
+                );
+                setGetData1(updatedData);
+        
+                setSelectedRowKeys([]);
             }
           })
           .catch(error =>{
@@ -227,7 +221,7 @@ const Folder = () => {
             }else{
               console.log(error)
             }
-          })
+          });
         },
         onCancel() {
           console.log('Cancel');
@@ -271,20 +265,33 @@ const Folder = () => {
       const { current, pageSize } = pagination;
       fetchData(current, pageSize, IdParent);
     };
+    
+    const getFolderIds = (folder: DataFolderProps): number[] => {
+      let ids: number[] = [folder.id];
+      if (folder.children && folder.children.length > 0) {
+        folder.children.forEach(child => {
+          ids = [...ids, ...getFolderIds(child)];
+        });
+      }
+      return ids;
+    };
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(newSelectedRowKeys);
 
-      const selectedTreeFolderIds: number[] = [];
-      newSelectedRowKeys.forEach(key => {
-        const selectedFolder = getData1.find(item => item.id === key);
-        if (selectedFolder) {
-          selectedTreeFolderIds.push(selectedFolder.id as number);
-        }
+      const folderIds: number[] = [];
+      newSelectedRowKeys.forEach(selectedKey => {
+        getData.forEach(folder => {
+          if (folder.id === selectedKey) {
+            if (folder.children && folder.children.length > 0) {
+              folderIds.push(...getFolderIds(folder));
+            } else {
+              folderIds.push(folder.id);
+            }
+          }
+        });
       });
-
-      setSelectedTreeFolderKeys(selectedTreeFolderIds);
-      console.log("Selected tree folder keys:", selectedTreeFolderKeys);
+      setAllSelectedIds(folderIds);
     };
   
     const rowSelection = {
@@ -313,48 +320,47 @@ const Folder = () => {
       <div className="folder-main">
         {contextHolder}
         <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
-        <div className="c-c">
-            <p className="create"><Button onClick={(e) => {e.preventDefault();navigate("/administrator/internship/builder/folder/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Button></p>
-            <p className="search">
-              <Space.Compact>
-                <Input placeholder='Search folder' value={search} onChange={handleSearchChange}/>
-                <Button onClick={handleSearch} type="primary">
-                  Search
-                </Button>
-              </Space.Compact>
-            </p>
+        <div className="action">
+          <p className="create"><Button onClick={() => {navigate("/administrator/internship/builder/folder/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Button></p>
+          <p className="search">
+            <Space.Compact>
+              <Input placeholder='Search folder' value={search} onChange={handleSearchChange}/>
+              <Button onClick={handleSearch} type="primary">
+                Search
+              </Button>
+            </Space.Compact>
+          </p>
+        </div>
+        <div className="tree-table">
+          <div className="tree-folder">
+            <DirectoryTree
+              className="folder-style"
+              multiple
+              defaultExpandAll
+              onSelect={onSelect}
+              treeData={treeData}
+            />
           </div>
-          <div className="tree-table">
-            <div className="tree-folder">
-              <DirectoryTree
-                className="folder-style"
-                multiple
-                defaultExpandAll
-                onSelect={onSelect}
-                treeData={treeData}
-                onExpand={onExpand}
-              />
+          <div className="table-folder">
+            <div className="delete" >
+              <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
+                <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
+              </Button>
+              <span style={{ marginLeft: 8 }}>
+                {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+              </span>
             </div>
-            <div className="table-folder">
-              <div className="del-f" >
-                <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
-                 <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
-                </Button>
-                <span style={{ marginLeft: 8 }}>
-                  {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-                </span>
-              </div>
-              <Table   
-                rowKey={"id"}             
-                onChange={handleTableChange}
-                pagination={pagination}
-                columns={columns}
-                dataSource={getData1}
-                rowSelection={rowSelection}
-                loading={loading}
-              />
-            </div>
+            <Table   
+              rowKey={"id"}             
+              onChange={handleTableChange}
+              pagination={pagination}
+              columns={columns}
+              dataSource={getData1}
+              rowSelection={rowSelection}
+              loading={loading}
+            />
           </div>
+        </div>
       </div>   
     );
 }

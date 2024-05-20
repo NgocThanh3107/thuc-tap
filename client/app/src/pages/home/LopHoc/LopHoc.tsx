@@ -10,7 +10,8 @@ import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import '../_pages.scss';
+
 interface DataType {
     key: string;
     tenLop: string;
@@ -25,33 +26,33 @@ interface PaginationProps {
     totalPage?: number;
     total ?: number;
     page?: number;
-  }
-
+}
 
 const { Column } = Table;
+
 const LopHoc: React.FC = () => {
   
     let navigate = useNavigate();
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
-    
     const [originalData, setOriginalData] = useState<DataType[]>([]);
-
-    const [pagination, setPagination] = useState<PaginationProps>()
-    console.log(pagination)
+    const [pagination, setPagination] = useState<PaginationProps>();
     const [getdata, setgetData] = useState<DataType[]>([]);
-    console.log(getdata)
-
     const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState<string>("");
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    useEffect(() => {
-      fetchData(1, 10);
-    }, []);
+    const [startSTT, setStartSTT] = useState(0);
 
-      const fetchData = (page: number, pageSize: number) => {
-        axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
+      useEffect(() => {
+        fetchData(1, 10);
+      }, []);
+
+        const fetchData = (page: number, pageSize: number) => {  
+          const start = (page - 1) * pageSize + 1;
+            setStartSTT(start);
+            
+          axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data`, {
             headers: {
               'API-Key': api,
               Authorization: `Bearer ${token}`,
@@ -61,7 +62,7 @@ const LopHoc: React.FC = () => {
             if (res.data.status == true) {
               setgetData(res.data.data);
               setOriginalData(res.data.data);
-              setPagination(res.data.pagination);
+              // setPagination(res.data.pagination);
             } else {
               console.log(res.data.message);
             }
@@ -82,56 +83,39 @@ const LopHoc: React.FC = () => {
         setSearch(value);
         if(value ===""){
           setgetData(originalData);
-          fetchData(1,10)
+          // fetchData(1,10)
         }
       }
+
       const handleSearch = () => {
         if (search.trim() === "") {
           setgetData(originalData);
           setPagination(undefined);
         } else {
             axios
-                .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&maLop=${search}`, {
-                    headers: {
-                        'API-Key': api,
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((res) => {
-                    if (res.data.pagination.total > 0) {
-                        setgetData(res.data.data);
-                        setPagination(res.data.pagination);
-                    } else {   
-                        setgetData([]);      
-                        setPagination(undefined);
-                    }
-                })
-                .catch(error=>{
-                  if(error.response.status == 401){
-                    navigate("/login");
-                  }else{
-                    console.log(error)
+              .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&maLop=${search}`, {
+                  headers: {
+                    'API-Key': api,
+                    Authorization: `Bearer ${token}`,
+                  },
+              })
+              .then((res) => {
+                  if (res.data.pagination.total > 0) {
+                    setgetData(res.data.data);
+                    setPagination(res.data.pagination);
+                  } else {   
+                      setgetData([]);      
+                      setPagination(undefined);
                   }
-                })
-              }
-                // axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&tenLop=${search}`, {
-                //     headers: {
-                //         'API-Key': api,
-                //         Authorization: `Bearer ${token}`,
-                //     },
-                // })
-                // .then((res) => {
-                //     console.log(res.data.pagination.total)
-                //     if (res.data.pagination.total > 0) {
-                //         setgetData(res.data.data);
-                //         setPagination(res.data.pagination);
-                //     } else {   
-                //         setgetData([]);      
-                //     }
-                // })
-                // .catch((error) => {
-                //     console.log(error);
-                // });  
+              })
+              .catch(error=>{
+                if(error.response.status == 401){
+                  navigate("/login");
+                }else{
+                  console.log(error)
+                }
+              })
+          }
       }
 
       const handleTableChange = (pagination: any) => {
@@ -147,36 +131,35 @@ const LopHoc: React.FC = () => {
           onOk() {
             axios.delete("http://192.168.5.240/api/v1/builder/form/lop-hoc/data",
             {
-                headers: {
-                    "API-Key" : api,
-                    "Authorization": `Bearer ${token}`
-                },
-                data : selectedRowKeys
-            }        
-            )
+              headers: {
+                "API-Key" : api,
+                "Authorization": `Bearer ${token}`
+              },
+              data : selectedRowKeys
+            })     
             .then(res=>{
-                if(res.data.status == true){
-                  const key = 'updatable';
+              if(res.data.status == true){
+                const key = 'updatable';
+                messageApi.open({
+                  key,
+                  type: 'loading',
+                  content: 'Đang xóa...',
+                });
+                setTimeout(() => {
                   messageApi.open({
                     key,
-                    type: 'loading',
-                    content: 'Đang xóa...',
+                    type: 'success',
+                    content: 'Đã xóa!',
+                    duration: 2,
                   });
-                  setTimeout(() => {
-                    messageApi.open({
-                      key,
-                      type: 'success',
-                      content: 'Đã xóa!',
-                      duration: 2,
-                    });
-                  }, 300);
-        
-                  const newData = getdata.filter(item => item.id && !selectedRowKeys.includes(item.id));
-                  setgetData(newData);
-                  setSelectedRowKeys([]);
-                } else{
-                      console.log(res.data.message)
-                  }
+                }, 300);
+      
+                const newData = getdata.filter(item => item.id && !selectedRowKeys.includes(item.id));
+                setgetData(newData);
+                setSelectedRowKeys([]);
+              } else{
+                  console.log(res.data.message)
+                }
             })
             .catch(error=>{
               if(error.response.status == 401){
@@ -184,25 +167,24 @@ const LopHoc: React.FC = () => {
               }else{
                 console.log(error)
               }
-            })
+            });
           },
             onCancel() {
               console.log('Cancel');
             }
         });
-    };
+      };
 
-    const onSelectChange = (selectedRowKeys: React.Key[]) => {
-      // console.log('selectedRowKeys changed: ', selectedRowKeys);
-      setSelectedRowKeys(selectedRowKeys);
+    const onSelectChange = (selectedRowKey: React.Key[]) => {
+      setSelectedRowKeys(selectedRowKey);
     };
   
     const rowSelection = {
       selectedRowKeys,
       onChange: onSelectChange,
     };
+
     const hasSelected = selectedRowKeys.length > 0;
-        // console.log(selectedRowKeys)
 
     const { locale, theme } = useContext(ConfigProvider.ConfigContext);
 
@@ -219,12 +201,13 @@ const LopHoc: React.FC = () => {
         ),
       });
     }, [locale, theme]);
+
     return (
         <div className='table-style'>
           <h1>Quản lý lớp học <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
             {contextHolder}
             <div className='table-main'>
-              <div className="del-f">
+              <div className="delete">
                 <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
                  <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
                 </Button>
@@ -232,11 +215,11 @@ const LopHoc: React.FC = () => {
                   {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
                 </span>
               </div>
-              <div className='c-c'>
+              <div className='action'>
                 <p className='create'>
-                    <Button onClick={(e) => { e.preventDefault(); navigate("/administrator/builder/data/lop-hoc/create.html"); }}>
-                      <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Class
-                    </Button>
+                  <Button onClick={() => { navigate("/administrator/builder/data/lop-hoc/create.html"); }}>
+                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Class
+                  </Button>
                 </p>
                 <p className='search'>
                   <Space.Compact>
@@ -247,33 +230,33 @@ const LopHoc: React.FC = () => {
                   </Space.Compact>
                 </p>
               </div>
-              <Table  dataSource={getdata}
-                      pagination={pagination}
-                      onChange={handleTableChange}
-                      rowSelection={rowSelection}
-                      rowKey='id'
-                      loading={loading}
+              <Table
+                dataSource={getdata}
+                // pagination={pagination}
+                onChange={handleTableChange}
+                rowSelection={rowSelection}
+                rowKey='id'
+                loading={loading}
               >
-                  <Column title="STT" dataIndex='' render={(text, record,index)=> index +1} />
+                  <Column title="STT" dataIndex='' render={(text, record,index)=> startSTT + index} />
                   <Column title="Ma lop" dataIndex="maLop" key="maLop" />
                   <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
                   <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
-                  {/* <Column title="Ten Quoc Gia" dataIndex="tenQuocGia" key="tenQuocGia" /> */}
                   <Column
-                      title="Action"
-                      key="action"
-                      render={(getdata: DataType) => (
-                          <Space size="middle" className='style_a'>
-                              <Link onClick={(e) => { e.preventDefault(); navigate("/administrator/builder/data/lop-hoc/edit/" + getdata?.id + ".html"); }}>
-                              <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
-                              </Link>
-                          </Space>
-                      )}
+                    title="Action"
+                    key="action"
+                    render={(getdata: DataType) => (
+                      <Space size="middle">
+                        <Link onClick={(e) => { e.preventDefault(); navigate("/administrator/builder/data/lop-hoc/edit/" + getdata?.id + ".html"); }}>
+                          <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                        </Link>
+                      </Space>
+                    )}
                   />
               </Table>
             </div>   
         </div>
-    )
+    );
     
 }
 export default LopHoc;

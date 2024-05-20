@@ -1,6 +1,5 @@
-
 import React from "react";
-// import "../pages/home/_home.scss";
+
 function PageNotFound(){
     return(
         <div className="PageNotFound">

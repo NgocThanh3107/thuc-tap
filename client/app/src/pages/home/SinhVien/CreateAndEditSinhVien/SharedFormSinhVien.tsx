@@ -5,19 +5,19 @@ import { Button, Form, Input, Select, Flex, Spin } from 'antd';
 import React from 'react';
 import LopProps from "../../LopHoc";
 
-const SharedFormSinhVien: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
+type FieldType = {
+  tenSinhVien?: string;
+  maSinhVien: string;
+  id?: number;
+  lop?: LopProps;
+  moTa?: string;
+};
+
+const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
   const api = localStorage.getItem("api");
   const navigate = useNavigate();
   const { id } = useParams();
   const token = localStorage.getItem("token");
-
-  type FieldType = {
-    tenSinhVien?: string;
-    maSinhVien: string;
-    id?: number;
-    lop?: LopProps;
-    moTa?: string;
-  };
 
   const [idLop, setIdLop] = useState<number>();
   const [formData, setFormData] = useState<FieldType>();
@@ -25,7 +25,7 @@ const SharedFormSinhVien: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
   const [codeError, setcodeError] = useState<string>('');
   const [loading,setLoading] = useState(true);
   useEffect(() => {
-    if (isEditing && id) {
+    if (isEdit && id) {
       axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data/${id}`, {
         headers: {
           "API-Key": api,
@@ -53,7 +53,7 @@ const SharedFormSinhVien: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
       setLoading(false)
     }
     fetchClassData(1, 100);
-  }, [id, isEditing]);
+  }, [id, isEdit]);
 
   const fetchClassData = (page: number, pageSize: number) => {
     axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
@@ -89,7 +89,7 @@ const SharedFormSinhVien: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
       moTa: values.moTa || null
     };
 
-    const request = isEditing
+    const request = isEdit
       ? axios.put(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data`, data, {
           headers: {
             "API-Key": api,
@@ -105,24 +105,24 @@ const SharedFormSinhVien: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
 
     request.then(res => {
       if (res.data.status === true) {
-        isEditing ? alert("Updated successfully") : alert("Created successfully");
+        isEdit ? alert("Updated successfully") : alert("Created successfully");
         navigate("/administrator/builder/data/sinh-vien.html");
       } else {
         console.log(res.data.message);
       }
     })
     .catch(error => {
-        if (error.response.status === 401) {
-            navigate("/login");
-          } else {
-            const errorDescription = error.response.data.errorDescription;
-            const codeError = errorDescription.find((errorItem: any) => errorItem.field === "maSinhVien");
-            if(codeError) {
-                setcodeError(error.response.data.message);
-            } else{
-                setcodeError("")
-            }
+      if (error.response.status === 401) {
+        navigate("/login");
+      } else {
+          const errorDescription = error.response.data.errorDescription;
+          const codeError = errorDescription.find((errorItem: any) => errorItem.field === "maSinhVien");
+          if(codeError) {
+            setcodeError(error.response.data.message);
+          } else{
+              setcodeError("")
           }
+        }
     });
   };
 
@@ -141,9 +141,11 @@ const SharedFormSinhVien: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
       </Flex>
     );
   }
+
+  
   return (
       <div className="edit-create">
-        <h1>{isEditing ? "Edit and Update Students" : "Create New Students"}</h1>
+        <h1>{isEdit ? "Edit and Update Students" : "Create New Students"}</h1>
         <Form<FieldType>
           name="basic"
           labelCol={{ span: 8 }}
@@ -198,7 +200,7 @@ const SharedFormSinhVien: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              {isEditing ? "Update" : "Create"}
+              {isEdit ? "Update" : "Create"}
             </Button>
           </Form.Item>
         </Form>
