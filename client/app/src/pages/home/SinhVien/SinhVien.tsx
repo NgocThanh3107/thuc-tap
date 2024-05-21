@@ -22,12 +22,12 @@ interface DataType {
     lop : LopProps;
 }
 
-interface paginationProps {
-    pageSize? : number;
-    totalPage?: number;
-    total ?: number;
-    page?: number;
-}
+// interface paginationProps {
+//     pageSize? : number;
+//     totalPage?: number;
+//     total ?: number;
+//     page?: number;
+// }
 
 const {Column} = Table;
 
@@ -37,14 +37,14 @@ const {Column} = Table;
       let api = localStorage.getItem("api");
       let token = localStorage.getItem("token");
       const [data, setData] = useState<DataType[]>([]);
-      const [pagination, setPagination] = useState<paginationProps>()
+      // const [pagination, setPagination] = useState<paginationProps>()
       const [messageApi, contextHolder] = message.useMessage();
       const [originalData, setOriginalData] = useState<DataType[]>([]);
-      const [search, setSearch] = useState<string>('');
+      // const [search, setSearch] = useState<string>('');
       const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
       const [loading, setLoading] = useState(true);
       const [startSTT, setStartSTT] = useState(0);
-
+      // console.log(data)
         useEffect(() => {
             fetchData(1, 10);
           }, []);
@@ -62,7 +62,7 @@ const {Column} = Table;
               .then((res) => {
                 if (res.data.status === true) {
                   setData(res.data.data);
-                  setPagination(res.data.pagination);
+                  // setPagination(res.data.pagination);
                   setOriginalData(res.data.data);
                 } else {
                   console.log(res.data.message);
@@ -81,37 +81,43 @@ const {Column} = Table;
         
           const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const value = e.target.value;
-            setSearch(value);
+            // setSearch(value);
             if(value===""){
               setData(originalData)
-              // fetchData(1,10)
+            }else {
+              const filteredData = originalData.filter(item =>
+                item.maSinhVien.toLowerCase().includes(value.toLowerCase()) ||
+                item.tenSinhVien.toLowerCase().includes(value.toLowerCase()) ||
+                (item.lop && item.lop.tenLop && item.lop.tenLop.toLowerCase().includes(value.toLowerCase()))
+              );
+              setData(filteredData);
             }
           };
         
-        const handleSearch = () =>{
-            axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?page=1&pageSize=10&maSinhVien=${search}`, {
-              headers: {
-                'API-Key': api,
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((res) => {
-              if (res.data.pagination.total > 0) {
-                setData(res.data.data);
-                setPagination(res.data.pagination);
-              } else {   
-                  setData([]);  
-                  setPagination(undefined); 
-              }
-            })
-            .catch(error=>{
-              if(error.response.status == 401){
-                navigate("/login");
-              }else{
-                console.log(error)
-              }
-            })  
-        }
+        // const handleSearch = () =>{
+        //     axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?maSinhVien=${search}`, {
+        //       headers: {
+        //         'API-Key': api,
+        //         Authorization: `Bearer ${token}`,
+        //       },
+        //     })
+        //     .then((res) => {
+        //       if (res.data.status === true) {
+        //         setData(res.data.data);
+        //         // setPagination(res.data.pagination);
+        //       } else {   
+        //           setData([]);  
+        //           // setPagination(undefined); 
+        //       }
+        //     })
+        //     .catch(error=>{
+        //       if(error.response.status == 401){
+        //         navigate("/login");
+        //       }else{
+        //         console.log(error)
+        //       }
+        //     })  
+        // }
 
         const handleTableChange = (pagination: any) => {
           const { current, pageSize } = pagination;
@@ -201,7 +207,7 @@ const {Column} = Table;
     
     return (
         <div className='table-style'>
-          <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
+          <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{data.length}</span></h1>
             {contextHolder}
             <div className='table-main'>
               <div className="delete">
@@ -215,19 +221,19 @@ const {Column} = Table;
               <div className='action'>
                 <p className='create'>
                   <Button onClick={() => { navigate("/administrator/builder/data/sinh-vien/create.html");}}>
-                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new students
+                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new 
                   </Button>
                 </p>
                 <p className='search'>
                   <Space.Compact>
-                    <Input placeholder='Search by Students ID' value={search} onChange={handleSearchChange}/>
-                    <Button onClick={handleSearch} type="primary" >Search</Button>
+                  <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
+                    {/* <Button onClick={handleSearch} type="primary" >Search</Button> */}
                   </Space.Compact>
                 </p>
               </div>
               <Table  
                 dataSource={data}
-                pagination={pagination}
+                // pagination={pagination}
                 onChange={handleTableChange}
                 rowSelection={rowSelection}
                 rowKey='id'

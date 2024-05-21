@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Space, Table, message, Input, Button } from 'antd';
-import type { TableProps } from 'antd';
 import { useNavigate } from "react-router-dom";
 import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
+import type { TableColumnsType } from 'antd';
 
 interface DataFormProps{
     id: number;
@@ -23,8 +23,8 @@ interface DataFolderProps {
     children:DataFolderProps[];
     parent: DataFolderProps[];
   }
-  
-      
+
+
     const Form: React.FC = () =>{
 
         let api = localStorage.getItem("api");
@@ -36,6 +36,7 @@ interface DataFolderProps {
         const [search, setSearch] = useState<string>("");
         const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
         const [loading, setLoading] = useState(true);
+        const [startSTT, setStartSTT] = useState(0);
           useEffect(() => {
             axios.get(`http://192.168.5.240/api/v1/builder/form`, {
               headers: {
@@ -61,56 +62,70 @@ interface DataFolderProps {
                 }
                 setLoading(false)
               });
-          }, []);
-      
 
+            fetchData(1,10);
+          }, []);
+          const fetchData = (page : number, pageSize : number) => {
+            const start = (page - 1) * pageSize + 1 ;
+            setStartSTT(start)
+          }
+      
+      const handleTable = (pagination : any) => {
+        const {current, pageSize} = pagination;
+        fetchData(current,pageSize)
+      }
       const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearch(value);
         if(value ===""){
           setGetData(originalData);
+        }else {
+          const filteredData = originalData.filter(item => 
+            item.code.toLowerCase().includes(value.toLowerCase()) ||
+            item.name.toLowerCase().includes(value.toLowerCase())
+        );
+          setGetData(filteredData);
         }
       }
 
-      const handleSearch = () => {
-        if (search.trim() === "") {
-          setGetData(originalData);
-        } else {
-            axios
-              .get(`http://192.168.5.240/api/v1/builder/form?code=${search}`, {
-                  headers: {
-                      'API-Key': api,
-                      Authorization: `Bearer ${token}`,
-                  },
-              })
-              .then((res) => {
-                if(res.data.status===true){
-                  setGetData(res.data.data)
-                }else{
-                  setGetData([]);
-                }
-              })
-              .catch(error=>{
-                if(error.response.status == 401){
-                  navigate("/login");
-                }else{
-                  console.log(error)
-                }
-              })
-          } 
-      }
+      // const handleSearch = () => {
+      //   if (search.trim() === "") {
+      //     setGetData(originalData);
+      //   } else {
+      //       axios
+      //         .get(`http://192.168.5.240/api/v1/builder/form?code=${search}`, {
+      //             headers: {
+      //                 'API-Key': api,
+      //                 Authorization: `Bearer ${token}`,
+      //             },
+      //         })
+      //         .then((res) => {
+      //           if(res.data.status===true){
+      //             setGetData(res.data.data)
+      //           }else{
+      //             setGetData([]);
+      //           }
+      //         })
+      //         .catch(error=>{
+      //           if(error.response.status == 401){
+      //             navigate("/login");
+      //           }else{
+      //             console.log(error)
+      //           }
+      //         })
+      //     } 
+      // }
         
-        const columns: TableProps<DataFormProps>['columns'] = [
+        const columns: TableColumnsType<DataFormProps> = [
           {
             title: 'STT',
             dataIndex: '',
-            render: (text, record, index) => index + 1
+            render: (text, record, index) => startSTT + index
           },
           {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: (text) => <a>{text}</a>,
           },
           {
             title: 'Code',
@@ -226,17 +241,17 @@ interface DataFolderProps {
               </span>
             </div>
             <div className="action">
-              <p className="create"><Button onClick={() => {navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Form</Button></p>
+              <p className="create"><Button onClick={() => {navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new </Button></p>
               <p className='search'>
                 <Space.Compact>
-                  <Input placeholder='Search by code ' value={search} onChange={handleSearchChange}/>
-                  <Button onClick={handleSearch} type="primary" >
+                <Input type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
+                  {/* <Button onClick={handleSearch} type="primary" >
                     Search
-                  </Button>
+                  </Button> */}
                 </Space.Compact>
               </p>
             </div>
-          <Table loading={loading} className="table" rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
+          <Table onChange={handleTable} loading={loading} rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
           </div>
         </div>
       </div>

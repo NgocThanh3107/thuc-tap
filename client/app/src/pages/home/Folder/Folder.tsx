@@ -25,18 +25,18 @@ interface DataFolderProps {
 }
 interface DataType {
   key?: React.Key;
-  name?: string;
+  name: string;
   description?: string;
   id?: number;
-  parent?: DataType[];
+  parent: DataType[];
   
 }
-interface PaginationProps {
-  pageSize? : number;
-  totalPage?: number;
-  total ?: number;
-  page?: number;
-}
+// interface PaginationProps {
+//   pageSize? : number;
+//   totalPage?: number;
+//   total ?: number;
+//   page?: number;
+// }
 
 const Folder = () => {
 
@@ -73,7 +73,8 @@ const Folder = () => {
     const [getData, setGetData] = useState<DataFolderProps[]>([]);
     const [getData1, setGetData1] = useState<DataType[]>([]);
     const [originalData, setOriginalData] = useState<DataFolderProps[]>([]);
-    const [pagination, setPagination] = useState<PaginationProps>();
+    const [originalData1, setOriginalData1] = useState<DataType[]>([]);
+    // const [pagination, setPagination] = useState<PaginationProps>();
     const [IdParent, setIdParent] = useState<number | undefined>();  
     const [messageApi, contextHolder] = message.useMessage();
     const [search, setSearch] = useState<string>('');
@@ -81,7 +82,8 @@ const Folder = () => {
     const [loading,setLoading] = useState(true);
     const [startSTT, setStartSTT] = useState(0);
     const [allSelectedIds, setAllSelectedIds] = useState<number[]>([]);
-
+    console.log(selectedRowKeys)
+    
       useEffect(() => {
         axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
           headers: {
@@ -107,22 +109,25 @@ const Folder = () => {
       }, []);
 
     const fetchData = (page: number, pageSize: number,parent: number | undefined) => {
+      const start = (page - 1) * pageSize + 1;
+        setStartSTT(start);
+
       axios
-        .get(`http://192.168.5.240/api/v1/folder?page=${page}&pageSize=${pageSize}&parent=${parent}`, {
+        .get(`http://192.168.5.240/api/v1/folder?parent=${parent}`, {
           headers: {
             'API-Key': api,
             Authorization: `Bearer ${token}`,
           },
         })
         .then((res) => {
-          if (res.data.pagination.total > 0) {
+          if (res.data.status === true) {
             setGetData1(res.data.data);
-            setPagination(res.data.pagination);
-            const start = (page - 1) * pageSize + 1;
-            setStartSTT(start);
+            setOriginalData1(res.data.data)
+            // setPagination(res.data.pagination);
         } else {   
             setGetData1([]);      
-            setPagination(undefined);
+            setOriginalData1([])
+            // setPagination(undefined);
         }
         setLoading(false)
         })
@@ -148,12 +153,16 @@ const Folder = () => {
 
     const treeData: TreeDataNode[] = convertData(getData);
 
+    const [selectedFolderName, setSelectedFolderName] = useState<string>('');
+
     const onSelect: DirectoryTreeProps['onSelect'] = (keys, info) => {
-        info.selectedNodes.map((v)=>{
-          console.log(v)
-            setIdParent(keys[0] as number);
-            fetchData(1,10, keys[0] as number);
-        })
+      info.selectedNodes.map((v)=>{
+          if ('title' in info.node) {
+              setSelectedFolderName(info.node.title as string);
+              setIdParent(keys[0] as number);
+              fetchData(1,10, keys[0] as number);
+          }
+      });
     }
     
     const deleteFolderTreeData = (id: number, data: DataFolderProps[]): DataFolderProps[] => {
@@ -233,33 +242,42 @@ const Folder = () => {
       const value = e.target.value;
       setSearch(value);
       if(value===""){
-        setGetData(originalData)
+        setGetData1(originalData1)
+      }else {
+        const filteredData1 = originalData1.filter(item => item.name?.toLowerCase().includes(value.toLowerCase()));
+        setGetData1(filteredData1);
       }
     }
 
-    const handleSearch = () =>{
-      axios.get(`http://192.168.5.240/api/v1/folder?page=1&pageSize=10&name=${search}`, {
-        headers: {
-            'API-Key': api,
-            Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(res=>{
-        console.log(res)
-        if (res.data.status === true) { 
-          setGetData(res.data.data);
-      } else {
-          setGetData([]);
-      }
-      })
-      .catch(error =>{
-        if(error.response.status === 401){
-          navigate("/login");
-        }else{
-          console.log(error)
-        }
-      })
-    }
+    // const handleSearch = () =>{
+    //   if(search == ""){
+    //     setGetData(originalData)
+    //   }else {
+    //     axios.get(`http://192.168.5.240/api/v1/folder?parent=${IdParent}&name=${search}`, {
+    //       headers: {
+    //           'API-Key': api,
+    //           Authorization: `Bearer ${token}`,
+    //       },
+    //     })
+    //     .then(res=>{
+    //       console.log(res)
+    //       if (res.data.status === true) { 
+    //         setGetData(res.data.data);
+    //         setGetData1(res.data.data)
+    //     } else {
+    //         setGetData([]);
+    //         setGetData1([]);
+    //     }
+    //     })
+    //     .catch(error =>{
+    //       if(error.response.status === 401){
+    //         navigate("/login");
+    //       }else{
+    //         console.log(error)
+    //       }
+    //     })
+    //   }
+    // }
 
     const handleTableChange = (pagination: any) => {
       const { current, pageSize } = pagination;
@@ -316,18 +334,20 @@ const Folder = () => {
         ),
       });
     }, [locale, theme]);
+
+
     return (
       <div className="folder-main">
         {contextHolder}
-        <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
+        <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
         <div className="action">
           <p className="create"><Button onClick={() => {navigate("/administrator/internship/builder/folder/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Button></p>
           <p className="search">
             <Space.Compact>
-              <Input placeholder='Search folder' value={search} onChange={handleSearchChange}/>
-              <Button onClick={handleSearch} type="primary">
+              <Input type="text" placeholder={`Search ${selectedFolderName ? selectedFolderName : 'folder'}` } value={search} style={{fontFamily: 'FontAwesome'}} onChange={handleSearchChange}/>
+              {/* <Button onClick={handleSearch} type="primary">
                 Search
-              </Button>
+              </Button> */}
             </Space.Compact>
           </p>
         </div>
@@ -353,7 +373,7 @@ const Folder = () => {
             <Table   
               rowKey={"id"}             
               onChange={handleTableChange}
-              pagination={pagination}
+              // pagination={pagination}
               columns={columns}
               dataSource={getData1}
               rowSelection={rowSelection}

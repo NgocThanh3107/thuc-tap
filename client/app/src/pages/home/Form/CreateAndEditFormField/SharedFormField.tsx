@@ -56,7 +56,7 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
         .then(res => {
           if (res.data.status === true) {
           isEdit ? alert("Updated successfully") : alert("Created successfully");
-          navigate("/formfield/" + idFFieldFrom);
+          navigate("/administrator/internship/builder/formfield/" + idFFieldFrom + ".html");
           }
         })
         .catch(error => {
@@ -117,7 +117,9 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
                 [
                     {value: 'text',label: 'Text'},
                     {value: 'boolean',label: 'Boolean'},
-                    {value: 'reference',label: 'Reference'}
+                    {value: 'reference',label: 'Reference'},
+                    {value: 'date',label: 'Date'},
+                    {value: 'int',label: 'Int'}
                 ]
             }>
             </Select>

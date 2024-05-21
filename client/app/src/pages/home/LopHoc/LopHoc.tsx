@@ -36,14 +36,13 @@ const LopHoc: React.FC = () => {
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
     const [originalData, setOriginalData] = useState<DataType[]>([]);
-    const [pagination, setPagination] = useState<PaginationProps>();
-    const [getdata, setgetData] = useState<DataType[]>([]);
+    // const [pagination, setPagination] = useState<PaginationProps>();
+    const [getData, setGetData] = useState<DataType[]>([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState<string>("");
+    // const [search, setSearch] = useState<string>("");
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [startSTT, setStartSTT] = useState(0);
-
       useEffect(() => {
         fetchData(1, 10);
       }, []);
@@ -60,7 +59,7 @@ const LopHoc: React.FC = () => {
           })
           .then((res) => {
             if (res.data.status == true) {
-              setgetData(res.data.data);
+              setGetData(res.data.data);
               setOriginalData(res.data.data);
               // setPagination(res.data.pagination);
             } else {
@@ -78,45 +77,50 @@ const LopHoc: React.FC = () => {
           })
       };
 
-      const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSearch(value);
-        if(value ===""){
-          setgetData(originalData);
-          // fetchData(1,10)
-        }
-      }
-
-      const handleSearch = () => {
-        if (search.trim() === "") {
-          setgetData(originalData);
-          setPagination(undefined);
+      const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        // setSearch(value);
+        if (value === "") {
+            setGetData(originalData);
         } else {
-            axios
-              .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=1&pageSize=10&maLop=${search}`, {
-                  headers: {
-                    'API-Key': api,
-                    Authorization: `Bearer ${token}`,
-                  },
-              })
-              .then((res) => {
-                  if (res.data.pagination.total > 0) {
-                    setgetData(res.data.data);
-                    setPagination(res.data.pagination);
-                  } else {   
-                      setgetData([]);      
-                      setPagination(undefined);
-                  }
-              })
-              .catch(error=>{
-                if(error.response.status == 401){
-                  navigate("/login");
-                }else{
-                  console.log(error)
-                }
-              })
+            const filteredData = originalData.filter(item => 
+              item.maLop.toLowerCase().includes(value.toLowerCase()) ||
+              item.tenLop.toLowerCase().includes(value.toLowerCase())
+            );
+            setGetData(filteredData);
           }
-      }
+      };
+
+      // const handleSearch = () => {
+      //   if (search.trim() === "") {
+      //     setGetData(originalData);
+      //     // setPagination(undefined);
+      //   } else {
+      //       axios
+      //         .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?maLop=${search}`, {
+      //             headers: {
+      //               'API-Key': api,
+      //               Authorization: `Bearer ${token}`,
+      //             },
+      //         })
+      //         .then((res) => {
+      //           if (res.data.status === true) {
+      //             setGetData(res.data.data);
+      //             // setPagination(res.data.pagination);
+      //           } else {   
+      //               setGetData([]);      
+      //               // setPagination(undefined);
+      //           }
+      //         })
+      //         .catch(error=>{
+      //           if(error.response.status == 401){
+      //             navigate("/login");
+      //           }else{
+      //             console.log(error)
+      //           }
+      //         })
+      //     }
+      // }
 
       const handleTableChange = (pagination: any) => {
         const { current, pageSize } = pagination;
@@ -154,8 +158,8 @@ const LopHoc: React.FC = () => {
                   });
                 }, 300);
       
-                const newData = getdata.filter(item => item.id && !selectedRowKeys.includes(item.id));
-                setgetData(newData);
+                const newData = getData.filter(item => item.id && !selectedRowKeys.includes(item.id));
+                setGetData(newData);
                 setSelectedRowKeys([]);
               } else{
                   console.log(res.data.message)
@@ -204,7 +208,7 @@ const LopHoc: React.FC = () => {
 
     return (
         <div className='table-style'>
-          <h1>Quản lý lớp học <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{pagination?.total}</span></h1>
+          <h1>Quản lý lớp học <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             {contextHolder}
             <div className='table-main'>
               <div className="delete">
@@ -218,20 +222,20 @@ const LopHoc: React.FC = () => {
               <div className='action'>
                 <p className='create'>
                   <Button onClick={() => { navigate("/administrator/builder/data/lop-hoc/create.html"); }}>
-                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Class
+                    <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new 
                   </Button>
                 </p>
                 <p className='search'>
                   <Space.Compact>
-                    <Input placeholder='Search by Class ID' value={search} onChange={handleSearchChange} />
-                    <Button onClick={handleSearch} type="primary">
+                  <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
+                    {/* <Button onClick={handleSearch} type="primary">
                       Search
-                    </Button>
+                    </Button> */}
                   </Space.Compact>
                 </p>
               </div>
               <Table
-                dataSource={getdata}
+                dataSource={getData}
                 // pagination={pagination}
                 onChange={handleTableChange}
                 rowSelection={rowSelection}
@@ -239,9 +243,9 @@ const LopHoc: React.FC = () => {
                 loading={loading}
               >
                   <Column title="STT" dataIndex='' render={(text, record,index)=> startSTT + index} />
-                  <Column title="Ma lop" dataIndex="maLop" key="maLop" />
-                  <Column title="Ten Lop" dataIndex="tenLop" key="tenLop" />
-                  <Column title="Mo Ta" dataIndex="moTa" key="moTa" />
+                  <Column title="Mã lớp" dataIndex="maLop" key="maLop" />
+                  <Column title="Tên Lớp" dataIndex="tenLop" key="tenLop" />
+                  <Column title="Mô Tả" dataIndex="moTa" key="moTa" />
                   <Column
                     title="Action"
                     key="action"

@@ -52,7 +52,25 @@ html, body {
     height: auto;
     text-align: center;
     background-color: #ecebeb;
-    
+    h1{
+        text-align: left;
+        margin-top: 20px;
+        margin-left: 15px;
+    }
+    .title-link{
+        text-align: left;
+        margin-left: 15px;
+        margin-top: 10px;
+        a{
+            text-decoration: none;
+            color: #333;
+            font-size: 20px;
+        }
+        :first-child{
+            font-weight: bold;
+            font-size: 21px;
+        }
+    }
 } 
 
 .footer {

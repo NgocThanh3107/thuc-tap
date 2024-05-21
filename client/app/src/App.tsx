@@ -14,13 +14,13 @@ import CreateFolder from './pages/home/Folder/EditAndCreateFolder/CreateFolder';
 import FormField from './pages/home/Form/FormField';
 import CreateForm from './pages/home/Form/CreateAndEditForm/CreateForm';
 import Form from './pages/home/Form/Form';
-import CreateFormField from './pages/home/Form/CreateAndEditFormField/CreateFormField';
 import EditFormField from './pages/home/Form/CreateAndEditFormField/EditFormField';
 import EditForm from './pages/home/Form/CreateAndEditForm/EditForm';
 import EditLop from './pages/home/LopHoc/CreateAndEditLopHoc/EditLop';
 import CreateLop from './pages/home/LopHoc/CreateAndEditLopHoc/CreateLop';
 import PageNotFound from './components/layout/PageNotFound';
 import Register from './components/member/Register';
+import CreateFormField from './pages/home/Form/CreateAndEditFormField/CreateFormField';
 
 function App() {
 
@@ -43,7 +43,7 @@ function App() {
           <Route path='/administrator/internship/builder/form/edit/:id.html' element={<EditForm />}/>
           <Route path='/administrator/internship/builder/form/create.html' element={<CreateForm />}/>
           <Route path='/administrator/internship/builder/formfield/:id.html' element= {<FormField/>} />
-          <Route path='/administrator/internship/builder/formfield/create.html' element={<CreateFormField />}/>
+          <Route path='/administrator/internship/builder/formfield/create' element={<CreateFormField />}/>
           <Route path='/administrator/internship/builder/formfield/edit/:id.html' element={<EditFormField />}/>
         </Route>
         <Route path='/account' element={<Account />} />
