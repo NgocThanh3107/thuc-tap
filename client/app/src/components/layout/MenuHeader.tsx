@@ -26,7 +26,7 @@ const MenuHeader: React.FC = () => {
             axios.get("http://192.168.5.240/api/v2/menu/my-menu", {
                 headers: {
                     "API-Key": api,
-                    "locale": "en",
+                    // "locale": "en",
                     "Authorization": `Bearer ${token}`
                 }
                 })
@@ -49,7 +49,7 @@ const MenuHeader: React.FC = () => {
                 const icon = menuItem.iconClass || "fa fa-angle-double-right";
                 if (menuItem.children.length > 0) {
                     return (
-                        <SubMenu key={menuItem.id} title={<span><i className={icon}></i> {menuItem.pageTitle}</span>}>
+                        <SubMenu className='submenu' key={menuItem.id} title={<span><i className={icon}></i> {menuItem.pageTitle}</span>}>
                             {renderMenuItems(menuItem.children)}
                         </SubMenu>
                     );
@@ -66,9 +66,11 @@ const MenuHeader: React.FC = () => {
         };
 
         return (
-            <Menu className='menu-header' mode="inline" >
-                {renderMenuItems(data)}
-            </Menu>
+            <div className='menu-header'>
+                <Menu mode="inline" >
+                    {renderMenuItems(data)}
+                </Menu>
+            </div>
         );
 
     }

@@ -118,6 +118,12 @@ const FormField = () => {
       setSearch(value);
       if(value ===""){
         setgetData(originalData);
+      }else{
+        const filteredData = originalData.filter(item =>
+          item?.name.toLowerCase().includes(value.toLowerCase()) ||
+          item?.apiKey.toLowerCase().includes(value.toLowerCase())
+        );
+        setgetData(filteredData);
       }
     }
 
@@ -198,10 +204,10 @@ const FormField = () => {
                     </span>
                 </div>
                 <div className="action"> 
-                  <p className="create"><Button onClick={() => { navigate('/administrator/internship/builder/formfield/create')}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add New</Button></p>
+                  <p className="create"><Button type="primary" onClick={() => { navigate('/administrator/internship/builder/formfield/create')}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add New</Button></p>
                   <p className='search'>
                     <Space.Compact>
-                    <Input type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
+                    <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
                       {/* <Button onClick={handleSearch} type="primary" icon={<SearchOutlined />}>
                         Search
                       </Button> */}

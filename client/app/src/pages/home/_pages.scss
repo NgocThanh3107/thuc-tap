@@ -1,10 +1,12 @@
+
+
 .table-style{
-    width: 98%;
+    width: 100%;
     display: block;
     height: auto;
     float: left;
-    padding: 1% ;
-    margin: auto;
+    padding: 2% ;
+    margin: 0;
     background-color: #ecebeb;
     button{
         text-align: left;
@@ -21,6 +23,7 @@
        text-align: left;
        margin: 0;
        margin-bottom: 15px;
+       padding: 0;
       
     } 
 }
@@ -35,7 +38,7 @@
     } 
 }
 .delete{
-    width: 30%;
+    width: 100%;
     text-align: left;
     display: block;
     float: left;
@@ -44,18 +47,29 @@
 
 .folder-main{
     display: block;
-    width: 98%;
+    width: 100%;
     float: left;
     height: auto;
     text-align: left;
     background-color: #ecebeb;
-    padding: 1%;
+    padding: 2%;
+
+    .tree-table{
+        width: 100%;
+        display: inline-block;
+        background-color: #fff;
+        padding: 2%;
+        margin-top: 10px;
+        height: auto;
+    }
+
     .folder-style{
         background-color: rgb(224, 224, 224);
         padding: 10px 0;
     }
     h1{
         margin: 0;
+        margin-bottom: 15px;
     }
     .tree-folder{
         width: 20%;
@@ -79,7 +93,7 @@
     }
 }
 .action{
-    width:70%;
+    width:100%;
     display: block;
     float: right;
         
@@ -88,7 +102,7 @@
             padding: 0;
             margin: 0;
             button{
-                color: #1677ff;
+                color: #fff;
                 border: 1px solid #1677ff;
             } 
         }
@@ -99,14 +113,6 @@
                 border: 1px solid #1677ff;
             }
         }         
-}
-
-.tree-table{
-    width: 96%;
-    display: inline-block;
-    background-color: #fff;
-    padding: 2%;
-    margin-top: 10px;
 }
 
 .edit-create{
@@ -124,42 +130,126 @@
     }
 }
 
-@media screen and (max-width: 820px){
-    .folder-main{
-        width: 100%;
-        padding: 0;
+@media screen and (max-width: 1024px){
+
+    .table-style{
         h1{
             font-size: 25px;
         }
     }
-    .c-c{
-        width: 70%;
-        
-    .search{
-        width: 160px;
-    }
-    .create{
-        a{
-            font-size: 12px;
+    .folder-main{
+        width: 100%;
+        // padding: 0;
+        h1{
+            font-size: 25px;
         }
-        
     }
-    }
+
     .tree-table{
-        width: 96%;
+        width: 100%;
     }
     .tree-folder{
-        width: 25%;
+        width: 15%;
         padding: 0;
         .folder-style{
             padding: 0;
         }
     }
     .table-folder{
-        width: 70%;
+        width: 85%;
     }
-    .del-f{
-        width: 30%;
+    .delete{
         font-size: 13px;
     }
+}
+
+@media screen and (max-width: 430px){
+    .table-style{
+        width: 100%;
+        padding: 0;
+        h1{
+            font-size: 20px;
+            margin: 0;
+        }
+        .delete{
+            margin-bottom: 10px;
+            button{
+                font-size: 12px;
+                padding: 0 10px;
+                
+            }
+        }
+    }
+    .folder-main{
+        display: block;
+        width: 100%;
+        h1{
+            font-size: 20px;
+        }
+        .delete{
+            margin-bottom: 10px;
+            button{
+                font-size: 12px;
+                padding: 0 10px;
+                
+            }
+        }
+        .tree-table{
+            width: 100%;
+            display: inline-block;
+            height: 100%;
+
+            .tree-folder{
+                width: 100%;
+                margin: 15px 0px;
+            }
+            .table-folder{
+                width: 100%;
+                table{
+                    width: 100%;
+                    th{
+                        font-size: 12px;
+                    }
+                    td{
+                        font-size: 11px;
+                    }
+                }
+            }
+        }
+    }
+    .table-main{
+        table{
+            margin: 0;
+            width: 100%;
+            margin-top: 15px;   
+            th{
+                font-size: 13px;
+                padding: 0;
+            }
+            td{
+                font-size: 11px;
+                padding: 0;
+            }
+        }
+    }
+    .edit-create{
+        width: 70%;
+        text-align: left;
+        margin: auto;
+        // margin-left: 100px;
+        background-color: #ecebeb;
+        h1{
+            text-align: center;
+            // margin-left: 200px;
+            // padding: 30px 0px;
+            margin: 0;
+        }
+        form{
+            margin: auto;
+            width: 80%;
+            text-align: left;
+            
+        }
+    }
+  
 }

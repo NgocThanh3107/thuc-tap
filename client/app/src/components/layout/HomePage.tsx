@@ -51,9 +51,9 @@ const HomePage = () =>{
         </div>
         <div className='content_style'>
           {check ? <Outlet /> : <PageNotFound />}
+          <Footer />
         </div>
       </div>
-      <Footer />
     </div>
   )
   

@@ -241,10 +241,10 @@ interface DataFolderProps {
               </span>
             </div>
             <div className="action">
-              <p className="create"><Button onClick={() => {navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new </Button></p>
+              <p className="create"><Button type="primary" onClick={() => {navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new </Button></p>
               <p className='search'>
                 <Space.Compact>
-                <Input type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
+                <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
                   {/* <Button onClick={handleSearch} type="primary" >
                     Search
                   </Button> */}

@@ -221,7 +221,7 @@ const LopHoc: React.FC = () => {
               </div>
               <div className='action'>
                 <p className='create'>
-                  <Button onClick={() => { navigate("/administrator/builder/data/lop-hoc/create.html"); }}>
+                  <Button type="primary" onClick={() => { navigate("/administrator/builder/data/lop-hoc/create.html"); }}>
                     <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new 
                   </Button>
                 </p>

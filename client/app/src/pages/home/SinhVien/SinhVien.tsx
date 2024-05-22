@@ -36,7 +36,7 @@ const {Column} = Table;
       let navigate = useNavigate();
       let api = localStorage.getItem("api");
       let token = localStorage.getItem("token");
-      const [data, setData] = useState<DataType[]>([]);
+      const [getData, setGetData] = useState<DataType[]>([]);
       // const [pagination, setPagination] = useState<paginationProps>()
       const [messageApi, contextHolder] = message.useMessage();
       const [originalData, setOriginalData] = useState<DataType[]>([]);
@@ -61,7 +61,7 @@ const {Column} = Table;
               })
               .then((res) => {
                 if (res.data.status === true) {
-                  setData(res.data.data);
+                  setGetData(res.data.data);
                   // setPagination(res.data.pagination);
                   setOriginalData(res.data.data);
                 } else {
@@ -83,14 +83,14 @@ const {Column} = Table;
             const value = e.target.value;
             // setSearch(value);
             if(value===""){
-              setData(originalData)
+              setGetData(originalData)
             }else {
               const filteredData = originalData.filter(item =>
                 item.maSinhVien.toLowerCase().includes(value.toLowerCase()) ||
                 item.tenSinhVien.toLowerCase().includes(value.toLowerCase()) ||
                 (item.lop && item.lop.tenLop && item.lop.tenLop.toLowerCase().includes(value.toLowerCase()))
               );
-              setData(filteredData);
+              setGetData(filteredData);
             }
           };
         
@@ -156,8 +156,8 @@ const {Column} = Table;
                       });
                     }, 300);
 
-                    const newData = data.filter(item => item.id && !selectedRowKeys.includes(item.id));
-                    setData(newData);
+                    const newData = getData.filter(item => item.id && !selectedRowKeys.includes(item.id));
+                    setGetData(newData);
                     setSelectedRowKeys([]);
                   } else{
                       console.log(res.data.message)
@@ -207,7 +207,7 @@ const {Column} = Table;
     
     return (
         <div className='table-style'>
-          <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{data.length}</span></h1>
+          <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             {contextHolder}
             <div className='table-main'>
               <div className="delete">
@@ -220,7 +220,7 @@ const {Column} = Table;
               </div>
               <div className='action'>
                 <p className='create'>
-                  <Button onClick={() => { navigate("/administrator/builder/data/sinh-vien/create.html");}}>
+                  <Button type="primary" onClick={() => { navigate("/administrator/builder/data/sinh-vien/create.html");}}>
                     <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new 
                   </Button>
                 </p>
@@ -232,7 +232,7 @@ const {Column} = Table;
                 </p>
               </div>
               <Table  
-                dataSource={data}
+                dataSource={getData}
                 // pagination={pagination}
                 onChange={handleTableChange}
                 rowSelection={rowSelection}
@@ -248,7 +248,7 @@ const {Column} = Table;
                       {lop && lop.tenLop ? (
                           <span key={lop.id}>
                               {lop.tenLop}
-                          </span>
+                          </span> 
                       ) : (
                           <span>Không có lớp</span>
                       )}

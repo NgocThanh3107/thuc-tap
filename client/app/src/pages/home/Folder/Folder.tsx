@@ -72,8 +72,8 @@ const Folder = () => {
     let navigate = useNavigate();
     const [getData, setGetData] = useState<DataFolderProps[]>([]);
     const [getData1, setGetData1] = useState<DataType[]>([]);
-    const [originalData, setOriginalData] = useState<DataFolderProps[]>([]);
-    const [originalData1, setOriginalData1] = useState<DataType[]>([]);
+    const [originalData, setOriginalData] = useState<DataType[]>([]);
+    // const [originalData1, setOriginalData1] = useState<DataType[]>([]);
     // const [pagination, setPagination] = useState<PaginationProps>();
     const [IdParent, setIdParent] = useState<number | undefined>();  
     const [messageApi, contextHolder] = message.useMessage();
@@ -82,7 +82,7 @@ const Folder = () => {
     const [loading,setLoading] = useState(true);
     const [startSTT, setStartSTT] = useState(0);
     const [allSelectedIds, setAllSelectedIds] = useState<number[]>([]);
-    console.log(selectedRowKeys)
+    // console.log(selectedRowKeys)
     
       useEffect(() => {
         axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
@@ -94,7 +94,6 @@ const Folder = () => {
         .then(res => {
           if(res.data.status === true) {
             setGetData(res.data.data);
-            setOriginalData(res.data.data);
           }    
         })
         .catch(error=>{
@@ -122,11 +121,11 @@ const Folder = () => {
         .then((res) => {
           if (res.data.status === true) {
             setGetData1(res.data.data);
-            setOriginalData1(res.data.data)
+            setOriginalData(res.data.data)
             // setPagination(res.data.pagination);
         } else {   
             setGetData1([]);      
-            setOriginalData1([])
+            setOriginalData([])
             // setPagination(undefined);
         }
         setLoading(false)
@@ -242,9 +241,9 @@ const Folder = () => {
       const value = e.target.value;
       setSearch(value);
       if(value===""){
-        setGetData1(originalData1)
+        setGetData1(originalData)
       }else {
-        const filteredData1 = originalData1.filter(item => item.name?.toLowerCase().includes(value.toLowerCase()));
+        const filteredData1 = originalData.filter(item => item.name?.toLowerCase().includes(value.toLowerCase()));
         setGetData1(filteredData1);
       }
     }
@@ -341,7 +340,7 @@ const Folder = () => {
         {contextHolder}
         <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
         <div className="action">
-          <p className="create"><Button onClick={() => {navigate("/administrator/internship/builder/folder/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new Folder</Button></p>
+          <p className="create"><Button type="primary" onClick={() => {navigate("/administrator/internship/builder/folder/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new </Button></p>
           <p className="search">
             <Space.Compact>
               <Input type="text" placeholder={`Search ${selectedFolderName ? selectedFolderName : 'folder'}` } value={search} style={{fontFamily: 'FontAwesome'}} onChange={handleSearchChange}/>
@@ -370,7 +369,7 @@ const Folder = () => {
                 {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
               </span>
             </div>
-            <Table   
+            <Table
               rowKey={"id"}             
               onChange={handleTableChange}
               // pagination={pagination}
