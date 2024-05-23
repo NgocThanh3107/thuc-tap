@@ -33,7 +33,7 @@ interface DataFolderProps {
         const [getData, setGetData] = useState<DataFormProps[]>([]);
         const [messageApi, contextHolder] = message.useMessage();
         const [originalData, setOriginalData] = useState<DataFormProps[]>([]);
-        const [search, setSearch] = useState<string>("");
+        // const [search, setSearch] = useState<string>("");
         const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
         const [loading, setLoading] = useState(true);
         const [startSTT, setStartSTT] = useState(0);
@@ -45,8 +45,8 @@ interface DataFolderProps {
               },
               })
               .then((res) => {
-                console.log(res)
-                if (res.data.status == true) {
+                // console.log(res)
+                if (res.data.status === true) {
                   setGetData(res.data.data);
                   setOriginalData(res.data.data);
                 } else {
@@ -55,7 +55,7 @@ interface DataFolderProps {
                 setLoading(false)
               })
               .catch(error=>{
-                if(error.response.status == 401){
+                if(error.response.status === 401){
                   navigate("/login");
                 }else{
                   console.log(error)
@@ -76,7 +76,7 @@ interface DataFolderProps {
       }
       const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSearch(value);
+        // setSearch(value);
         if(value ===""){
           setGetData(originalData);
         }else {
@@ -147,7 +147,7 @@ interface DataFolderProps {
               </Space>
             ),
           },
-        ];
+        ]; 
 
     const handleDelete = () => {
       Modal.confirm({

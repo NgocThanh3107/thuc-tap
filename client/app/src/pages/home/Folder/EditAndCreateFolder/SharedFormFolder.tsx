@@ -130,6 +130,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
 
   const onChange = (newValue: string[]) => {
     setValue(newValue);
+    console.log(newValue)
   };
 
   const onPopupScroll = (e: SyntheticEvent) => {
@@ -179,7 +180,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
 
         <Form.Item<DataFolderProps>
           label="Parent"
-          name={["parent", "id"]}
+          name={["parent", "name"]}
           validateStatus={parentError ? "error" : ""}
           help={parentError ? parentError : ""}
         >
@@ -194,6 +195,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
             onChange={onChange}
             treeData={treeData}
             onPopupScroll={onPopupScroll}
+            treeNodeFilterProp= 'title'
           />
         </Form.Item>
 

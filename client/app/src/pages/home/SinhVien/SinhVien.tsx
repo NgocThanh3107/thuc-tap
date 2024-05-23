@@ -70,7 +70,7 @@ const {Column} = Table;
                 setLoading(false)
               })
               .catch(error=>{
-                if(error.response.status == 401){
+                if(error.response.status === 401){
                   navigate("/login");
                 }else{
                   console.log(error)
@@ -140,7 +140,7 @@ const {Column} = Table;
                   data : selectedRowKeys
                 })      
                 .then(res=>{
-                  if(res.data.status == true){
+                  if(res.data.status === true){
                     const key = 'updatable';
                     messageApi.open({
                       key,
@@ -164,7 +164,7 @@ const {Column} = Table;
                     }
                 })
                 .catch(error=>{
-                  if(error.response.status == 401){
+                  if(error.response.status === 401){
                     navigate("/login");
                   }else{
                     console.log(error)
@@ -261,7 +261,7 @@ const {Column} = Table;
                   key="action"
                   render={( data: DataType) => (
                     <Space size="middle">
-                    <a onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                    <a href={"/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html"} onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
                     </Space>
                   )}
                 />

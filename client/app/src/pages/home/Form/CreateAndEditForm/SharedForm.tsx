@@ -198,6 +198,7 @@
               onChange={onChange}
               treeData={treeData}
               loading={loading}
+              treeNodeFilterProp="title"
             />
           </Form.Item>
 

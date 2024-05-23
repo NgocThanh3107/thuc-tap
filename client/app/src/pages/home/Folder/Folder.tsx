@@ -10,7 +10,7 @@ import { Button, Input} from 'antd';
 import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { App, ConfigProvider, Modal } from 'antd';
+import { App, ConfigProvider, Modal, Empty } from 'antd';
 import '../_pages.scss';
 
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
@@ -82,7 +82,7 @@ const Folder = () => {
     const [loading,setLoading] = useState(true);
     const [startSTT, setStartSTT] = useState(0);
     const [allSelectedIds, setAllSelectedIds] = useState<number[]>([]);
-    // console.log(selectedRowKeys)
+    console.log(allSelectedIds)
     
       useEffect(() => {
         axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
@@ -161,6 +161,7 @@ const Folder = () => {
               setIdParent(keys[0] as number);
               fetchData(1,10, keys[0] as number);
           }
+          console.log(keys)
       });
     }
     
@@ -280,7 +281,7 @@ const Folder = () => {
 
     const handleTableChange = (pagination: any) => {
       const { current, pageSize } = pagination;
-      fetchData(current, pageSize, IdParent);
+        fetchData(current, pageSize, IdParent);
     };
     
     const getFolderIds = (folder: DataFolderProps): number[] => {
@@ -334,7 +335,22 @@ const Folder = () => {
       });
     }, [locale, theme]);
 
-
+    const handleTree = () => {
+      if(getData.length > 0){
+        return (
+          <DirectoryTree
+            className="folder-style"
+            onSelect={onSelect}
+            treeData={treeData} 
+          />
+        )
+      }else{
+        return (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+        )
+      }
+    }
+    
     return (
       <div className="folder-main">
         {contextHolder}
@@ -352,13 +368,7 @@ const Folder = () => {
         </div>
         <div className="tree-table">
           <div className="tree-folder">
-            <DirectoryTree
-              className="folder-style"
-              multiple
-              defaultExpandAll
-              onSelect={onSelect}
-              treeData={treeData}
-            />
+            {handleTree()}
           </div>
           <div className="table-folder">
             <div className="delete" >

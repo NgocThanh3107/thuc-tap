@@ -48,12 +48,10 @@ const EditFormField = () => {
       );
     }
 
-    if (!getdata) {
-      return <div>No data available</div>; 
-    }
-    return(
-      <MyFormField isEdit={true} data={getdata}/>
-    )  
+
+  return(
+    <MyFormField isEdit={true} data={getdata}/>
+  )  
     
 }
 export default EditFormField;

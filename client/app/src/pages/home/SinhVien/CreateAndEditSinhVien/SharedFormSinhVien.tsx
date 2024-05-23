@@ -186,17 +186,25 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
           <Form.Item<FieldType>
             label="Lớp"
             name={["lop", "id"]}
+            rules={[{ required: true, message: "Vui lòng chọn lớp!" }]}
           >
             <Select
+              showSearch
               style={{ textAlign: 'left' }}
+              placeholder="Chọn lớp"
+              optionFilterProp="children"
+              allowClear
               onChange={handleClassChange}
+              filterOption={(input, option) =>
+                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              }
               options={
                 classData.map((v) => ({
                   value: v.id,
                   label: v.tenLop,
                 }))
               }
-            />
+          />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">

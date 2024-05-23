@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Space, Input, Button, Table, message } from "antd";
 import type { TableProps } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-
+import  { useContext, useLayoutEffect } from 'react';
+import { StyleProvider } from '@ant-design/cssinjs';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { App, ConfigProvider, Modal} from 'antd';
 interface FormFieldProps{
     id: number;
     name: string;
@@ -57,48 +59,59 @@ const FormField = () => {
         }
       },[])
 
-    const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
-        e.preventDefault();
-        axios.delete('http://192.168.5.240/api/v1/builder/form/'+ params.id + '/field',
-          {
-          headers: {
-              "API-Key" : api,
-              "Authorization": `Bearer ${token}`
-          },
-          data: selectedRowKeys
-          })
-          .then(res=>{
-            console.log(res)
-            if(res.data.status=== true){
-              const key = 'updatable';
-                messageApi.open({
-                    key,
-                    type: 'loading',
-                    content: 'Đang xóa...',
-                });
-                setTimeout(() => {
-                    messageApi.open({
-                    key,
-                    type: 'success',
-                    content: 'Đã xóa!',
-                    duration: 2,
-                    });
-                }, 300);
+    const handleDelete = () => {
+      Modal.confirm({
+        title: `Do you want to delete ${selectedRowKeys.length} items?`,
+        icon: <ExclamationCircleFilled />,
+        content: 'This action cannot be undone.',
 
-                const updatedData = getData.filter(item => !selectedRowKeys.includes(item.id as React.Key));
-                setgetData(updatedData);
-                setSelectedRowKeys([]);
-            }else{
+        onOk(){
+          axios.delete('http://192.168.5.240/api/v1/builder/form/'+ params.id + '/field',
+            {
+            headers: {
+                "API-Key" : api,
+                "Authorization": `Bearer ${token}`
+            },
+            data: selectedRowKeys
+            })
+            .then(res=>{
               console.log(res)
-            }
-          })
-          .catch(error =>{
-            if(error.response.status === 401){
-              navigate("/login");
-            }else{
-              console.log(error)
-            }
-          });
+              if(res.data.status=== true){
+                const key = 'updatable';
+                  messageApi.open({
+                      key,
+                      type: 'loading',
+                      content: 'Đang xóa...',
+                  });
+                  setTimeout(() => {
+                      messageApi.open({
+                      key,
+                      type: 'success',
+                      content: 'Đã xóa!',
+                      duration: 2,
+                      });
+                  }, 300);
+
+                  const updatedData = getData.filter(item => !selectedRowKeys.includes(item.id as React.Key));
+                  setgetData(updatedData);
+                  setSelectedRowKeys([]);
+              }else{
+                console.log(res)
+              }
+            })
+            .catch(error =>{
+              if(error.response.status === 401){
+                navigate("/login");
+              }else{
+                console.log(error)
+              }
+            });
+        },
+        onCancel(){
+          console.log('Cancel');
+        }
+      })
+        
     }
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -120,8 +133,8 @@ const FormField = () => {
         setgetData(originalData);
       }else{
         const filteredData = originalData.filter(item =>
-          item?.name.toLowerCase().includes(value.toLowerCase()) ||
-          item?.apiKey.toLowerCase().includes(value.toLowerCase())
+          item.name.toLowerCase().includes(value.toLowerCase()) ||
+          item.apiKey.toLowerCase().includes(value.toLowerCase())
         );
         setgetData(filteredData);
       }
@@ -188,6 +201,20 @@ const FormField = () => {
         },
     ];
 
+    const { locale, theme } = useContext(ConfigProvider.ConfigContext);
+    useLayoutEffect(() => {
+      ConfigProvider.config({
+        holderRender: (children) => (
+          <StyleProvider hashPriority="high">
+            <ConfigProvider prefixCls="static" iconPrefixCls="icon" locale={locale} theme={theme}>
+              <App message={{ maxCount: 1 }} notification={{ maxCount: 1 }}>
+                {children}
+              </App>
+            </ConfigProvider>
+          </StyleProvider>
+        ),
+      });
+    }, [locale, theme]);
 
     return(
         <div className="table-style">
@@ -196,12 +223,12 @@ const FormField = () => {
             <div className="form-style">
               <div className="table-main">
                 <div className="delete"> 
-                    <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected} >
-                      <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
-                    </Button>
-                    <span style={{ marginLeft: 8 }}>
-                      {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-                    </span>
+                  <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected} >
+                    <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
+                  </Button>
+                  <span style={{ marginLeft: 8 }}>
+                    {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                  </span>
                 </div>
                 <div className="action"> 
                   <p className="create"><Button type="primary" onClick={() => { navigate('/administrator/internship/builder/formfield/create')}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add New</Button></p>

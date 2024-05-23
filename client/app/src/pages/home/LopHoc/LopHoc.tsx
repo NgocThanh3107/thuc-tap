@@ -58,7 +58,7 @@ const LopHoc: React.FC = () => {
             },
           })
           .then((res) => {
-            if (res.data.status == true) {
+            if (res.data.status === true) {
               setGetData(res.data.data);
               setOriginalData(res.data.data);
               // setPagination(res.data.pagination);
@@ -68,7 +68,7 @@ const LopHoc: React.FC = () => {
             setLoading(false)
           })
           .catch(error=>{
-            if(error.response.status == 401){
+            if(error.response.status === 401){
               navigate("/login");
             }else{
               console.log(error)
@@ -142,7 +142,7 @@ const LopHoc: React.FC = () => {
               data : selectedRowKeys
             })     
             .then(res=>{
-              if(res.data.status == true){
+              if(res.data.status === true){
                 const key = 'updatable';
                 messageApi.open({
                   key,
@@ -166,7 +166,7 @@ const LopHoc: React.FC = () => {
                 }
             })
             .catch(error=>{
-              if(error.response.status == 401){
+              if(error.response.status === 401){
                 navigate("/login");
               }else{
                 console.log(error)

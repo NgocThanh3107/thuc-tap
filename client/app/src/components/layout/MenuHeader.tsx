@@ -26,7 +26,6 @@ const MenuHeader: React.FC = () => {
             axios.get("http://192.168.5.240/api/v2/menu/my-menu", {
                 headers: {
                     "API-Key": api,
-                    // "locale": "en",
                     "Authorization": `Bearer ${token}`
                 }
                 })

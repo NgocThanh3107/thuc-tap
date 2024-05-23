@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { FormProps } from 'antd';
 import { Button, Form, Input,Select } from 'antd';
@@ -38,6 +38,12 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
     let token = localStorage.getItem("token");
     let navigate = useNavigate();
     const idFFieldFrom = localStorage.getItem("idFormField");
+    const [apiKeyErr, setApiKeyErr] = useState<string>("");
+    const [sortErr, setSortErr] = useState<string>("");
+    const [minErr, setMinErr] = useState<string>("");
+    const [maxErr, setMaxErr] = useState<string>("");
+    const [formColErr, setFormColErr] = useState<string>("");
+
 
     const onFinish: FormProps<DataformFieldProps>['onFinish'] = (values) => {
         const newdata = {
@@ -49,26 +55,53 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
 
         requestMethod(apiEndpoint, newdata, {
           headers: {
-          "API-Key": api,
-          "Authorization": `Bearer ${token}`
+            "API-Key": api,
+            "Authorization": `Bearer ${token}`
           }
         })
         .then(res => {
           if (res.data.status === true) {
-          isEdit ? alert("Updated successfully") : alert("Created successfully");
-          navigate("/administrator/internship/builder/formfield/" + idFFieldFrom + ".html");
+            isEdit ? alert("Updated successfully") : alert("Created successfully");
+            navigate("/administrator/internship/builder/formfield/" + idFFieldFrom + ".html");
           }
         })
         .catch(error => {
+          console.log(error.response.data.errorDescription)
           if (error.response.status === 401) {
-          navigate("/login");
+            navigate("/login");
           } else {
+              const FilterErr = error.response.data.errorDescription;
               const errorDescription = error.response.data.errorDescription;
-              // const formErrors = errorDescription.map((errorItem: any) => ({
-              //   name: errorItem.field,
-              //   errors: [errorItem.message],
-              // }));
-              // form.setFields(formErrors);
+              const apiKeyErr = errorDescription.find((item: any) => item.fields && item.fields.includes("apiKey"));             
+              const sortErr = FilterErr.find((item : any)=> item.field === "sort");
+              const minErr = FilterErr.find((item : any)=> item.field === "min");
+              const maxErr = FilterErr.find((item : any)=> item.field === "max");
+              const formColErr = FilterErr.find((item : any)=> item.field === "formCol"); 
+                if(apiKeyErr){
+                  setApiKeyErr(error.response.data.message)
+                }else{
+                  setApiKeyErr('')
+                }
+                if(sortErr){
+                  setSortErr(sortErr.message)
+                }else{
+                  setSortErr('')
+                }
+                if(minErr){
+                  setMinErr(minErr.message)
+                }else{
+                  setMinErr('')
+                }
+                if(maxErr){
+                  setMaxErr(maxErr.message)
+                }else{
+                  setMaxErr('')
+                }
+                if(formColErr){
+                  setFormColErr(formColErr.message)
+                }else{
+                  setFormColErr('')
+                }
           }
         });
         };
@@ -105,6 +138,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="ApiKey"
             name="apiKey"
             rules={[{ required: true, message: 'Please input your apikey!' }]}
+            validateStatus={apiKeyErr ? "error" : ""}
+            help = {apiKeyErr ? apiKeyErr : "" }
           >
             <Input />
           </Form.Item>
@@ -119,7 +154,7 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
                     {value: 'boolean',label: 'Boolean'},
                     {value: 'reference',label: 'Reference'},
                     {value: 'date',label: 'Date'},
-                    {value: 'int',label: 'Int'}
+                    {value: 'integer',label: 'Integer'}
                 ]
             }>
             </Select>
@@ -129,6 +164,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="Sort"
             name="sort"
             rules={[{ required: true, message: 'Please input your sort!' }]}
+            validateStatus={sortErr ? "error" : ""}
+            help={sortErr ? sortErr : ""}
           >
             <Input />
           </Form.Item>
@@ -244,6 +281,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="FormCol"
             name="formCol"
             rules={[{ required: true, message: 'Please input your formCol!' }]}
+            validateStatus={formColErr ? "error" : ""}
+            help={formColErr ? formColErr : ""}
           >
             <Input />
           </Form.Item>
@@ -252,6 +291,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="Min"
             name="min"
             // rules={[{ required: true, message: 'Please input your min!' }]}
+            validateStatus={minErr ? "error" : ""}
+            help={minErr ? minErr : ""}
           >
             <Input />
           </Form.Item>
@@ -260,6 +301,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="Max"
             name="max"
             // rules={[{ required: true, message: 'Please input your max!' }]}
+            validateStatus={maxErr ? "error" : ""}
+            help={maxErr ? maxErr : ""}
           >
             <Input />
           </Form.Item>
