@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Form, Input, TreeSelect } from 'antd';
+import { Button, Form, Input, TreeSelect, message } from 'antd';
 import type { FormProps } from 'antd';
 import type { SyntheticEvent } from 'react';
 
@@ -93,7 +93,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
       })
       .then(res => {
         if (res.data.status === true) {
-          isEdit ? alert("Updated successfully") : alert("Created successfully")
+          isEdit ? message.success('Updated successfully !') : message.success('Created successfully !');
           navigate("/administrator/internship/builder/folder.html");
         }
       })

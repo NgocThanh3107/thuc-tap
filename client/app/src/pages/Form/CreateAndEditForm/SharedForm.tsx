@@ -101,7 +101,7 @@
       })
       .then(res => {
         if (res.data.status === true) {
-          isEdit ? alert("Updated successfully") : alert("Created successfully");
+          isEdit ? message.success('Updated successfully !') : message.success('Created successfully !');
           navigate("/administrator/internship/builder/form.html");
         }
       })

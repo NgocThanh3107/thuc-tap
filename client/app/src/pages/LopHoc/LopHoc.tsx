@@ -21,12 +21,6 @@ interface DataType {
     tags: string[];
     tenQuocGia: string;
 }
-interface PaginationProps {
-    pageSize? : number;
-    totalPage?: number;
-    total ?: number;
-    page?: number;
-}
 
 const { Column } = Table;
 
@@ -36,11 +30,9 @@ const LopHoc: React.FC = () => {
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
     const [originalData, setOriginalData] = useState<DataType[]>([]);
-    // const [pagination, setPagination] = useState<PaginationProps>();
     const [getData, setGetData] = useState<DataType[]>([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(true);
-    // const [search, setSearch] = useState<string>("");
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [startSTT, setStartSTT] = useState(0);
       useEffect(() => {
@@ -61,7 +53,6 @@ const LopHoc: React.FC = () => {
             if (res.data.status === true) {
               setGetData(res.data.data);
               setOriginalData(res.data.data);
-              // setPagination(res.data.pagination);
             } else {
               console.log(res.data.message);
             }
@@ -79,7 +70,6 @@ const LopHoc: React.FC = () => {
 
       const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        // setSearch(value);
         if (value === "") {
             setGetData(originalData);
         } else {
@@ -91,36 +81,6 @@ const LopHoc: React.FC = () => {
           }
       };
 
-      // const handleSearch = () => {
-      //   if (search.trim() === "") {
-      //     setGetData(originalData);
-      //     // setPagination(undefined);
-      //   } else {
-      //       axios
-      //         .get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?maLop=${search}`, {
-      //             headers: {
-      //               'API-Key': api,
-      //               Authorization: `Bearer ${token}`,
-      //             },
-      //         })
-      //         .then((res) => {
-      //           if (res.data.status === true) {
-      //             setGetData(res.data.data);
-      //             // setPagination(res.data.pagination);
-      //           } else {   
-      //               setGetData([]);      
-      //               // setPagination(undefined);
-      //           }
-      //         })
-      //         .catch(error=>{
-      //           if(error.response.status == 401){
-      //             navigate("/login");
-      //           }else{
-      //             console.log(error)
-      //           }
-      //         })
-      //     }
-      // }
 
       const handleTableChange = (pagination: any) => {
         const { current, pageSize } = pagination;
@@ -207,7 +167,7 @@ const LopHoc: React.FC = () => {
     }, [locale, theme]);
 
     return (
-        <div className='table-style'>
+        <div className='main-style'>
           <h1>Quản lý lớp học <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             {contextHolder}
             <div className='table-main'>
@@ -227,16 +187,12 @@ const LopHoc: React.FC = () => {
                 </p>
                 <p className='search'>
                   <Space.Compact>
-                  <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
-                    {/* <Button onClick={handleSearch} type="primary">
-                      Search
-                    </Button> */}
+                    <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
                   </Space.Compact>
                 </p>
               </div>
               <Table
                 dataSource={getData}
-                // pagination={pagination}
                 onChange={handleTableChange}
                 rowSelection={rowSelection}
                 rowKey='id'

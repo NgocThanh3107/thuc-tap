@@ -8,6 +8,7 @@
 
 .app {
     width: 100%;
+    margin: auto;
     height: auto;
     display: flex;
     flex-direction: column;
@@ -73,7 +74,7 @@
     }
 }
 
-.menu-header{
+.menu{
     width: 100%;
     background-color: #fff;
     text-align: left;
@@ -98,7 +99,7 @@
     flex: 1;
 }
 
-.sider_style {
+.sider {
     width: 20%;
     background-color: #fff;
     max-height: calc(94vh - 75px);
@@ -107,7 +108,7 @@
     padding-top: 20px;
 }
 
-.content_style {
+.content {
     width: 80%;
     background-color: #ecebeb;
     display: flex;
@@ -156,7 +157,7 @@
             }
         }
     }
-    .menu-header{
+    .menu{
         a{
             font-size: 15px;
         }
@@ -167,13 +168,13 @@
         }
     }
 
-    .sider_style {
+    .sider {
         width: 25%;
         font-size: 14px; 
         padding-bottom: 30px;
     }
 
-    .content_style{
+    .content{
         width: 75%;
         padding: 0;
     }
@@ -228,12 +229,12 @@
     .container{
         display: block;
     }
-    .sider_style{
+    .sider{
         width: 100%;
         display: inline-block;
         // padding: 0;
     }
-    .content_style{
+    .content{
         display: block;
         width: 100%;
         float: right;

@@ -16,13 +16,14 @@ interface DataFormProps{
     code: string;
     description: string;
 }
+
 interface DataFolderProps {
     name: string;
     id: number;
     sort: number;
     children:DataFolderProps[];
     parent: DataFolderProps[];
-  }
+}
 
 
     const Form: React.FC = () =>{
@@ -33,7 +34,6 @@ interface DataFolderProps {
         const [getData, setGetData] = useState<DataFormProps[]>([]);
         const [messageApi, contextHolder] = message.useMessage();
         const [originalData, setOriginalData] = useState<DataFormProps[]>([]);
-        // const [search, setSearch] = useState<string>("");
         const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
         const [loading, setLoading] = useState(true);
         const [startSTT, setStartSTT] = useState(0);
@@ -76,7 +76,6 @@ interface DataFolderProps {
       }
       const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        // setSearch(value);
         if(value ===""){
           setGetData(originalData);
         }else {
@@ -88,33 +87,6 @@ interface DataFolderProps {
         }
       }
 
-      // const handleSearch = () => {
-      //   if (search.trim() === "") {
-      //     setGetData(originalData);
-      //   } else {
-      //       axios
-      //         .get(`http://192.168.5.240/api/v1/builder/form?code=${search}`, {
-      //             headers: {
-      //                 'API-Key': api,
-      //                 Authorization: `Bearer ${token}`,
-      //             },
-      //         })
-      //         .then((res) => {
-      //           if(res.data.status===true){
-      //             setGetData(res.data.data)
-      //           }else{
-      //             setGetData([]);
-      //           }
-      //         })
-      //         .catch(error=>{
-      //           if(error.response.status == 401){
-      //             navigate("/login");
-      //           }else{
-      //             console.log(error)
-      //           }
-      //         })
-      //     } 
-      // }
         
         const columns: TableColumnsType<DataFormProps> = [
           {
@@ -229,7 +201,7 @@ interface DataFolderProps {
     }, [locale, theme]);
   
     return(
-      <div className="table-style">
+      <div className="main-style">
         {contextHolder}
         <h1>Form <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
         <div className="form-style">
@@ -244,10 +216,7 @@ interface DataFolderProps {
               <p className="create"><Button type="primary" onClick={() => {navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new </Button></p>
               <p className='search'>
                 <Space.Compact>
-                <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
-                  {/* <Button onClick={handleSearch} type="primary" >
-                    Search
-                  </Button> */}
+                  <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
                 </Space.Compact>
               </p>
             </div>

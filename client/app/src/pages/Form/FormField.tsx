@@ -140,33 +140,6 @@ const FormField = () => {
       }
     }
 
-    const handleSearch = () => {
-      if (search.trim() === "") {
-        setgetData(originalData);
-      } else {
-          axios
-            .get(`http://192.168.5.240/api/v1/builder/form/`+ params.id +`/field?apiKey=${search}`, {
-              headers: {
-                'API-Key': api,
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((res) => {
-              if(res.data.status===true){
-                setgetData(res.data.data)
-              }else{
-                setgetData([]);
-              }
-            })
-            .catch(error=>{
-              if(error.response.status == 401){
-                navigate("/login");
-              }else{
-                console.log(error)
-              }
-            })
-        } 
-    }
 
     const columns: TableProps<FormFieldProps>['columns'] = [
         {
@@ -216,8 +189,8 @@ const FormField = () => {
       });
     }, [locale, theme]);
 
-    return(
-        <div className="table-style">
+    return (
+        <div className="main-style">
             {contextHolder}
             <h1>Form Fields <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             <div className="form-style">
@@ -234,10 +207,7 @@ const FormField = () => {
                   <p className="create"><Button type="primary" onClick={() => { navigate('/administrator/internship/builder/formfield/create')}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add New</Button></p>
                   <p className='search'>
                     <Space.Compact>
-                    <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
-                      {/* <Button onClick={handleSearch} type="primary" icon={<SearchOutlined />}>
-                        Search
-                      </Button> */}
+                      <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
                     </Space.Compact>
                   </p>
                 </div>

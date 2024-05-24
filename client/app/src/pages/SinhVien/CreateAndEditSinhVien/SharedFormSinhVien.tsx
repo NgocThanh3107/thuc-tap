@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Form, Input, Select, Flex, Spin } from 'antd';
+import { Button, Form, Input, Select, Flex, Spin, message } from 'antd';
 import React from 'react';
 import LopProps from "../../LopHoc";
 
@@ -24,6 +24,8 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
   const [classData, setClassData] = useState<LopProps[]>([]);
   const [codeError, setcodeError] = useState<string>('');
   const [loading,setLoading] = useState(true);
+  
+
   useEffect(() => {
     if (isEdit && id) {
       axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data/${id}`, {
@@ -54,6 +56,7 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
     }
     fetchClassData(1, 100);
   }, [id, isEdit]);
+
 
   const fetchClassData = (page: number, pageSize: number) => {
     axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
@@ -105,7 +108,7 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
 
     request.then(res => {
       if (res.data.status === true) {
-        isEdit ? alert("Updated successfully") : alert("Created successfully");
+        isEdit ? message.success('Updated successfully !') : message.success('Created successfully !');
         navigate("/administrator/builder/data/sinh-vien.html");
       } else {
         console.log(res.data.message);

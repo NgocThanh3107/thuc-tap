@@ -10,7 +10,7 @@ import { Button, Input} from 'antd';
 import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { App, ConfigProvider, Modal, Empty } from 'antd';
+import { App, ConfigProvider, Modal, Empty, Flex, Spin } from 'antd';
 import '../_pages.scss';
 
 type DirectoryTreeProps = GetProps<typeof Tree.DirectoryTree>;
@@ -31,12 +31,7 @@ interface DataType {
   parent: DataType[];
   
 }
-// interface PaginationProps {
-//   pageSize? : number;
-//   totalPage?: number;
-//   total ?: number;
-//   page?: number;
-// }
+
 
 const Folder = () => {
 
@@ -73,8 +68,6 @@ const Folder = () => {
     const [getData, setGetData] = useState<DataFolderProps[]>([]);
     const [getData1, setGetData1] = useState<DataType[]>([]);
     const [originalData, setOriginalData] = useState<DataType[]>([]);
-    // const [originalData1, setOriginalData1] = useState<DataType[]>([]);
-    // const [pagination, setPagination] = useState<PaginationProps>();
     const [IdParent, setIdParent] = useState<number | undefined>();  
     const [messageApi, contextHolder] = message.useMessage();
     const [search, setSearch] = useState<string>('');
@@ -95,7 +88,8 @@ const Folder = () => {
         .then(res => {
           if(res.data.status === true) {
             setGetData(res.data.data);
-          }    
+          } 
+          setLoading(false);   
         })
         .catch(error=>{
           if(error.response.status == 401){
@@ -103,6 +97,7 @@ const Folder = () => {
           }else{
             console.log(error)
           }
+          setLoading(false);   
         })
 
         fetchData(1, 10, undefined);
@@ -123,11 +118,9 @@ const Folder = () => {
           if (res.data.status === true) {
             setGetData1(res.data.data);
             setOriginalData(res.data.data)
-            // setPagination(res.data.pagination);
         } else {   
             setGetData1([]);      
             setOriginalData([])
-            // setPagination(undefined);
         }
         setLoading(false)
         })
@@ -166,6 +159,7 @@ const Folder = () => {
       });
     }
     
+    
     const deleteFolderTreeData = (id: number, data: DataFolderProps[]): DataFolderProps[] => {
       return data.filter(item => {
         if (item.id === id) {
@@ -180,18 +174,17 @@ const Folder = () => {
     
     const handleDelete = () => {
       Modal.confirm({
-        title: `Do you want to delete ${selectedRowKeys.length} items?`,
+        title: `Do you want to delete ${allSelectedIds.length} items?`,
         icon: <ExclamationCircleFilled />,
         content: 'This action cannot be undone.',
         onOk() {
-          const idsToDelete = allSelectedIds.length > 0 ? allSelectedIds : selectedRowKeys;
           axios.delete(`http://192.168.5.240/api/v1/folder`,
             {
               headers: {
                 "API-Key" : api,
                 "Authorization": `Bearer ${token}`
               },
-              data: idsToDelete
+              data: allSelectedIds
             }
           )
           .then(res=>{
@@ -212,17 +205,17 @@ const Folder = () => {
                   });
                 }, 300);
 
-                const updatedTreeData = selectedRowKeys.reduce((acc, key) => {
+                const updatedTreeData = allSelectedIds.reduce((acc, key) => {
                   return deleteFolderTreeData(key as number, acc);
                 }, [...getData]);
                 setGetData(updatedTreeData);
         
                 const updatedData = getData1.filter(
-                  (item) => item.id !== undefined && !selectedRowKeys.includes(item.id)
+                  (item) => item.id !== undefined && !allSelectedIds.includes(item.id)
                 );
                 setGetData1(updatedData);
         
-                setSelectedRowKeys([]);
+                setAllSelectedIds([]);
             }
           })
           .catch(error =>{
@@ -250,44 +243,13 @@ const Folder = () => {
       }
     }
 
-    // const handleSearch = () =>{
-    //   if(search == ""){
-    //     setGetData(originalData)
-    //   }else {
-    //     axios.get(`http://192.168.5.240/api/v1/folder?parent=${IdParent}&name=${search}`, {
-    //       headers: {
-    //           'API-Key': api,
-    //           Authorization: `Bearer ${token}`,
-    //       },
-    //     })
-    //     .then(res=>{
-    //       console.log(res)
-    //       if (res.data.status === true) { 
-    //         setGetData(res.data.data);
-    //         setGetData1(res.data.data)
-    //     } else {
-    //         setGetData([]);
-    //         setGetData1([]);
-    //     }
-    //     })
-    //     .catch(error =>{
-    //       if(error.response.status === 401){
-    //         navigate("/login");
-    //       }else{
-    //         console.log(error)
-    //       }
-    //     })
-    //   }
-    // }
-
     const handleTableChange = (pagination: any) => {
       const { current, pageSize } = pagination;
         fetchData(current, pageSize, IdParent);
     };
     
-    
+
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(newSelectedRowKeys);
     
       const folderIds: number[] = [];
     
@@ -300,29 +262,30 @@ const Folder = () => {
         }
       };
     
-      getData.forEach(folder => {
-        if (newSelectedRowKeys.includes(folder.id)) {
-          findAllChildrenIds(folder);
-        } else {
-          if (folder.children && folder.children.length > 0) {
-            folder.children.forEach(child => {
-              if (newSelectedRowKeys.includes(child.id)) {
-                findAllChildrenIds(child);
-              }
-            });
+      const findAndProcessFolders = (folders: DataFolderProps[]) => {
+        folders.forEach(folder => {
+          if (newSelectedRowKeys.includes(folder.id)) {
+            findAllChildrenIds(folder);
+          } else {
+            if (folder.children && folder.children.length > 0) {
+              findAndProcessFolders(folder.children);
+            }
           }
-        }
-      });
+        });
+      };
+      findAndProcessFolders(getData);
+
+      console.log(folderIds);
+
       setAllSelectedIds(folderIds);
     };
     
     const rowSelection = {
-      selectedRowKeys,
       onChange: onSelectChange,
     };
     
 
-    const hasSelected = selectedRowKeys.length > 0;
+    const hasSelected = allSelectedIds.length > 0;
 
     const { locale, theme } = useContext(ConfigProvider.ConfigContext);
     
@@ -356,8 +319,16 @@ const Folder = () => {
       }
     }
     
+    if (loading) {
+      return (
+        <Flex vertical style={{ height: '50vh' }} align="center" justify="center">
+          <Spin tip="Loading..." size="large" />
+        </Flex>
+      );
+    }
+
     return (
-      <div className="folder-main">
+      <div className="main-style">
         {contextHolder}
         <h1>Folder <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
         <div className="action">
@@ -365,9 +336,6 @@ const Folder = () => {
           <p className="search">
             <Space.Compact>
               <Input type="text" placeholder={`Search ${selectedFolderName ? selectedFolderName : 'folder'}` } value={search} style={{fontFamily: 'FontAwesome'}} onChange={handleSearchChange}/>
-              {/* <Button onClick={handleSearch} type="primary">
-                Search
-              </Button> */}
             </Space.Compact>
           </p>
         </div>
@@ -381,17 +349,15 @@ const Folder = () => {
                 <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
               </Button>
               <span style={{ marginLeft: 8 }}>
-                {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                {hasSelected ? `Selected ${allSelectedIds.length} items` : ''}
               </span>
             </div>
             <Table
-              rowKey={"id"}             
+              rowKey={"id"}   
               onChange={handleTableChange}
-              // pagination={pagination}
               columns={columns}
               dataSource={getData1}
               rowSelection={rowSelection}
-              loading={loading}
             />
           </div>
         </div>

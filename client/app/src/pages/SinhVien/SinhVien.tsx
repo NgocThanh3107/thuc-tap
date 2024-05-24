@@ -22,13 +22,6 @@ interface DataType {
     lop : LopProps;
 }
 
-// interface paginationProps {
-//     pageSize? : number;
-//     totalPage?: number;
-//     total ?: number;
-//     page?: number;
-// }
-
 const {Column} = Table;
 
   const SinhVien: React.FC = () =>{
@@ -37,14 +30,12 @@ const {Column} = Table;
       let api = localStorage.getItem("api");
       let token = localStorage.getItem("token");
       const [getData, setGetData] = useState<DataType[]>([]);
-      // const [pagination, setPagination] = useState<paginationProps>()
       const [messageApi, contextHolder] = message.useMessage();
       const [originalData, setOriginalData] = useState<DataType[]>([]);
-      // const [search, setSearch] = useState<string>('');
       const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
       const [loading, setLoading] = useState(true);
       const [startSTT, setStartSTT] = useState(0);
-      // console.log(data)
+
         useEffect(() => {
             fetchData(1, 10);
           }, []);
@@ -62,7 +53,6 @@ const {Column} = Table;
               .then((res) => {
                 if (res.data.status === true) {
                   setGetData(res.data.data);
-                  // setPagination(res.data.pagination);
                   setOriginalData(res.data.data);
                 } else {
                   console.log(res.data.message);
@@ -81,7 +71,6 @@ const {Column} = Table;
         
           const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const value = e.target.value;
-            // setSearch(value);
             if(value===""){
               setGetData(originalData)
             }else {
@@ -94,31 +83,7 @@ const {Column} = Table;
             }
           };
         
-        // const handleSearch = () =>{
-        //     axios.get(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data?maSinhVien=${search}`, {
-        //       headers: {
-        //         'API-Key': api,
-        //         Authorization: `Bearer ${token}`,
-        //       },
-        //     })
-        //     .then((res) => {
-        //       if (res.data.status === true) {
-        //         setData(res.data.data);
-        //         // setPagination(res.data.pagination);
-        //       } else {   
-        //           setData([]);  
-        //           // setPagination(undefined); 
-        //       }
-        //     })
-        //     .catch(error=>{
-        //       if(error.response.status == 401){
-        //         navigate("/login");
-        //       }else{
-        //         console.log(error)
-        //       }
-        //     })  
-        // }
-
+  
         const handleTableChange = (pagination: any) => {
           const { current, pageSize } = pagination;
           fetchData(current, pageSize);
@@ -206,7 +171,7 @@ const {Column} = Table;
 
     
     return (
-        <div className='table-style'>
+        <div className='main-style'>
           <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             {contextHolder}
             <div className='table-main'>
@@ -226,14 +191,12 @@ const {Column} = Table;
                 </p>
                 <p className='search'>
                   <Space.Compact>
-                  <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
-                    {/* <Button onClick={handleSearch} type="primary" >Search</Button> */}
+                    <Input onChange={handleSearchChange} type="text" placeholder="&#xf002; Search..." style={{fontFamily: 'FontAwesome', marginLeft : 10}}/>
                   </Space.Compact>
                 </p>
               </div>
               <Table  
                 dataSource={getData}
-                // pagination={pagination}
                 onChange={handleTableChange}
                 rowSelection={rowSelection}
                 rowKey='id'
@@ -261,7 +224,7 @@ const {Column} = Table;
                   key="action"
                   render={( data: DataType) => (
                     <Space size="middle">
-                    <a href={"/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html"} onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                      <a href={"/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html"} onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
                     </Space>
                   )}
                 />

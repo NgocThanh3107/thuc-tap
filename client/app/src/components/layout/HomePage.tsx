@@ -46,10 +46,10 @@ const HomePage = () =>{
     <div className='app'>
       <Header />
       <div className='container'>
-        <div className='sider_style'>
+        <div className='sider'>
           <MenuHeader />
         </div>
-        <div className='content_style'>
+        <div className='content'>
           {check ? <Outlet /> : <PageNotFound />}
           <Footer />
         </div>

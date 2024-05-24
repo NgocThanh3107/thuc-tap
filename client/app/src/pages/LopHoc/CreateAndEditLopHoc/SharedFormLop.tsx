@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import LopProps from '..';
 
 interface MyFormProps {
@@ -33,7 +33,7 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
         })
         .then(res => {
             if (res.data.status === true) {
-                isEdit ? alert("Updated successfully") : alert("Created successfully")
+                isEdit ? message.success('Updated successfully !') : message.success('Created successfully !');
                 navigate('/administrator/builder/data/lop-hoc.html');
             } else {
                 console.log(res.data.message)

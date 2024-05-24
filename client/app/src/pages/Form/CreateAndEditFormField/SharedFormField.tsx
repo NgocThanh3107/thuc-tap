@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { FormProps } from 'antd';
-import { Button, Form, Input,Select } from 'antd';
+import { Button, Form, Input,Select, message } from 'antd';
 
   interface DataformFieldProps {
     name?: string;
@@ -61,7 +61,7 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
         })
         .then(res => {
           if (res.data.status === true) {
-            isEdit ? alert("Updated successfully") : alert("Created successfully");
+            isEdit ? message.success('Updated successfully !') : message.success('Created successfully !');
             navigate("/administrator/internship/builder/formfield/" + idFFieldFrom + ".html");
           }
         })
