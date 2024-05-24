@@ -4,23 +4,23 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './components/layout/HomePage';
 import Account from './components/member/Account';
 import Login from './components/member/Login';
-import SinhVien from './pages/home/SinhVien/SinhVien';
-import LopHoc from './pages/home/LopHoc/LopHoc';
-import CreateSinhVien from './pages/home/SinhVien/CreateAndEditSinhVien/CreateSinhVien';
-import EditSinhVien from './pages/home/SinhVien/CreateAndEditSinhVien/EditSinhVien';
-import TreeFolder from './pages/home/Folder/Folder';
-import EditFolder from './pages/home/Folder/EditAndCreateFolder/EditFolder';
-import CreateFolder from './pages/home/Folder/EditAndCreateFolder/CreateFolder';
-import FormField from './pages/home/Form/FormField';
-import CreateForm from './pages/home/Form/CreateAndEditForm/CreateForm';
-import Form from './pages/home/Form/Form';
-import EditFormField from './pages/home/Form/CreateAndEditFormField/EditFormField';
-import EditForm from './pages/home/Form/CreateAndEditForm/EditForm';
-import EditLop from './pages/home/LopHoc/CreateAndEditLopHoc/EditLop';
-import CreateLop from './pages/home/LopHoc/CreateAndEditLopHoc/CreateLop';
+import SinhVien from './pages/SinhVien/SinhVien';
+import LopHoc from './pages/LopHoc/LopHoc';
+import CreateSinhVien from './pages/SinhVien/CreateAndEditSinhVien/CreateSinhVien';
+import EditSinhVien from './pages/SinhVien/CreateAndEditSinhVien/EditSinhVien';
+import TreeFolder from './pages/Folder/Folder';
+import EditFolder from './pages/Folder/EditAndCreateFolder/EditFolder';
+import CreateFolder from './pages/Folder/EditAndCreateFolder/CreateFolder';
+import FormField from './pages/Form/FormField';
+import CreateForm from './pages/Form/CreateAndEditForm/CreateForm';
+import Form from './pages/Form/Form';
+import EditFormField from './pages/Form/CreateAndEditFormField/EditFormField';
+import EditForm from './pages/Form/CreateAndEditForm/EditForm';
+import EditLop from './pages/LopHoc/CreateAndEditLopHoc/EditLop';
+import CreateLop from './pages/LopHoc/CreateAndEditLopHoc/CreateLop';
 import PageNotFound from './components/layout/PageNotFound';
 import Register from './components/member/Register';
-import CreateFormField from './pages/home/Form/CreateAndEditFormField/CreateFormField';
+import CreateFormField from './pages/Form/CreateAndEditFormField/CreateFormField';
 
 function App() {
 
