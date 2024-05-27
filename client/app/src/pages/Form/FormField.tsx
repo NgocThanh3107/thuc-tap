@@ -168,7 +168,7 @@ const FormField = () => {
           key: 'action',
           render: (record) => (
             <Space size="middle">
-              <a onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/edit/'+ record?.id + '.html')}}>Edit</a>
+              <a className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/edit/'+ record?.id + '.html')}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
             </Space>
           ),
         },

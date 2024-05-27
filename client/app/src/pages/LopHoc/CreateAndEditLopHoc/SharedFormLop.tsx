@@ -15,13 +15,13 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
     let api = localStorage.getItem("api");
     let token = localStorage.getItem("token");
     const [codeError, setcodeError] = useState<string>('');
+    
     const onFinish = (values: LopProps) => {
         const newData = {
-            id: parseInt(id || '0'),
-            maLop: values.maLop,
-            tenLop: values.tenLop,
-            moTa: values.moTa
+            ...values,
+            id: parseInt(id || '0')
         }
+        console.log(newData)
         const apiEndpoint = isEdit ? `http://192.168.5.240/api/v1/builder/form/lop-hoc/data` : 'http://192.168.5.240/api/v1/builder/form/lop-hoc/data';
         const requestMethod = isEdit ? axios.put : axios.post;
 
@@ -56,11 +56,15 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
+        const { errorFields } = errorInfo;
+        if (errorFields.some((field: any) => field.name[0] === 'maLop')) {
+           message.error('Vui lòng nhập Mã Lớp')
+        }
     };
 
     return (    
         <div className="edit-create">
-        <h1>{isEdit ? "Edit and Update Class" : "Create New Class"}</h1>
+            <h1>{isEdit ? "Edit and Update Class" : "Create New Class"}</h1>
             <Form
                 name="basic"
                 labelCol={{ span: 8 }}
@@ -75,7 +79,7 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
                 <Form.Item
                     label="Tên Lớp"
                     name="tenLop"
-                    rules={[{ required: true, message: 'Please input your ten lop!' }]}
+                    rules={[{ required: true, message: 'Please input your ten lop !' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -83,7 +87,7 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
                 <Form.Item
                     label="Mã Lớp"
                     name="maLop"
-                    rules={[{ required: true, message: 'Please input your ma lop!' }]}
+                    rules={[{ required: true, message: 'Please input your ma lop !' }]}
                     validateStatus={codeError ? "error" : ""}
                     help={ codeError ? codeError : ""}
                 >

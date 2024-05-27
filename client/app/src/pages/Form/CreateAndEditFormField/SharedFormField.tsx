@@ -48,8 +48,9 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
     const onFinish: FormProps<DataformFieldProps>['onFinish'] = (values) => {
         const newdata = {
           ...values,
-          id: data?.id    
+          id: data?.id,
         }
+        console.log(newdata)
         const apiEndpoint = isEdit ? 'http://192.168.5.240/api/v1/builder/form/'+ idFFieldFrom + '/field' : 'http://192.168.5.240/api/v1/builder/form/'+ idFFieldFrom + '/field';
         const requestMethod = isEdit ? axios.put : axios.post;
 
@@ -72,11 +73,11 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           } else {
               const FilterErr = error.response.data.errorDescription;
               const errorDescription = error.response.data.errorDescription;
-              const apiKeyErr = errorDescription.find((item: any) => item.fields && item.fields.includes("apiKey"));             
+              const apiKeyErr = errorDescription.find((item: any) => item.fields && item.fields.includes("apiKey"));
               const sortErr = FilterErr.find((item : any)=> item.field === "sort");
               const minErr = FilterErr.find((item : any)=> item.field === "min");
               const maxErr = FilterErr.find((item : any)=> item.field === "max");
-              const formColErr = FilterErr.find((item : any)=> item.field === "formCol"); 
+              const formColErr = FilterErr.find((item : any)=> item.field === "formCol");
                 if(apiKeyErr){
                   setApiKeyErr(error.response.data.message)
                 }else{
@@ -108,7 +109,6 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
       
     const onFinishFailed: FormProps<DataformFieldProps>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
-
     };
 
     return(
@@ -137,7 +137,7 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           <Form.Item<DataformFieldProps>
             label="ApiKey"
             name="apiKey"
-            rules={[{ required: true, message: 'Please input your apikey!' }]}
+            // rules={[{ required: true, message: 'Please input your apikey!' }]}
             validateStatus={apiKeyErr ? "error" : ""}
             help = {apiKeyErr ? apiKeyErr : "" }
           >
@@ -163,7 +163,7 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           <Form.Item<DataformFieldProps>
             label="Sort"
             name="sort"
-            rules={[{ required: true, message: 'Please input your sort!' }]}
+            // rules={[{ required: true, message: 'Please input your sort!' }]}
             validateStatus={sortErr ? "error" : ""}
             help={sortErr ? sortErr : ""}
           >
@@ -280,7 +280,7 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           <Form.Item<DataformFieldProps>
             label="FormCol"
             name="formCol"
-            rules={[{ required: true, message: 'Please input your formCol!' }]}
+            // rules={[{ required: true, message: 'Please input your formCol!' }]}
             validateStatus={formColErr ? "error" : ""}
             help={formColErr ? formColErr : ""}
           >

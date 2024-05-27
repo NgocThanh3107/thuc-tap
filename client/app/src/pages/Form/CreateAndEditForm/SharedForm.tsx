@@ -41,9 +41,6 @@
     const navigate = useNavigate();
     const [treeData, setTreeData] = useState<DataFolderProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [value, setValue] = useState<string | undefined>(data?.folder?.id.toString());
-    const [check, setCheck] = useState<boolean | undefined>(data?.checkAccess);
-    const [show, setShow] = useState<boolean | undefined>(data?.showView);
     const [nameError, setNameError] = useState<string>("");
     const [codeError, setCodeError] = useState<string>("");
 
@@ -84,12 +81,9 @@
     const onFinish = (values: DataFormProps) => {
       const newData = {
         ...values,
-        id: data ? data.id : undefined,
-        folder: { id: value ? parseInt(value) : data?.folder?.id },
-        checkAccess: check,
-        showView: show
+        id: data ? data.id : undefined,    
       };
-      
+
       const apiEndpoint = isEdit ? `http://192.168.5.240/api/v1/builder/form` : `http://192.168.5.240/api/v1/builder/form`;
       const requestMethod = isEdit ? axios.put : axios.post;
 
@@ -130,18 +124,6 @@
       console.log('Failed:', errorInfo);
     };
 
-    const onChange = (newValue: string) => {
-      setValue(newValue);
-    };
-
-    const handleCheckChange = (value: boolean) => {
-      setCheck(value);
-    };
-
-    const handleShowChange = (value: boolean) => {
-      setShow(value);
-    };
-
     return (
       <div className="edit-create">
         <h1>{isEdit ? "Edit and Update form" : "Create New Form"}</h1>
@@ -159,7 +141,7 @@
           <Form.Item
             label="Name"
             name="name"
-            rules={[{ required: true, message: 'Please input your name!' }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
             validateStatus={nameError ? "error" : ""}
             help={nameError ? nameError : ""}
           >
@@ -185,17 +167,15 @@
 
           <Form.Item
             label="Folder"
-            name={['folder', 'name']}
+            name={['folder', 'id']}
           >
             <TreeSelect
               showSearch
               style={{ width: '100%' }}
-              value={value}
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
               placeholder="Please select"
               allowClear
               treeDefaultExpandAll
-              onChange={onChange}
               treeData={treeData}
               loading={loading}
               treeNodeFilterProp="title"
@@ -210,12 +190,10 @@
             <Select
               placeholder='Please Select'
               style={{ width: '100%' }}
-              onChange={handleCheckChange}
               options={[
                 { value: true, label: "True" },
                 { value: false, label: "False" }
               ]}
-              value={check}
             />
           </Form.Item>
 
@@ -227,12 +205,10 @@
             <Select
               placeholder='Please Select'
               style={{ width: '100%' }}
-              onChange={handleShowChange}
               options={[
                 { value: true, label: "True" },
                 { value: false, label: "False" }
               ]}
-              value={show}
             />
           </Form.Item>
 

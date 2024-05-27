@@ -78,10 +78,10 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
       id: data?.id,
       name: values.name,
       sort: values.sort,
-      ...(values.description && { description: values.description }),
-      ...(value && { parent: { id: value } })
+      description: values?.description,
+      parent: value ? { id: value } : null
     };
-
+  console.log(newdata)
     const apiEndpoint = `http://192.168.5.240/api/v1/folder`;
     const requestMethod = isEdit ? axios.put : axios.post;
 

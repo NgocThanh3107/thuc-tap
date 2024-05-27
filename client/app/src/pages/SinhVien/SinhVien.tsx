@@ -175,15 +175,15 @@ const {Column} = Table;
           <h1>Quản lý sinh viên <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             {contextHolder}
             <div className='table-main'>
-              <div className="delete">
-                <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
-                  <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
-                </Button>
-                <span style={{ marginLeft: 8 }}>
-                  {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-                </span>
-              </div>
               <div className='action'>
+                <div className="delete">
+                  <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i> Delete
+                  </Button>
+                  <span style={{ marginLeft: 8 }}>
+                    {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                  </span>
+                </div>
                 <p className='create'>
                   <Button type="primary" onClick={() => { navigate("/administrator/builder/data/sinh-vien/create.html");}}>
                     <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new 
@@ -203,9 +203,9 @@ const {Column} = Table;
                 loading={loading}
               >
                 <Column title="STT" dataIndex='' render={(text, record, index) => startSTT + index} /> 
-                <Column title="Ma Sinh Vien" dataIndex="maSinhVien" key="maSinhVien" />
-                <Column title="Ten Sinh Vien" dataIndex="tenSinhVien" key="tenSinhVien" />
-                <Column title="Lop" dataIndex="lop" key = "lop" 
+                <Column title="Mã Sinh Viên" dataIndex="maSinhVien" key="maSinhVien" />
+                <Column title="Tên Sinh Viên" dataIndex="tenSinhVien" key="tenSinhVien" />
+                <Column title="Lớp" dataIndex="lop" key = "lop" 
                   render={(lop: LopProps) => (
                     <span>
                       {lop && lop.tenLop ? (
@@ -224,7 +224,7 @@ const {Column} = Table;
                   key="action"
                   render={( data: DataType) => (
                     <Space size="middle">
-                      <a href={"/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html"} onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                      <a className='ac-edit' href={"/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html"} onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
                     </Space>
                   )}
                 />

@@ -49,6 +49,9 @@
         width: 20%;
         display: inline-block;
         border-radius: 6px;
+        overflow-y: auto;
+        max-height: 640px;
+        scrollbar-width: thin;
     }
     .table-folder{
         display: block;
@@ -57,29 +60,36 @@
         border: 1px solid #dbd8d8;
         border-radius: 10px;
         padding: 10px;
+
         table{
             margin-top: 10px;
+    
             th{
                 font-size: 17px;
                 background-color: rgb(230, 230, 230);
+                
             }
         }
     }
 }
 
 .delete{
-    width: 100%;
+    width: 20%;
     text-align: left;
     display: block;
     float: left;
     font-size: 15px;
 }
 
+.ac-edit{
+    font-weight: bold;
+}
+
 .action{
     width:100%;
     display: block;
     float: right;
-        
+    margin-top: 10px;
         .create{
             float: right;
             padding: 0;

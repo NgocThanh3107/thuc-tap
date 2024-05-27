@@ -87,7 +87,6 @@ interface DataFolderProps {
         }
       }
 
-        
         const columns: TableColumnsType<DataFormProps> = [
           {
             title: 'STT',
@@ -114,8 +113,8 @@ interface DataFolderProps {
             key: 'action',
             render: (record) => (
               <Space size="middle">
-                <a onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/form/edit/'+ record?.id + '.html')}} >Edit</a>
-                <a onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/'+ record?.id + '.html')}} >Form Field</a>
+                <a className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/form/edit/'+ record?.id + '.html')}} ><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                <a className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/'+ record?.id + '.html')}} ><i className="fa fa-list-alt" aria-hidden="true"></i> Form Field</a>
               </Space>
             ),
           },
@@ -206,13 +205,13 @@ interface DataFolderProps {
         <h1>Form <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
         <div className="form-style">
           <div className="table-main">
-            <div className="delete">     
-              <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected} ><i className="fa fa-trash-o" aria-hidden="true"> </i> Delete</Button>
-              <span style={{ marginLeft: 8 }}>
-                {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-              </span>
-            </div>
             <div className="action">
+              <div className="delete">     
+                <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected} ><i className="fa fa-trash-o" aria-hidden="true"> </i> Delete</Button>
+                <span style={{ marginLeft: 8 }}>
+                  {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                </span>
+              </div>
               <p className="create"><Button type="primary" onClick={() => {navigate("/administrator/internship/builder/form/create.html")}}><i className="fa fa-plus-circle" aria-hidden="true"></i> Add new </Button></p>
               <p className='search'>
                 <Space.Compact>
@@ -220,7 +219,7 @@ interface DataFolderProps {
                 </Space.Compact>
               </p>
             </div>
-          <Table onChange={handleTable} loading={loading} rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
+            <Table onChange={handleTable} loading={loading} rowKey={'id'} rowSelection={rowSelection} columns={columns} dataSource={getData} />
           </div>
         </div>
       </div>

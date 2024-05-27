@@ -83,14 +83,13 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
 
   const handleSubmit = (values: FieldType) => {
     const data = {
+      ...values,
       id: formData?.id,
-      maSinhVien: values.maSinhVien,
-      tenSinhVien: values.tenSinhVien,
       lop: {
         id: idLop !== undefined ? idLop : formData?.lop?.id
       },
-      moTa: values.moTa || null
     };
+    console.log(data)
 
     const request = isEdit
       ? axios.put(`http://192.168.5.240/api/v1/builder/form/sinh-vien/data`, data, {
@@ -131,6 +130,10 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
 
   const handleFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
+    const { errorFields } = errorInfo;
+        if (errorFields.some((field: any) => field.name[0] === 'maSinhVien')) {
+           message.error('Vui lòng nhập Mã Sinh Viên')
+        }
   };
 
   const handleClassChange = (value: number) => {

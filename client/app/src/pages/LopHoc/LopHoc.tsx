@@ -171,15 +171,15 @@ const LopHoc: React.FC = () => {
           <h1>Quản lý lớp học <span style={{fontSize: 14, color: "rgb(147, 147, 147)"}}>{getData.length}</span></h1>
             {contextHolder}
             <div className='table-main'>
-              <div className="delete">
-                <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
-                 <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
-                </Button>
-                <span style={{ marginLeft: 8 }}>
-                  {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
-                </span>
-              </div>
               <div className='action'>
+                <div className="delete">
+                  <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
+                  <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
+                  </Button>
+                  <span style={{ marginLeft: 8 }}>
+                    {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+                  </span>
+                </div>
                 <p className='create'>
                   <Button type="primary" onClick={() => { navigate("/administrator/builder/data/lop-hoc/create.html"); }}>
                     <i className="fa fa-plus-circle" aria-hidden="true"></i> Add new 
@@ -207,7 +207,7 @@ const LopHoc: React.FC = () => {
                     key="action"
                     render={(getdata: DataType) => (
                       <Space size="middle">
-                        <Link onClick={(e) => { e.preventDefault(); navigate("/administrator/builder/data/lop-hoc/edit/" + getdata?.id + ".html"); }}>
+                        <Link className='ac-edit' onClick={(e) => { e.preventDefault(); navigate("/administrator/builder/data/lop-hoc/edit/" + getdata?.id + ".html"); }}>
                           <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
                         </Link>
                       </Space>

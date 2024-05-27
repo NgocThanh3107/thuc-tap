@@ -40,8 +40,8 @@ const Folder = () => {
       title: 'STT',
       dataIndex: '',
       render: (text, record, index) => startSTT + index ,
-      width: '5%',
-      align: 'center'
+      width: '10%',
+      
     },
     {
       title: 'Name',
@@ -55,9 +55,7 @@ const Folder = () => {
       title: 'Action',
       dataIndex: '',
       render: (record) => (
-        <div>
-          <a onClick={(e) =>{e.preventDefault(); navigate('/administrator/internship/builder/folder/edit/'+ record?.id + '.html')}}>Edit</a>
-        </div>
+        <a className="ac-edit" onClick={(e) =>{e.preventDefault(); navigate('/administrator/internship/builder/folder/edit/'+ record?.id + '.html')}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
       )
     }
   ];
@@ -71,12 +69,9 @@ const Folder = () => {
     const [IdParent, setIdParent] = useState<number | undefined>();  
     const [messageApi, contextHolder] = message.useMessage();
     const [search, setSearch] = useState<string>('');
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [loading,setLoading] = useState(true);
     const [startSTT, setStartSTT] = useState(0);
     const [allSelectedIds, setAllSelectedIds] = useState<number[]>([]);
-    // console.log(allSelectedIds)
-    // console.log(selectedRowKeys)
     
       useEffect(() => {
         axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
@@ -235,6 +230,7 @@ const Folder = () => {
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setSearch(value);
+
       if(value===""){
         setGetData1(originalData)
       }else {
@@ -345,14 +341,15 @@ const Folder = () => {
           </div>
           <div className="table-folder">
             <div className="delete" >
-              <Button type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
+              <Button size="small" type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
                 <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
               </Button>
-              <span style={{ marginLeft: 8 }}>
+              <span style={{ marginLeft: 8, fontSize: 13 }}>
                 {hasSelected ? `Selected ${allSelectedIds.length} items` : ''}
               </span>
             </div>
             <Table
+              size="middle"
               rowKey={"id"}   
               onChange={handleTableChange}
               columns={columns}
