@@ -54,12 +54,9 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
     }else{
       setLoading(false)
     }
-    fetchClassData(1, 100);
-  }, [id, isEdit]);
+   
 
-
-  const fetchClassData = (page: number, pageSize: number) => {
-    axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data?page=${page}&pageSize=${pageSize}`, {
+    axios.get(`http://192.168.5.240/api/v1/builder/form/lop-hoc/data`, {
       headers: {
         'API-Key': api,
         'Authorization': `Bearer ${token}`,
@@ -79,7 +76,8 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
         console.log(error);
       }
     });
-  };
+  }, []);
+  
 
   const handleSubmit = (values: FieldType) => {
     const data = {
@@ -130,10 +128,6 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
 
   const handleFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
-    const { errorFields } = errorInfo;
-        if (errorFields.some((field: any) => field.name[0] === 'maSinhVien')) {
-           message.error('Vui lòng nhập Mã Sinh Viên')
-        }
   };
 
   const handleClassChange = (value: number) => {
@@ -175,8 +169,8 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
             label="Mã Sinh Viên"
             name="maSinhVien"
             rules={[{ required: true, message: "Vui lòng nhập mã sinh viên!" }]}
-            validateStatus={codeError ? "error" : ""}
-            help={codeError ? codeError : ""}
+            validateStatus={codeError ? "error" : undefined}
+            help={codeError || undefined}
           >
             <Input />
           </Form.Item>
@@ -210,7 +204,7 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
                   label: v.tenLop,
                 }))
               }
-          />
+            />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">

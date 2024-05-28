@@ -33,13 +33,14 @@ interface MyFormProps {
   }
 
 const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
+  
   let api = localStorage.getItem("api");
   let token = localStorage.getItem("token");
   const [parentError, setParentError] = useState<string>("");
   const [nameError, setNameError] = useState<string>("");
   const [sortError, setSortError] = useState<string>("");
   const [treeData, setTreeData] = useState<DataFolderProps1[]>([]);
-  const [value, setValue] = useState<string[]>();
+  const [value, setValue] = useState<string | number | null>(null);
   let params = useParams();
   let navigate = useNavigate();
 
@@ -74,12 +75,17 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
   };
 
   const onFinish: FormProps<DataFolderProps>['onFinish'] = (values) => {
+    let parentValue = value;
+    if (parentValue === null && data?.parent) {
+      parentValue = data.parent.id;
+    }
+
     const newdata = {
       id: data?.id,
       name: values.name,
       sort: values.sort,
       description: values?.description,
-      parent: value ? { id: value } : null
+      parent: parentValue ? { id: parentValue } : null 
     };
   console.log(newdata)
     const apiEndpoint = `http://192.168.5.240/api/v1/folder`;
@@ -105,21 +111,10 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
           const parentError = errorDescription.find((errorItem: any) => errorItem.field === "parent");
           const sortError = errorDescription.find((errorItem: any) => errorItem.field === "sort");
           const nameError = errorDescription.find((errorItem: any) => errorItem.field === "name");
-          if (parentError) {
-            setParentError(error.response.data.message);
-          } else {
-            setParentError("");
-          }
-          if(sortError) {
-            setSortError(error.response.data.message);
-          } else {
-            setSortError("");
-          }
-          if(nameError) {
-            setNameError(error.response.data.message);
-          } else {
-            setNameError("");
-          }
+
+          setParentError(parentError ? error.response.data.message : "");
+          setSortError(sortError ? error.response.data.message : "");
+          setNameError(nameError ? error.response.data.message : "");
         }
       })
   };
@@ -128,7 +123,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
     console.log('Failed:', errorInfo);
   };
 
-  const onChange = (newValue: string[]) => {
+  const onChange = (newValue: string | number | null) => {
     setValue(newValue);
     console.log(newValue)
   };
@@ -155,8 +150,8 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
           label="Name"
           name="name"
           rules={[{ required: true, message: 'Please input your name!' }]}
-          validateStatus={nameError ? "error" : ""}
-          help={nameError ? nameError : ""}
+          validateStatus={nameError ? "error" : undefined}
+          help={nameError ||undefined }
         >
           <Input />
         </Form.Item>
@@ -165,8 +160,8 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
           label="Sort"
           name="sort"
           rules={[{ required: true, message: 'Please input your sort!' }]}
-          validateStatus={sortError ? "error" : ""}
-          help={sortError ? sortError : ""}
+          validateStatus={sortError ? "error" : undefined}
+          help={sortError || undefined}
         >
           <Input />
         </Form.Item>
@@ -181,8 +176,8 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
         <Form.Item<DataFolderProps>
           label="Parent"
           name={["parent", "name"]}
-          validateStatus={parentError ? "error" : ""}
-          help={parentError ? parentError : ""}
+          validateStatus={parentError ? "error" : undefined}
+          help={parentError || undefined}
         >
           <TreeSelect
             showSearch

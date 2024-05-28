@@ -43,14 +43,20 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
     const [minErr, setMinErr] = useState<string>("");
     const [maxErr, setMaxErr] = useState<string>("");
     const [formColErr, setFormColErr] = useState<string>("");
+    const [labelKeyErr, setLabelKeyErr] = useState<string>("");
+    const [referenceIdErr, setReferenceIdErr] = useState<string>("");
 
 
     const onFinish: FormProps<DataformFieldProps>['onFinish'] = (values) => {
         const newdata = {
           ...values,
           id: data?.id,
+          min: values.min || null,
+          max: values.max || null,
+          referenceId: values.referenceId || null,
+          labelKey: values.labelKey || null
         }
-        console.log(newdata)
+        // console.log(newdata)
         const apiEndpoint = isEdit ? 'http://192.168.5.240/api/v1/builder/form/'+ idFFieldFrom + '/field' : 'http://192.168.5.240/api/v1/builder/form/'+ idFFieldFrom + '/field';
         const requestMethod = isEdit ? axios.put : axios.post;
 
@@ -77,32 +83,17 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
               const sortErr = FilterErr.find((item : any)=> item.field === "sort");
               const minErr = FilterErr.find((item : any)=> item.field === "min");
               const maxErr = FilterErr.find((item : any)=> item.field === "max");
+              const referenceIdErr = FilterErr.find((item : any)=> item.field === "referenceId");
+              const labelKeyErr = FilterErr.find((item : any)=> item.field === "labelKey");
               const formColErr = FilterErr.find((item : any)=> item.field === "formCol");
-                if(apiKeyErr){
-                  setApiKeyErr(error.response.data.message)
-                }else{
-                  setApiKeyErr('')
-                }
-                if(sortErr){
-                  setSortErr(sortErr.message)
-                }else{
-                  setSortErr('')
-                }
-                if(minErr){
-                  setMinErr(minErr.message)
-                }else{
-                  setMinErr('')
-                }
-                if(maxErr){
-                  setMaxErr(maxErr.message)
-                }else{
-                  setMaxErr('')
-                }
-                if(formColErr){
-                  setFormColErr(formColErr.message)
-                }else{
-                  setFormColErr('')
-                }
+          
+              setApiKeyErr(apiKeyErr ? error.response.data.message : "")         
+              setSortErr(sortErr ? sortErr.message : "")   
+              setMinErr(minErr ? minErr.message : "")               
+              setMaxErr(maxErr ? maxErr.message : "")
+              setFormColErr(formColErr ? formColErr.message : "") 
+              setReferenceIdErr(referenceIdErr ? referenceIdErr.message : "")
+              setLabelKeyErr(labelKeyErr ? labelKeyErr.message : "")
           }
         });
         };
@@ -137,9 +128,9 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           <Form.Item<DataformFieldProps>
             label="ApiKey"
             name="apiKey"
-            // rules={[{ required: true, message: 'Please input your apikey!' }]}
-            validateStatus={apiKeyErr ? "error" : ""}
-            help = {apiKeyErr ? apiKeyErr : "" }
+            rules={[{ required: true, message: 'Please input your apikey!' }]}
+            validateStatus={ apiKeyErr ? "error" : undefined }
+            help = { apiKeyErr || undefined }
           >
             <Input />
           </Form.Item>
@@ -163,9 +154,9 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           <Form.Item<DataformFieldProps>
             label="Sort"
             name="sort"
-            // rules={[{ required: true, message: 'Please input your sort!' }]}
-            validateStatus={sortErr ? "error" : ""}
-            help={sortErr ? sortErr : ""}
+            rules={[{ required: true, message: 'Please input your sort!' }]}
+            validateStatus={ sortErr ? "error" : undefined }
+            help={ sortErr || undefined }
           >
             <Input />
           </Form.Item>
@@ -280,9 +271,9 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           <Form.Item<DataformFieldProps>
             label="FormCol"
             name="formCol"
-            // rules={[{ required: true, message: 'Please input your formCol!' }]}
-            validateStatus={formColErr ? "error" : ""}
-            help={formColErr ? formColErr : ""}
+            rules={[{ required: true, message: 'Please input your formCol!' }]}
+            validateStatus={ formColErr ? "error" : undefined }
+            help={ formColErr || undefined }
           >
             <Input />
           </Form.Item>
@@ -291,8 +282,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="Min"
             name="min"
             // rules={[{ required: true, message: 'Please input your min!' }]}
-            validateStatus={minErr ? "error" : ""}
-            help={minErr ? minErr : ""}
+            validateStatus={ minErr ? "error" : undefined }
+            help={ minErr || undefined }
           >
             <Input />
           </Form.Item>
@@ -301,8 +292,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="Max"
             name="max"
             // rules={[{ required: true, message: 'Please input your max!' }]}
-            validateStatus={maxErr ? "error" : ""}
-            help={maxErr ? maxErr : ""}
+            validateStatus={ maxErr ? "error" : undefined }
+            help={ maxErr || undefined }
           >
             <Input />
           </Form.Item>
@@ -319,6 +310,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="ReferenceId"
             name="referenceId"
             // rules={[{ required: true, message: 'Please input your referenceId!' }]}
+            validateStatus={ referenceIdErr ? "error" : undefined }
+            help={ referenceIdErr || undefined }
           >
             <Input />
           </Form.Item>
@@ -327,6 +320,8 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
             label="LabelKey"
             name="labelKey"
             // rules={[{ required: true, message: 'Please input your labelKey!' }]}
+            validateStatus={ labelKeyErr ? "error" : undefined }
+            help={ labelKeyErr || undefined }
           >
             <Input />
           </Form.Item>

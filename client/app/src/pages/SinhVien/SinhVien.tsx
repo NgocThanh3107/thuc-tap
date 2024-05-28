@@ -11,6 +11,7 @@ import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
 import '../_pages.scss';
+import Link from 'antd/es/typography/Link';
 
 interface DataType {
     key: string;
@@ -224,7 +225,7 @@ const {Column} = Table;
                   key="action"
                   render={( data: DataType) => (
                     <Space size="middle">
-                      <a className='ac-edit' href={"/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html"} onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                      <Link className='ac-edit' href={"/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html"} onClick={(e) => {e.preventDefault();navigate("/administrator/builder/data/sinh-vien/edit/" + data?.id + ".html")}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</Link>
                     </Space>
                   )}
                 />

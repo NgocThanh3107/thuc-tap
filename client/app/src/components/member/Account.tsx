@@ -25,13 +25,6 @@ const Account: React.FC = () =>{
 
         <div>
             <h2>Account</h2>
-            <form action="">
-                <p><input className="input" type="text" /></p>
-                <p><input className="input" type="text" /></p>
-                <p><input className="input" type="text" /></p>
-                <p><input className="input" type="text" /></p>
-                <p><button className="button">Submit</button></p>
-            </form>
        </div>
     )
 }

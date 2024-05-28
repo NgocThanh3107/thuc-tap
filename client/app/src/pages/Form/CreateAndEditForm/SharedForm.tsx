@@ -122,7 +122,7 @@
 
     const onFinishFailed = (errorInfo: any) => {
       console.log('Failed:', errorInfo);
-    };
+    }
 
     return (
       <div className="edit-create">
@@ -142,8 +142,8 @@
             label="Name"
             name="name"
             rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
-            validateStatus={nameError ? "error" : ""}
-            help={nameError ? nameError : ""}
+            validateStatus={nameError ? "error" : undefined}
+            help={nameError || undefined}
           >
             <Input />
           </Form.Item>
@@ -152,8 +152,8 @@
             label="Code"
             name="code"
             rules={[{ required: true, message: 'Please input your code!' }]}
-            validateStatus={codeError ? "error" : ""}
-            help={codeError ? codeError : ""}
+            validateStatus={codeError ? "error" : undefined}
+            help={codeError || undefined}
           >
             <Input />
           </Form.Item>

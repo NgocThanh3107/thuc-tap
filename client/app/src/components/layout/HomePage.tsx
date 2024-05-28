@@ -7,6 +7,8 @@ import axios from 'axios';
 import Footer from './footer/Footer';
 import '../layout/_layout.scss';
 import PageNotFound from './PageNotFound';
+import { Flex, Spin } from 'antd';
+
 
 const HomePage = () =>{
 
@@ -14,6 +16,7 @@ const HomePage = () =>{
   let navigate = useNavigate();
   const [check, setCheck] = useState<boolean>();
   let api = localStorage.getItem("api");
+  const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(()=>{
       axios.get("http://192.168.5.240/api/v2/auth/check",
@@ -31,6 +34,7 @@ const HomePage = () =>{
           localStorage.removeItem("token");
           navigate("/login");
         }
+        setLoading(false)
       })
       .catch(error => {
         if (error.response.status === 401) {
@@ -38,10 +42,18 @@ const HomePage = () =>{
         } else {
             console.log(error);
         }
+        setLoading(false)
     });
     },[]);
 
- 
+    if (loading) {
+      return (
+        <Flex vertical style={{ height: '50vh' }} align="center" justify="center">
+          <Spin tip="Loading..." size="large" />
+        </Flex>
+      );
+    }
+
   return (
     <div className='app'>
       <Header />

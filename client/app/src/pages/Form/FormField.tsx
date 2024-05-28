@@ -7,6 +7,8 @@ import  { useContext, useLayoutEffect } from 'react';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
+import Link from "antd/es/typography/Link";
+
 interface FormFieldProps{
     id: number;
     name: string;
@@ -24,7 +26,6 @@ const FormField = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [getData, setgetData] = useState<FormFieldProps[]>([])
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [search, setSearch] = useState<string>("");
     const [originalData, setOriginalData] = useState<FormFieldProps[]>([]);
     const [loading,setLoading] = useState(true);
 
@@ -46,7 +47,7 @@ const FormField = () => {
         }
         )
         .catch(error=>{
-          if(error.response.status == 401){
+          if(error.response.status === 401){
             navigate("/login");
           }else{
             console.log(error)
@@ -128,7 +129,6 @@ const FormField = () => {
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      setSearch(value);
       if(value ===""){
         setgetData(originalData);
       }else{
@@ -151,7 +151,7 @@ const FormField = () => {
           title: 'Name',
           dataIndex: 'name',
           key: 'name',
-          render: (text) => <a>{text}</a>,
+          // render: (text) => <a>{text}</a>,
         },
         {
           title: 'ApiKey',
@@ -168,11 +168,12 @@ const FormField = () => {
           key: 'action',
           render: (record) => (
             <Space size="middle">
-              <a className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/edit/'+ record?.id + '.html')}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+              <Link href={'/administrator/internship/builder/formfield/edit/'+ record?.id + '.html'} className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/edit/'+ record?.id + '.html')}}><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</Link>
             </Space>
           ),
         },
     ];
+
 
     const { locale, theme } = useContext(ConfigProvider.ConfigContext);
     useLayoutEffect(() => {

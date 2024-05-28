@@ -207,7 +207,7 @@ const LopHoc: React.FC = () => {
                     key="action"
                     render={(getdata: DataType) => (
                       <Space size="middle">
-                        <Link className='ac-edit' onClick={(e) => { e.preventDefault(); navigate("/administrator/builder/data/lop-hoc/edit/" + getdata?.id + ".html"); }}>
+                        <Link href={"/administrator/builder/data/lop-hoc/edit/" + getdata?.id + ".html"} className='ac-edit' onClick={(e) => { e.preventDefault(); navigate("/administrator/builder/data/lop-hoc/edit/" + getdata?.id + ".html"); }}>
                           <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
                         </Link>
                       </Space>

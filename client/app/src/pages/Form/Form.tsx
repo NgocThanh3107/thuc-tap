@@ -8,7 +8,7 @@ import { StyleProvider } from '@ant-design/cssinjs';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { App, ConfigProvider, Modal} from 'antd';
 import type { TableColumnsType } from 'antd';
-
+import Link from "antd/es/typography/Link";
 interface DataFormProps{
     id: number;
     folder: DataFolderProps;
@@ -113,8 +113,8 @@ interface DataFolderProps {
             key: 'action',
             render: (record) => (
               <Space size="middle">
-                <a className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/form/edit/'+ record?.id + '.html')}} ><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
-                <a className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/'+ record?.id + '.html')}} ><i className="fa fa-list-alt" aria-hidden="true"></i> Form Field</a>
+                <Link href={'/administrator/internship/builder/form/edit/'+ record?.id + '.html'} className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/form/edit/'+ record?.id + '.html')}} ><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</Link>
+                <Link href={'/administrator/internship/builder/formfield/'+ record?.id + '.html'} className="ac-edit" onClick={(e) =>{ e.preventDefault(); navigate('/administrator/internship/builder/formfield/'+ record?.id + '.html')}} ><i className="fa fa-list-alt" aria-hidden="true"></i> Form Field</Link>
               </Space>
             ),
           },
