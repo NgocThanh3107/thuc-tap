@@ -58,6 +58,11 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
         console.log('Failed:', errorInfo);
     };
 
+    const handleInputChange = () => {
+        setcodeError('');
+    };
+    
+
     return (    
         <div className="edit-create">
             <h1>{isEdit ? "Edit and Update Class" : "Create New Class"}</h1>
@@ -87,7 +92,7 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
                     validateStatus={codeError ? "error" : undefined}
                     help={codeError || undefined}
                 >
-                    <Input />
+                    <Input onChange={handleInputChange}/>
                 </Form.Item>
 
                 <Form.Item

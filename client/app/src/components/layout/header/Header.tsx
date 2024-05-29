@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'antd/es/typography/Link';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
 const Header: React.FC = () => {
 
@@ -19,21 +20,25 @@ const Header: React.FC = () => {
   }
   
   const Logout = () => {
-    axios.post("http://192.168.5.240/api/v2/auth/logout",
-      {
-      headers: {
-        "API-Key": api,
-        "Authorization": `Bearer ${token}`
-      }
-    })
-    .then(res => {
-      localStorage.removeItem("check");
-      localStorage.removeItem("token");
-      navigate("/login");
-    })
-    .catch(error => {
-      console.error('Logout failed:', error);
-    });
+      axios.post("http://192.168.5.240/api/v2/auth/logout",
+      {},
+        {
+        headers: {
+          "API-Key": api,
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(res => {
+        if(res.data.status === true){
+        localStorage.removeItem("check");
+        localStorage.removeItem("token");
+        message.success("Đăng xuất thành công");
+        navigate("/login");
+        }
+      })
+      .catch(error => {
+        console.error('Logout failed:', error);
+      });
   }
   
   return (

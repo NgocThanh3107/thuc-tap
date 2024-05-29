@@ -142,6 +142,9 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
     );
   }
 
+  const handleInputChange = () => {
+    setcodeError('')
+  }
   
   return (
       <div className="edit-create">
@@ -172,7 +175,7 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
             validateStatus={codeError ? "error" : undefined}
             help={codeError || undefined}
           >
-            <Input />
+            <Input onChange={handleInputChange}/>
           </Form.Item>
 
           <Form.Item<FieldType>

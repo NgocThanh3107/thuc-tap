@@ -132,6 +132,13 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
     console.log('onPopupScroll', e);
   };
 
+  const handleInputName = () => {
+    setNameError('');
+  }
+  const handleInputSort = () => {
+    setSortError('');
+  }
+
   return (
     <div className="edit-create">
       <h1>{isEdit ? "Edit Folder" : "Create Folder"}</h1>
@@ -153,7 +160,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
           validateStatus={nameError ? "error" : undefined}
           help={nameError ||undefined }
         >
-          <Input />
+          <Input onChange={handleInputName}/>
         </Form.Item>
 
         <Form.Item<DataFolderProps>
@@ -163,7 +170,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
           validateStatus={sortError ? "error" : undefined}
           help={sortError || undefined}
         >
-          <Input />
+          <Input onChange={handleInputSort}/>
         </Form.Item>
 
         <Form.Item<DataFolderProps>

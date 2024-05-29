@@ -4,6 +4,7 @@ import axios from 'axios';
 import Link from 'antd/es/typography/Link';
 import { useNavigate } from 'react-router-dom';
 import React from "react";
+import { message } from 'antd';
 
 type FieldType = {
   username?: string;
@@ -31,10 +32,12 @@ const Login: React.FC = () => {
         }
       })
       .then((res) => {
+        console.log(res)
         if (res.data.status === true) {
           localStorage.setItem("check", res.data.status)
           let token = res.data.data.token;
-          localStorage.setItem("token", token)
+          localStorage.setItem("token", token);
+          message.success('Đăng nhập thành công')
           navigate("/")
         } else {
           alert("Username or Password incorrect")

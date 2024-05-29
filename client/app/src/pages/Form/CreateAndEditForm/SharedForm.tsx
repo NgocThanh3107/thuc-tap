@@ -124,6 +124,12 @@
       console.log('Failed:', errorInfo);
     }
 
+    const handleInputName = () => {
+      setNameError('')
+    }
+    const handleInputCode = () => {
+      setCodeError('')
+    }
     return (
       <div className="edit-create">
         <h1>{isEdit ? "Edit and Update form" : "Create New Form"}</h1>
@@ -145,7 +151,7 @@
             validateStatus={nameError ? "error" : undefined}
             help={nameError || undefined}
           >
-            <Input />
+            <Input onChange={handleInputName}/>
           </Form.Item>
 
           <Form.Item
@@ -155,7 +161,7 @@
             validateStatus={codeError ? "error" : undefined}
             help={codeError || undefined}
           >
-            <Input />
+            <Input onChange={handleInputCode}/>
           </Form.Item>
 
           <Form.Item

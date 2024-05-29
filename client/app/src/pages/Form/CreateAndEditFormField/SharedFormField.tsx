@@ -77,23 +77,23 @@ const SharedFormField: React.FC<MyFormProps> = ({ isEdit, data }) => {
           if (error.response.status === 401) {
             navigate("/login");
           } else {
-              const FilterErr = error.response.data.errorDescription;
-              const errorDescription = error.response.data.errorDescription;
-              const apiKeyErr = errorDescription.find((item: any) => item.fields && item.fields.includes("apiKey"));
-              const sortErr = FilterErr.find((item : any)=> item.field === "sort");
-              const minErr = FilterErr.find((item : any)=> item.field === "min");
-              const maxErr = FilterErr.find((item : any)=> item.field === "max");
-              const referenceIdErr = FilterErr.find((item : any)=> item.field === "referenceId");
-              const labelKeyErr = FilterErr.find((item : any)=> item.field === "labelKey");
-              const formColErr = FilterErr.find((item : any)=> item.field === "formCol");
-          
-              setApiKeyErr(apiKeyErr ? error.response.data.message : "")         
-              setSortErr(sortErr ? sortErr.message : "")   
-              setMinErr(minErr ? minErr.message : "")               
-              setMaxErr(maxErr ? maxErr.message : "")
-              setFormColErr(formColErr ? formColErr.message : "") 
-              setReferenceIdErr(referenceIdErr ? referenceIdErr.message : "")
-              setLabelKeyErr(labelKeyErr ? labelKeyErr.message : "")
+            const FilterErr = error.response.data.errorDescription;
+            const errorDescription = error.response.data.errorDescription;
+            const apiKeyErr = errorDescription.find((item: any) => item.fields && item.fields.includes("apiKey"));
+            const sortErr = FilterErr.find((item : any)=> item.field === "sort");
+            const minErr = FilterErr.find((item : any)=> item.field === "min");
+            const maxErr = FilterErr.find((item : any)=> item.field === "max");
+            const referenceIdErr = FilterErr.find((item : any)=> item.field === "referenceId");
+            const labelKeyErr = FilterErr.find((item : any)=> item.field === "labelKey");
+            const formColErr = FilterErr.find((item : any)=> item.field === "formCol");
+        
+            setApiKeyErr(apiKeyErr ? error.response.data.message : "")         
+            setSortErr(sortErr ? sortErr.message : "")   
+            setMinErr(minErr ? minErr.message : "")               
+            setMaxErr(maxErr ? maxErr.message : "")
+            setFormColErr(formColErr ? formColErr.message : "") 
+            setReferenceIdErr(referenceIdErr ? referenceIdErr.message : "")
+            setLabelKeyErr(labelKeyErr ? labelKeyErr.message : "")
           }
         });
         };

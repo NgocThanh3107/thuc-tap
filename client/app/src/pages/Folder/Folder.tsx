@@ -207,7 +207,6 @@ const Folder = () => {
                   (item) => item.id !== undefined && !allSelectedIds.includes(item.id)
                 );
                 setGetData1(updatedData);
-        
                 setAllSelectedIds([]);
             }
           })
