@@ -30,10 +30,10 @@ const Header: React.FC = () => {
       })
       .then(res => {
         if(res.data.status === true){
-        localStorage.removeItem("check");
-        localStorage.removeItem("token");
-        message.success("Đăng xuất thành công");
-        navigate("/login");
+          localStorage.removeItem("check");
+          localStorage.removeItem("token");
+          message.success("Đăng xuất thành công");
+          navigate("/login");
         }
       })
       .catch(error => {

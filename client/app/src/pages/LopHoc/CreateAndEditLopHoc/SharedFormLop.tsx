@@ -98,7 +98,6 @@ const SharedFormLop: React.FC<MyFormProps> = ({ isEdit, data, id }) => {
                 <Form.Item
                     label="Mô Tả"
                     name="moTa"
-                    // rules={[{ required: true, message: 'Please input your mo ta!' }]}
                 >
                     <Input />
                 </Form.Item>

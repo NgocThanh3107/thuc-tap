@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Form, Input, TreeSelect, message } from 'antd';
 import type { FormProps } from 'antd';
 import type { SyntheticEvent } from 'react';
@@ -33,7 +33,7 @@ interface MyFormProps {
   }
 
 const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
-  
+
   let api = localStorage.getItem("api");
   let token = localStorage.getItem("token");
   const [parentError, setParentError] = useState<string>("");
@@ -41,7 +41,6 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
   const [sortError, setSortError] = useState<string>("");
   const [treeData, setTreeData] = useState<DataFolderProps1[]>([]);
   const [value, setValue] = useState<string | number | null>(null);
-  let params = useParams();
   let navigate = useNavigate();
 
     useEffect(()=>{
@@ -125,7 +124,6 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
 
   const onChange = (newValue: string | number | null) => {
     setValue(newValue);
-    console.log(newValue)
   };
 
   const onPopupScroll = (e: SyntheticEvent) => {
@@ -158,7 +156,7 @@ const FolderForm: React.FC<MyFormProps> = ({ isEdit, data }) => {
           name="name"
           rules={[{ required: true, message: 'Please input your name!' }]}
           validateStatus={nameError ? "error" : undefined}
-          help={nameError ||undefined }
+          help={nameError || undefined }
         >
           <Input onChange={handleInputName}/>
         </Form.Item>

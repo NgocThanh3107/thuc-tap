@@ -181,7 +181,6 @@ const SharedFormSinhVien: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
           <Form.Item<FieldType>
             label="Mô Tả "
             name="moTa"
-            // rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
           >
             <Input />
           </Form.Item>

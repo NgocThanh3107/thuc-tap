@@ -73,7 +73,7 @@ const Folder = () => {
     const [loading,setLoading] = useState(true);
     const [startSTT, setStartSTT] = useState(0);
     const [allSelectedIds, setAllSelectedIds] = useState<number[]>([]);
-    
+
       useEffect(() => {
         axios.get(`http://192.168.5.240/api/v1/folder/tree`, {
           headers: {
@@ -335,7 +335,7 @@ const Folder = () => {
             {handleTree()}
           </div>
           <div className="table-folder">
-            <div className="delete" >
+            <div className="delete">
               <Button size="small" type="primary" danger onClick={handleDelete} disabled={!hasSelected}>
                 <i className="fa fa-trash-o" aria-hidden="true"> </i> Delete
               </Button>
